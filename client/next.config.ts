@@ -11,6 +11,18 @@ const nextConfig: NextConfig = {
         source: "/uploads/:path*",
         destination: "http://localhost:5000/uploads/:path*",
       },
+      {
+        source: "/:file(.*\\.html)",
+        destination: "http://localhost:5000/:file",
+      },
+      {
+        source: "/css/:path*",
+        destination: "http://localhost:5000/css/:path*",
+      },
+      {
+        source: "/js/:path*",
+        destination: "http://localhost:5000/js/:path*",
+      },
     ];
   },
 };
