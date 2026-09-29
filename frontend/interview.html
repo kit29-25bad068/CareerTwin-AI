@@ -60,7 +60,18 @@
                 <div class="form-group">
                   <label class="form-label">Company Twin</label>
                   <select id="setup-company" class="form-select">
-                    <option value="" disabled selected>Loading verified company datasets...</option>
+                    <option value="Amazon" selected>Amazon (75 questions)</option>
+                    <option value="Google">Google (50 questions)</option>
+                    <option value="Microsoft">Microsoft (80 questions)</option>
+                    <option value="Meta">Meta (100 questions)</option>
+                    <option value="Apple">Apple (100 questions)</option>
+                    <option value="Adobe">Adobe (100 questions)</option>
+                    <option value="Atlassian">Atlassian (100 questions)</option>
+                    <option value="Zoho">Zoho (80 questions)</option>
+                    <option value="Infosys">Infosys (100 questions)</option>
+                    <option value="TCS">TCS (100 questions)</option>
+                    <option value="High-Growth Startup">High-Growth Startup (100 questions)</option>
+                    <option value="Custom">Custom Company...</option>
                   </select>
                 </div>
               </div>
@@ -268,7 +279,21 @@
   <script src="/js/vision.js"></script>
   <script src="/js/interview.js"></script>
   <script>
-    let loadedCompanies = [];
+    const FALLBACK_COMPANIES = [
+      { company: 'Amazon', totalQuestions: 75, categoryCounts: { dsa: 25, behavioral: 15, systemDesign: 10, hr: 10, project: 15 } },
+      { company: 'Google', totalQuestions: 50, categoryCounts: { dsa: 20, systemDesign: 10, behavioral: 5, hr: 5, project: 10 } },
+      { company: 'Microsoft', totalQuestions: 80, categoryCounts: { dsa: 30, oop: 15, systemDesign: 10, hr: 10, project: 15 } },
+      { company: 'Meta', totalQuestions: 100, categoryCounts: { dsa: 35, systemDesign: 20, behavioral: 15, hr: 10, project: 20 } },
+      { company: 'Apple', totalQuestions: 100, categoryCounts: { programming: 30, dsa: 25, operatingSystems: 15, hr: 10, project: 20 } },
+      { company: 'Adobe', totalQuestions: 100, categoryCounts: { dsa: 30, oop: 20, dbms: 15, hr: 15, project: 20 } },
+      { company: 'Atlassian', totalQuestions: 100, categoryCounts: { dsa: 25, systemDesign: 25, behavioral: 20, hr: 10, project: 20 } },
+      { company: 'Zoho', totalQuestions: 80, categoryCounts: { programming: 30, problemSolving: 20, dbms: 10, hr: 10, project: 10 } },
+      { company: 'Infosys', totalQuestions: 100, categoryCounts: { programming: 30, dbms: 20, computerNetworks: 15, hr: 15, project: 20 } },
+      { company: 'TCS', totalQuestions: 100, categoryCounts: { programming: 30, dbms: 20, hr: 20, problemSolving: 15, project: 15 } },
+      { company: 'High-Growth Startup', totalQuestions: 100, categoryCounts: { systemDesign: 30, dsa: 25, project: 25, behavioral: 10, hr: 10 } }
+    ];
+
+    let loadedCompanies = [...FALLBACK_COMPANIES];
 
     function updateCompanyKnowledgeCard(selectedName) {
       const card = document.getElementById('company-knowledge-card');
@@ -342,25 +367,26 @@
       Navbar.init('Mock Interview');
       window.orchestrator = new InterviewOrchestrator();
 
-      // 1. Fetch available companies from MongoDB (Requirement 12)
+      // Immediately display card for default company (Amazon)
+      const selectEl = document.getElementById('setup-company');
+      if (selectEl && selectEl.value) {
+        updateCompanyKnowledgeCard(selectEl.value);
+      }
+
+      // 1. Fetch available companies from backend / database (Requirement 12)
       try {
         const compRes = await API.get('/company-interviews');
-        if (compRes.success && compRes.companies && compRes.companies.length > 0) {
+        if (compRes && compRes.success && compRes.companies && compRes.companies.length > 0) {
           loadedCompanies = compRes.companies;
-          const selectEl = document.getElementById('setup-company');
+          const currentSelected = selectEl.value || 'Amazon';
           selectEl.innerHTML = loadedCompanies
-            .map((c) => `<option value="${c.company}">${c.company} (${c.totalQuestions} questions)</option>`)
-            .join('') + `<option value="Custom">Custom Company...</option>`;
+            .map((c) => `<option value="${c.company}" ${c.company === currentSelected ? 'selected' : ''}>${c.company} (${c.totalQuestions} questions)</option>`)
+            .join('') + `<option value="Custom" ${currentSelected === 'Custom' ? 'selected' : ''}>Custom Company...</option>`;
 
-          // Default select Amazon or first company
-          const defaultComp = loadedCompanies.find((c) => c.company === 'Amazon') || loadedCompanies[0];
-          if (defaultComp) {
-            selectEl.value = defaultComp.company;
-            updateCompanyKnowledgeCard(defaultComp.company);
-          }
+          updateCompanyKnowledgeCard(selectEl.value);
         }
       } catch (err) {
-        console.warn('Could not load company interviews from database:', err.message);
+        console.warn('Using built-in company interview catalog:', err.message);
       }
 
       // Pre-fill target role from profile

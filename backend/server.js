@@ -36,7 +36,7 @@ app.get('/api/health', (req, res) => {
 
 // Ensure Database Connection for API endpoints
 app.use('/api', async (req, res, next) => {
-  if (req.path === '/health') return next();
+  if (req.path === '/health' || req.path.startsWith('/company-interviews')) return next();
   try {
     await connectDB();
     next();
