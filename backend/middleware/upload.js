@@ -2,24 +2,27 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure base upload directories exist
-const uploadDirs = [
-  path.join(__dirname, '../../uploads'),
-  path.join(__dirname, '../../uploads/resumes'),
-  path.join(__dirname, '../../uploads/recordings'),
-  path.join(__dirname, '../../uploads/temp'),
-];
+const os = require('os');
 
-uploadDirs.forEach((dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+// Helper to get writable upload directory (uses /tmp on Vercel/serverless)
+const getUploadDir = (subfolder) => {
+  const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
+  const baseDir = isServerless ? path.join(os.tmpdir(), 'careertwin_uploads') : path.join(__dirname, '../../uploads');
+  const targetDir = subfolder ? path.join(baseDir, subfolder) : baseDir;
+  if (!fs.existsSync(targetDir)) {
+    try {
+      fs.mkdirSync(targetDir, { recursive: true });
+    } catch (e) {
+      console.warn(`Could not create upload directory ${targetDir}:`, e.message);
+    }
   }
-});
+  return targetDir;
+};
 
 // Storage engine for resumes
 const resumeStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads/resumes'));
+    cb(null, getUploadDir('resumes'));
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
@@ -31,7 +34,7 @@ const resumeStorage = multer.diskStorage({
 // Storage engine for interview recordings (Replay mode)
 const recordingStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads/recordings'));
+    cb(null, getUploadDir('recordings'));
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
@@ -42,7 +45,7 @@ const recordingStorage = multer.diskStorage({
 // Storage engine for temporary speech audio
 const tempAudioStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads/temp'));
+    cb(null, getUploadDir('temp'));
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;

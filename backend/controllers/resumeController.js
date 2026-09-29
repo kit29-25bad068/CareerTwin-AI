@@ -19,14 +19,17 @@ exports.uploadResume = async (req, res, next) => {
 
     // 1. Parse PDF & analyze with Gemini
     const { rawText, parsedData, analysis } = await resumeParserService.parseAndAnalyzeResume(
-      req.file.path,
+      req.file.path || req.file.buffer,
       targetRole
     );
 
     // 2. Check if previous resume existed; delete previous file if present
     const existingResume = await Resume.findOne({ user: req.user._id });
     if (existingResume && existingResume.storedFilePath) {
-      const oldPath = path.join(__dirname, '../../', existingResume.storedFilePath);
+      const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
+      const baseDir = isServerless ? path.join(require('os').tmpdir(), 'careertwin_uploads') : path.join(__dirname, '../../uploads');
+      const filename = path.basename(existingResume.storedFilePath);
+      const oldPath = path.join(baseDir, 'resumes', filename);
       if (fs.existsSync(oldPath)) {
         try {
           fs.unlinkSync(oldPath);

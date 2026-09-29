@@ -2,12 +2,22 @@ const fs = require('fs');
 const pdfParse = require('pdf-parse');
 const geminiService = require('./geminiService');
 
-async function parseAndAnalyzeResume(filePath, targetRole = 'Software Engineer') {
-  if (!fs.existsSync(filePath)) {
-    throw new Error('Resume file could not be found on server storage.');
+async function parseAndAnalyzeResume(fileInput, targetRole = 'Software Engineer') {
+  let dataBuffer;
+
+  if (Buffer.isBuffer(fileInput)) {
+    dataBuffer = fileInput;
+  } else if (fileInput && fileInput.buffer && Buffer.isBuffer(fileInput.buffer)) {
+    dataBuffer = fileInput.buffer;
+  } else if (typeof fileInput === 'string') {
+    if (!fs.existsSync(fileInput)) {
+      throw new Error('Resume file could not be found on server storage.');
+    }
+    dataBuffer = fs.readFileSync(fileInput);
+  } else {
+    throw new Error('Invalid resume file input.');
   }
 
-  const dataBuffer = fs.readFileSync(filePath);
   const pdfData = await pdfParse(dataBuffer);
   const rawText = pdfData.text.replace(/\r\n/g, '\n').trim();
 

@@ -21,7 +21,11 @@ app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Uploads (resumes and recordings)
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+const isServerlessEnv = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
+const uploadStaticDir = isServerlessEnv
+  ? path.join(require('os').tmpdir(), 'careertwin_uploads')
+  : path.join(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadStaticDir));
 
 // Health Check Endpoint
 app.get('/api/health', (req, res) => {
