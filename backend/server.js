@@ -37,6 +37,20 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Ensure Database Connection for API endpoints
+app.use('/api', async (req, res, next) => {
+  if (req.path === '/health') return next();
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    return res.status(503).json({
+      success: false,
+      message: err.message || 'Database connection error. Please configure MONGODB_URI in Vercel environment variables.'
+    });
+  }
+});
+
 // Mount API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/profile', require('./routes/profileRoutes'));
