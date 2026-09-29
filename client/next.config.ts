@@ -2,7 +2,9 @@ import path from "path";
 import type { NextConfig } from "next";
 
 const BACKEND_URL =
-  process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL;
+  process.env.BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.VERCEL ? "" : "http://localhost:5000");
 
 const nextConfig: NextConfig = {
   turbopack: {
