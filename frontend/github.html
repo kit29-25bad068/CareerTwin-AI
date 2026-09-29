@@ -36,6 +36,14 @@
 
         <!-- Username Input Form -->
         <div class="card" style="margin-bottom: 2rem;">
+          <div id="gh-linked-banner" style="display:none; margin-bottom: 1rem; padding: 0.75rem 1rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-md); font-size: 0.9rem; color: var(--accent-cyan); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <span>⚡ Account Integrated GitHub: </span>
+              <strong id="gh-linked-username" style="color: #fff;">@username</strong>
+            </div>
+            <span class="badge badge-emerald">Integrated from Registration</span>
+          </div>
+
           <form id="github-sync-form" style="display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-end;">
             <div class="form-group" style="flex:1; min-width:260px; margin-bottom:0;">
               <label class="form-label" for="gh-username-input">GitHub Username</label>
@@ -132,33 +140,69 @@
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       Navbar.init('GitHub Signals');
+
+      // Pre-fill from current user immediately
+      const user = API.getUser();
+      if (user && user.githubUsername) {
+        setLinkedBanner(user.githubUsername);
+      }
+
       await loadGitHubProfile();
 
       document.getElementById('github-sync-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const username = document.getElementById('gh-username-input').value.trim();
         if (!username) return;
-
-        Utils.showLoading(`Scanning @${username}'s public repositories and extracting engineering signals...`);
-        try {
-          const res = await API.post('/github/sync', { username });
-          Utils.hideLoading();
-          if (res.success && res.github) {
-            Utils.showToast('GitHub analysis synchronized successfully!', 'success');
-            renderGitHub(res.github);
-          }
-        } catch (err) {
-          Utils.hideLoading();
-          Utils.showToast(err.message || 'Failed to sync GitHub profile.', 'error');
-        }
+        await syncGitHubProfile(username);
       });
     });
 
+    function setLinkedBanner(username) {
+      if (!username) return;
+      document.getElementById('gh-username-input').value = username;
+      const banner = document.getElementById('gh-linked-banner');
+      const label = document.getElementById('gh-linked-username');
+      if (banner && label) {
+        label.textContent = `@${username}`;
+        banner.style.display = 'flex';
+      }
+    }
+
+    async function syncGitHubProfile(username, isAuto = false) {
+      if (!username) return;
+      Utils.showLoading(isAuto 
+        ? `Connecting to your account's GitHub (@${username}) and extracting engineering signals...`
+        : `Scanning @${username}'s public repositories and extracting engineering signals...`
+      );
+      try {
+        const res = await API.post('/github/sync', { username });
+        Utils.hideLoading();
+        if (res.success && res.github) {
+          if (!isAuto) Utils.showToast('GitHub analysis synchronized successfully!', 'success');
+          setLinkedBanner(res.github.username || username);
+          renderGitHub(res.github);
+        }
+      } catch (err) {
+        Utils.hideLoading();
+        Utils.showToast(err.message || 'Failed to sync GitHub profile.', 'error');
+      }
+    }
+
     async function loadGitHubProfile() {
       try {
+        const user = API.getUser();
         const res = await API.get('/github');
+
         if (res.success && res.isConnected && res.github) {
+          setLinkedBanner(res.github.username || (user && user.githubUsername));
           renderGitHub(res.github);
+        } else {
+          const linkedUser = res.githubUsername || (user && user.githubUsername);
+          if (linkedUser) {
+            setLinkedBanner(linkedUser);
+            // Automatically analyze and integrate the linked GitHub account!
+            await syncGitHubProfile(linkedUser, true);
+          }
         }
       } catch (err) {
         console.error('Error loading GitHub:', err);
@@ -236,6 +280,8 @@
           document.getElementById('github-results-section').style.display = 'none';
           document.getElementById('disconnect-gh-btn').style.display = 'none';
           document.getElementById('gh-username-input').value = '';
+          const banner = document.getElementById('gh-linked-banner');
+          if (banner) banner.style.display = 'none';
         }
       } catch (err) {
         Utils.showToast(err.message || 'Failed to disconnect GitHub.', 'error');

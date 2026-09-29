@@ -101,19 +101,18 @@ exports.register = async (req, res, next) => {
       experienceLevel: 'student',
     });
 
-    // Automatically trigger GitHub profile sync in background
+    // Automatically trigger GitHub profile sync
     if (parsedGitHubUsername) {
-      githubService.fetchAndAnalyzeGitHub(parsedGitHubUsername, 'Full Stack Developer')
-        .then((githubData) => {
-          return GitHubProfile.findOneAndUpdate(
-            { user: user._id },
-            { user: user._id, ...githubData },
-            { upsert: true, new: true }
-          );
-        })
-        .catch((err) => {
-          console.warn('[GitHub Auto-Sync Warning]:', err.message);
-        });
+      try {
+        const githubData = await githubService.fetchAndAnalyzeGitHub(parsedGitHubUsername, 'Full Stack Developer');
+        await GitHubProfile.findOneAndUpdate(
+          { user: user._id },
+          { user: user._id, ...githubData },
+          { upsert: true, new: true }
+        );
+      } catch (err) {
+        console.warn('[GitHub Auto-Sync Warning]:', err.message);
+      }
     }
 
     // Automatically trigger Codolio coding platform performance sync in background

@@ -87,11 +87,69 @@ exports.syncGitHub = async (req, res, next) => {
 // @access  Private
 exports.getGitHubProfile = async (req, res, next) => {
   try {
-    const github = await GitHubProfile.findOne({ user: req.user._id });
-    if (!github) {
-      return res.status(200).json({ success: true, isConnected: false, github: null });
+    let github = await GitHubProfile.findOne({ user: req.user._id });
+
+    // If user has a registered GitHub username but analysis document isn't saved yet, auto-sync it now
+    if (!github && req.user.githubUsername) {
+      try {
+        const cleanUsername = req.user.githubUsername.trim().toLowerCase().replace(/^@/, '');
+        const profile = await CareerProfile.findOne({ user: req.user._id });
+        const targetRole = profile?.targetRole || 'Full Stack Developer';
+
+        const githubData = await githubService.fetchAndAnalyzeGitHub(cleanUsername, targetRole);
+
+        github = await GitHubProfile.findOneAndUpdate(
+          { user: req.user._id },
+          {
+            user: req.user._id,
+            ...githubData,
+          },
+          { upsert: true, new: true }
+        );
+
+        // Auto-sync top languages to Skill database
+        if (githubData.topLanguages && Array.isArray(githubData.topLanguages)) {
+          for (const lang of githubData.topLanguages) {
+            if (lang.language && lang.language !== 'Unspecified') {
+              await Skill.findOneAndUpdate(
+                { user: req.user._id, name: lang.language },
+                {
+                  $setOnInsert: {
+                    user: req.user._id,
+                    name: lang.language,
+                    category: 'Programming Languages',
+                    proficiency: Math.min(60 + (lang.percentage || 20), 95),
+                    source: 'github',
+                    isGap: false,
+                  },
+                },
+                { upsert: true }
+              );
+            }
+          }
+        }
+      } catch (autoErr) {
+        console.warn('[Auto GitHub Sync on GET Warning]:', autoErr.message);
+      }
     }
-    res.status(200).json({ success: true, isConnected: true, github });
+
+    if (!github) {
+      return res.status(200).json({
+        success: true,
+        isConnected: false,
+        github: null,
+        githubUsername: req.user.githubUsername || null,
+        githubUrl: req.user.githubUrl || null,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      isConnected: true,
+      github,
+      githubUsername: req.user.githubUsername || github.username,
+      githubUrl: req.user.githubUrl || `https://github.com/${github.username}`,
+    });
   } catch (error) {
     next(error);
   }
