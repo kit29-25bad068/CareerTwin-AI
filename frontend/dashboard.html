@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - CareerTwin AI</title>
+  <title>Adaptive Dashboard - CareerTwin AI</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/pages.css">
+  <link rel="stylesheet" href="/css/adaptive.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -22,121 +23,224 @@
       <div id="topbar-container"></div>
 
       <div class="page-container">
-        <!-- Hero Banner with Career Goal -->
-        <div class="card card-glow" style="margin-bottom: 2rem; background: linear-gradient(135deg, rgba(17,24,39,0.9) 0%, rgba(31,41,61,0.6) 100%);">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-            <div>
-              <div style="font-size: 0.85rem; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.25rem;">
-                Target Career Path
+        <!-- Top Toolbar: Learner Switcher & Quick Links -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; background: rgba(17, 24, 39, 0.6); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">ACTIVE LEARNER:</span>
+            <select id="learner-selector" class="form-control" style="width: auto; background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-color); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.88rem; cursor: pointer;">
+              <option value="64f1a2b3c4d5e6f7a8b9c0d1">Alex Rivers (Adaptive Demo)</option>
+              <option value="64f1a2b3c4d5e6f7a8b9c0d2">Sam Chen (Steady Learner)</option>
+              <option value="64f1a2b3c4d5e6f7a8b9c0d3">Elena Rostova (Fast Track)</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <a href="/diagnostic.html" class="btn btn-secondary btn-sm">🩺 Cold-Start Diagnostic</a>
+            <a href="/concept-graph.html" class="btn btn-secondary btn-sm">🕸️ View Concept Graph</a>
+            <a href="/learning-history.html" class="btn btn-outline btn-sm">📜 Audit History</a>
+          </div>
+        </div>
+
+        <!-- Action Hero Card (The Core Adaptive Intelligence Unit) -->
+        <div class="action-hero-card" id="action-hero-container">
+          <div class="action-hero-header">
+            <div class="action-hero-title-group">
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <span id="hero-action-badge" class="action-badge-pill action-practice">
+                  ⚡ DETERMINING NEXT ACTION...
+                </span>
+                <span id="hero-domain-tag" style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
+                  Domain: Java Programming Fundamentals
+                </span>
               </div>
-              <h1 id="target-role-title" style="font-size: 1.85rem; margin-bottom: 0.25rem;">Loading Profile...</h1>
-              <p id="active-goal-desc" style="font-size: 0.95rem; color: var(--text-secondary);">Synchronizing your Digital Career Twin...</p>
+              <h1 id="hero-target-concept-name" style="font-size: 1.85rem; margin-top: 0.35rem; color: #fff;">
+                Analyzing Learner Knowledge State...
+              </h1>
+              <p id="hero-concept-desc" style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
+                Evaluating evidence signals, prerequisite chains, and epistemic uncertainty...
+              </p>
             </div>
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-              <a href="/interview.html" class="btn btn-cyan btn-md">🎙️ Start Mock Interview</a>
-              <a href="/mentor.html" class="btn btn-secondary btn-md">🤖 Ask Mentor AI</a>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+              <button id="btn-start-action" class="btn btn-primary btn-md" style="box-shadow: 0 0 20px rgba(99, 102, 241, 0.45);">
+                ▶ Start Recommended Action
+              </button>
+              <span id="hero-question-meta" style="font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono);">
+                Target Question: Loading...
+              </span>
+            </div>
+          </div>
+
+          <!-- Transparent "WHY THIS NEXT?" Explainability Section -->
+          <div class="why-this-next-box">
+            <div class="why-title">
+              <span>🧠 WHY THIS NEXT? (SYSTEM TRANSPARENCY)</span>
+            </div>
+            <div class="why-reason-text" id="hero-why-reason">
+              Fetching decision rationale...
+            </div>
+            <div class="decision-factors-grid" id="hero-decision-factors">
+              <span class="factor-chip">Loading factors...</span>
             </div>
           </div>
         </div>
 
-        <!-- Central Metrics Grid: Readiness Dial + 4 Core Signals -->
+        <!-- 4 Central Adaptive Metrics -->
+        <div class="grid grid-cols-4" style="margin-bottom: 2rem;">
+          <div class="card" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Average Mastery</span>
+              <span style="font-size: 1.25rem;">📈</span>
+            </div>
+            <div id="stat-avg-mastery" style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin: 0.35rem 0;">--%</div>
+            <div class="progress-track" style="height: 6px;">
+              <div id="stat-mastery-bar" class="progress-bar progress-bar-indigo" style="width: 0%;"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Target: ≥ 70% threshold</div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Epistemic Uncertainty</span>
+              <span style="font-size: 1.25rem;">🎯</span>
+            </div>
+            <div id="stat-avg-uncertainty" style="font-size: 2rem; font-weight: 800; color: var(--accent-amber); margin: 0.35rem 0;">--%</div>
+            <div class="progress-track" style="height: 6px;">
+              <div id="stat-uncertainty-bar" class="progress-bar progress-bar-amber" style="width: 100%;"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Lower is more verified (≤ 30%)</div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Concepts Mastered</span>
+              <span style="font-size: 1.25rem;">🏆</span>
+            </div>
+            <div id="stat-mastered-count" style="font-size: 2rem; font-weight: 800; color: var(--accent-emerald); margin: 0.35rem 0;">0 / 12</div>
+            <div class="progress-track" style="height: 6px;">
+              <div id="stat-count-bar" class="progress-bar progress-bar-emerald" style="width: 0%;"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Java Core Syllabus</div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Prerequisite Graph</span>
+              <span style="font-size: 1.25rem;">⛓️</span>
+            </div>
+            <div id="stat-prereq-status" style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 0.5rem 0;">Checking...</div>
+            <div id="stat-prereq-sub" style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">15 dependency edges active</div>
+          </div>
+        </div>
+
+        <!-- 12-Concept Dynamic Learning Path Widget -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🗺️ Dynamic 12-Concept Learning Path</span>
+              <span class="badge badge-primary" style="margin-left: 0.5rem;">Instructional Order</span>
+            </div>
+            <a href="/concept-graph.html" class="btn btn-outline btn-sm">Interactive Dependency Graph ➔</a>
+          </div>
+          <div class="path-timeline-container">
+            <div class="path-grid" id="learning-path-grid">
+              <!-- Dynamically populated 12 concept nodes -->
+              <div class="skeleton" style="height: 110px;"></div>
+              <div class="skeleton" style="height: 110px;"></div>
+              <div class="skeleton" style="height: 110px;"></div>
+              <div class="skeleton" style="height: 110px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept Mastery & Uncertainty Overview Table -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📊 Concept Mastery & Uncertainty Matrix</span>
+            </div>
+            <a href="/mastery.html" class="btn btn-outline btn-sm">Deep Inspection View ➔</a>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                  <th style="padding: 0.75rem 1rem;">Order</th>
+                  <th style="padding: 0.75rem 1rem;">Concept</th>
+                  <th style="padding: 0.75rem 1rem;">Status</th>
+                  <th style="padding: 0.75rem 1rem; width: 220px;">Mastery (0-100%)</th>
+                  <th style="padding: 0.75rem 1rem;">Uncertainty</th>
+                  <th style="padding: 0.75rem 1rem;">Evidence Count</th>
+                  <th style="padding: 0.75rem 1rem;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="concept-table-body">
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading concept mastery records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Career Evidence & Claimed Skills Verification -->
         <div class="grid grid-cols-12" style="margin-bottom: 2rem;">
-          <!-- Left: Career Readiness Dial -->
-          <div class="card col-span-4" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-            <div class="card-title" style="margin-bottom: 1.25rem;">
-              <span>Career Readiness Index</span>
+          <div class="card col-span-7">
+            <div class="card-header">
+              <div class="card-title">
+                <span>🛡️ Career Evidence: Claimed vs. Verified Skills</span>
+              </div>
+              <a href="/resume.html" class="btn btn-outline btn-sm">Resume Signals</a>
+            </div>
+            <div id="career-evidence-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 600; color: #fff;">Java Object-Oriented Programming (OOP)</div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Claimed on Resume: <em>"Proficient in Java & OOP architecture"</em></div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="badge badge-success" id="evidence-oop-badge">Evidence Verified</span>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">3 Transfer tests passed</div>
+                </div>
+              </div>
+
+              <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 600; color: #fff;">Java Exception Handling & Robustness</div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Claimed on Resume: <em>"Built fault-tolerant microservices"</em></div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="badge badge-amber" id="evidence-exc-badge">In Progress</span>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Needs Transfer Verification</div>
+                </div>
+              </div>
+
+              <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 600; color: #fff;">Java Collections & Data Structures</div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">GitHub Signal: <em>Multiple ArrayList & HashMap usages</em></div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="badge badge-cyan" id="evidence-coll-badge">Signal Detected</span>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Awaiting Transfer Challenge</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Digital Twin Readiness Quick Glance -->
+          <div class="card col-span-5" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+            <div class="card-title" style="margin-bottom: 1rem;">
+              <span>🧬 Twin Readiness Dial</span>
             </div>
             <div id="readiness-dial-container" style="margin: 0.5rem 0;"></div>
-            <div id="readiness-tier-badge" class="badge badge-primary" style="margin-top: 0.75rem; font-size: 0.8rem;">
-              Calculating...
+            <div id="readiness-tier-badge" class="badge badge-cyan" style="margin-top: 0.75rem;">
+              Synchronizing Signals...
             </div>
-            <p id="readiness-disclaimer" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.4;">
-              Internal readiness indicator based on recorded artifacts.
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.4; max-width: 320px;">
+              Readiness is weighted across Verified Concept Mastery (60%), Mock Interview Performance (20%), and Code Signals (20%).
             </p>
           </div>
-
-          <!-- Right: 4 Metric Cards -->
-          <div class="col-span-8 grid grid-cols-2">
-            <div class="card card-interactive" onclick="window.location.href='/interview.html'">
-              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎙️</div>
-              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted);">Technical Interviews</div>
-              <div id="metric-interview-score" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">--</div>
-              <div id="metric-interview-sub" style="font-size: 0.8rem; color: var(--text-secondary);">0 sessions completed</div>
-            </div>
-
-            <div class="card card-interactive" onclick="window.location.href='/resume.html'">
-              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📄</div>
-              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted);">Resume Alignment</div>
-              <div id="metric-resume-score" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">--</div>
-              <div id="metric-resume-sub" style="font-size: 0.8rem; color: var(--text-secondary);">No resume uploaded</div>
-            </div>
-
-            <div class="card card-interactive" onclick="window.location.href='/github.html'">
-              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🐙</div>
-              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted);">GitHub Signals</div>
-              <div id="metric-github-score" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">--</div>
-              <div id="metric-github-sub" style="font-size: 0.8rem; color: var(--text-secondary);">Not connected</div>
-            </div>
-
-            <div class="card card-interactive" onclick="window.location.href='/skills.html'">
-              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚡</div>
-              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted);">Skill Coverage</div>
-              <div id="metric-skills-score" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">--</div>
-              <div id="metric-skills-sub" style="font-size: 0.8rem; color: var(--text-secondary);">0 skills verified</div>
-            </div>
-          </div>
         </div>
 
-        <!-- Middle Row: Radar Chart + Smart Recommendations -->
-        <div class="grid grid-cols-12" style="margin-bottom: 2rem;">
-          <!-- 360 Degree Radar Chart -->
-          <div class="card col-span-6">
-            <div class="card-header">
-              <div class="card-title">🧬 360° Career Twin Radar</div>
-              <a href="/career-twin.html" class="btn btn-outline btn-sm">Full Twin View</a>
-            </div>
-            <div style="height: 320px; position: relative;">
-              <canvas id="readiness-radar-chart"></canvas>
-            </div>
-          </div>
-
-          <!-- Proactive Recommendations -->
-          <div class="card col-span-6">
-            <div class="card-header">
-              <div class="card-title">💡 Smart Recommendations</div>
-              <span class="badge badge-amber" id="recs-count-badge">0 Actions</span>
-            </div>
-            <div id="recommendations-list" style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 320px; overflow-y: auto;">
-              <div class="skeleton" style="height: 70px;"></div>
-              <div class="skeleton" style="height: 70px;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bottom Row: Recent Interview History & Quick Roadmap Progress -->
-        <div class="grid grid-cols-12">
-          <!-- Recent Mock Interviews -->
-          <div class="card col-span-8">
-            <div class="card-header">
-              <div class="card-title">🎙️ Recent Mock Interviews</div>
-              <a href="/interview.html" class="btn btn-outline btn-sm">New Session</a>
-            </div>
-            <div id="recent-interviews-list">
-              <p style="color: var(--text-muted); font-size: 0.9rem;">Loading interview records...</p>
-            </div>
-          </div>
-
-          <!-- Quick Roadmap Progress -->
-          <div class="card col-span-4">
-            <div class="card-header">
-              <div class="card-title">🗺️ Career Roadmap</div>
-              <a href="/roadmap.html" class="btn btn-outline btn-sm">View</a>
-            </div>
-            <div id="roadmap-summary-content">
-              <p style="color: var(--text-muted); font-size: 0.9rem;">Loading roadmap...</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -145,187 +249,292 @@
   <script src="/js/utils.js"></script>
   <script src="/js/auth.js"></script>
   <script src="/js/navbar.js"></script>
-  <script src="/js/charts.js"></script>
+  <script src="/js/adaptive-api.js"></script>
   <script>
+    let currentNextAction = null;
+
     document.addEventListener('DOMContentLoaded', async () => {
-      Navbar.init('Dashboard');
-      await loadDashboardData();
+      Navbar.init('Adaptive Learning Dashboard');
+
+      // Learner Selector Event
+      const selector = document.getElementById('learner-selector');
+      const activeId = AdaptiveAPI.getLearnerId();
+      if (activeId && selector) {
+        selector.value = activeId;
+      }
+
+      selector.addEventListener('change', async (e) => {
+        AdaptiveAPI.setDemoLearner(e.target.value);
+        Utils.showToast(`Switched active learner: ${e.target.options[e.target.selectedIndex].text}`, 'info');
+        await loadAllDashboardData();
+      });
+
+      // Hook up Action Hero Button
+      document.getElementById('btn-start-action').addEventListener('click', () => {
+        if (currentNextAction && currentNextAction.nextQuestion) {
+          AdaptiveUI.openAttemptModal(currentNextAction.nextQuestion, async (result) => {
+            Utils.showToast('Attempt registered. Updating learning path...', 'success');
+            await loadAllDashboardData();
+          });
+        } else {
+          window.location.href = '/diagnostic.html';
+        }
+      });
+
+      await loadAllDashboardData();
     });
 
-    async function loadDashboardData() {
+    async function loadAllDashboardData() {
+      try {
+        await Promise.all([
+          loadNextAction(),
+          loadMasteryOverview(),
+          loadLearningPath(),
+          loadTwinScore(),
+        ]);
+      } catch (err) {
+        console.error('Failed to load dashboard data:', err);
+      }
+    }
+
+    async function loadNextAction() {
+      try {
+        const res = await AdaptiveAPI.getNextAction();
+        if (res.success) {
+          currentNextAction = res;
+          renderActionHero(res);
+        }
+      } catch (err) {
+        console.error('Error fetching next action:', err);
+      }
+    }
+
+    function renderActionHero(data) {
+      const badge = document.getElementById('hero-action-badge');
+      const title = document.getElementById('hero-target-concept-name');
+      const desc = document.getElementById('hero-concept-desc');
+      const whyReason = document.getElementById('hero-why-reason');
+      const factorsGrid = document.getElementById('hero-decision-factors');
+      const questionMeta = document.getElementById('hero-question-meta');
+      const startBtn = document.getElementById('btn-start-action');
+
+      const action = data.action || 'PRACTICE';
+      const actionClasses = {
+        ADVANCE: 'action-advance',
+        PRACTICE: 'action-practice',
+        REVIEW: 'action-review',
+        REMEDIATE_PREREQUISITE: 'action-remediate_prerequisite',
+        CHALLENGE: 'action-challenge',
+        TEACHER_INTERVENTION: 'action-teacher_intervention',
+      };
+
+      badge.className = `action-badge-pill ${actionClasses[action] || 'action-practice'}`;
+      badge.textContent = `🎯 ${action.replace('_', ' ')}`;
+
+      const concept = data.targetConcept;
+      title.textContent = concept ? concept.name : 'All Concepts Mastered!';
+      desc.textContent = concept ? concept.description : 'Exceptional work. Review or explore advanced topics.';
+
+      whyReason.textContent = data.reason || 'Decision computed based on latest evidence.';
+
+      // Decision Factors
+      factorsGrid.innerHTML = '';
+      if (data.decisionFactors) {
+        const df = data.decisionFactors;
+        const addFactor = (label, val, type = 'neutral') => {
+          const chip = document.createElement('span');
+          chip.className = `factor-chip ${type === 'alert' ? 'factor-alert' : type === 'good' ? 'factor-good' : ''}`;
+          chip.innerHTML = `${label}: <strong>${val}</strong>`;
+          factorsGrid.appendChild(chip);
+        };
+
+        if (df.mastery !== undefined) addFactor('Mastery', `${df.mastery}%`, df.mastery >= 70 ? 'good' : 'neutral');
+        if (df.uncertainty !== undefined) addFactor('Uncertainty', `${df.uncertainty}%`, df.uncertainty <= 30 ? 'good' : 'alert');
+        if (df.prereqsMet !== undefined) addFactor('Prereqs Met', df.prereqsMet ? 'Yes' : 'NO', df.prereqsMet ? 'good' : 'alert');
+        if (df.decayRisk) addFactor('Decay Risk', df.decayRisk, 'alert');
+        if (df.consecutiveFailures > 0) addFactor('Failures', df.consecutiveFailures, 'alert');
+        if (df.consecutiveSuccesses > 0) addFactor('Success Streak', df.consecutiveSuccesses, 'good');
+      }
+
+      if (data.nextQuestion) {
+        questionMeta.textContent = `Target Question: ${data.nextQuestion.type} (Diff: ${data.nextQuestion.difficulty}/5)`;
+        startBtn.textContent = `▶ Answer ${data.nextQuestion.type} Question`;
+        startBtn.style.display = 'inline-flex';
+      } else {
+        questionMeta.textContent = 'No immediate question required';
+        startBtn.textContent = '🩺 Start Cold-Start Diagnostic';
+      }
+    }
+
+    async function loadMasteryOverview() {
+      try {
+        const res = await AdaptiveAPI.getMastery();
+        if (res.success && res.overview) {
+          const overview = res.overview;
+
+          // Stats calculation
+          const totalConcepts = overview.length;
+          const totalMastery = overview.reduce((acc, c) => acc + c.mastery, 0);
+          const totalUncertainty = overview.reduce((acc, c) => acc + c.uncertainty, 0);
+          const avgMastery = Math.round(totalMastery / totalConcepts);
+          const avgUncertainty = Math.round(totalUncertainty / totalConcepts);
+          const masteredCount = overview.filter((c) => c.mastery >= c.requiredMastery && c.uncertainty <= 30).length;
+
+          // Update stats in DOM
+          document.getElementById('stat-avg-mastery').textContent = `${avgMastery}%`;
+          document.getElementById('stat-mastery-bar').style.width = `${avgMastery}%`;
+
+          document.getElementById('stat-avg-uncertainty').textContent = `${avgUncertainty}%`;
+          document.getElementById('stat-uncertainty-bar').style.width = `${avgUncertainty}%`;
+
+          document.getElementById('stat-mastered-count').textContent = `${masteredCount} / ${totalConcepts}`;
+          document.getElementById('stat-count-bar').style.width = `${(masteredCount / totalConcepts) * 100}%`;
+
+          const prereqStatusEl = document.getElementById('stat-prereq-status');
+          const blockedNodes = overview.filter((c) => c.status === 'BLOCKED');
+          if (blockedNodes.length > 0) {
+            prereqStatusEl.textContent = `⚠️ ${blockedNodes.length} Blocked`;
+            prereqStatusEl.style.color = 'var(--accent-amber)';
+          } else {
+            prereqStatusEl.textContent = '✅ Prerequisites Clear';
+            prereqStatusEl.style.color = 'var(--accent-emerald)';
+          }
+
+          // Populate Table
+          renderConceptTable(overview);
+        }
+      } catch (err) {
+        console.error('Error fetching mastery overview:', err);
+      }
+    }
+
+    function renderConceptTable(overview) {
+      const tbody = document.getElementById('concept-table-body');
+      tbody.innerHTML = '';
+
+      overview.forEach((c) => {
+        let statusBadge = '';
+        if (c.mastery >= c.requiredMastery && c.uncertainty <= 30) {
+          statusBadge = '<span class="badge badge-success">MASTERED</span>';
+        } else if (c.uncertainty > 60 && c.evidenceCount > 0) {
+          statusBadge = '<span class="badge badge-amber">UNCERTAIN</span>';
+        } else if (c.isStale) {
+          statusBadge = '<span class="badge badge-purple">NEEDS REVIEW</span>';
+        } else if (c.evidenceCount > 0) {
+          statusBadge = '<span class="badge badge-cyan">LEARNING</span>';
+        } else {
+          statusBadge = '<span class="badge" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">NOT STARTED</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid var(--border-color)';
+        tr.innerHTML = `
+          <td style="padding: 0.85rem 1rem; font-family: var(--font-mono); color: var(--text-muted);">${c.order}</td>
+          <td style="padding: 0.85rem 1rem;">
+            <div style="font-weight: 600; color: var(--text-primary);">${c.name}</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">${c.slug}</div>
+          </td>
+          <td style="padding: 0.85rem 1rem;">${statusBadge}</td>
+          <td style="padding: 0.85rem 1rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 0.25rem;">
+              <span>${c.mastery}%</span>
+              <span style="color: var(--text-muted);">req: ${c.requiredMastery}%</span>
+            </div>
+            <div class="progress-track" style="height: 6px;">
+              <div class="progress-bar ${c.mastery >= c.requiredMastery ? 'progress-bar-emerald' : 'progress-bar-indigo'}" style="width: ${c.mastery}%;"></div>
+            </div>
+          </td>
+          <td style="padding: 0.85rem 1rem;">
+            <span style="font-family: var(--font-mono); font-weight: 700; color: ${c.uncertainty <= 30 ? '#34d399' : c.uncertainty > 60 ? '#fbbf24' : '#22d3ee'};">
+              ${c.uncertainty}%
+            </span>
+          </td>
+          <td style="padding: 0.85rem 1rem; font-family: var(--font-mono);">${c.evidenceCount}</td>
+          <td style="padding: 0.85rem 1rem;">
+            <button class="btn btn-secondary btn-sm" onclick="practiceConcept('${c.conceptId}', '${c.name}')" style="padding: 0.25rem 0.65rem; font-size: 0.8rem;">
+              Practice ➔
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function loadLearningPath() {
+      try {
+        const res = await AdaptiveAPI.getLearningPath();
+        if (res.success && res.learningPath) {
+          const container = document.getElementById('learning-path-grid');
+          container.innerHTML = '';
+
+          res.learningPath.forEach((node) => {
+            const c = node.conceptId;
+            const isTarget = currentNextAction?.targetConcept?._id === c._id;
+            const isMastered = node.status === 'MASTERED';
+            const isBlocked = node.status === 'BLOCKED';
+
+            const div = document.createElement('div');
+            div.className = `path-node ${isTarget ? 'active-target' : ''} ${isMastered ? 'mastered' : ''} ${isBlocked ? 'blocked' : ''}`;
+            div.onclick = () => practiceConcept(c._id, c.name);
+
+            div.innerHTML = `
+              <div class="path-node-header">
+                <span>#${c.order}</span>
+                <span class="badge ${isMastered ? 'badge-success' : isBlocked ? 'badge-danger' : isTarget ? 'badge-cyan' : 'badge-primary'}" style="font-size: 0.6rem; padding: 0.15rem 0.4rem;">
+                  ${isBlocked ? '🔒 BLOCKED' : node.status}
+                </span>
+              </div>
+              <div class="path-node-name" title="${c.name}">${c.name}</div>
+              <div class="mini-meter">
+                <div class="mini-meter-label">
+                  <span>M: ${node.currentMastery}%</span>
+                  <span>U: ${node.currentUncertainty}%</span>
+                </div>
+                <div class="progress-track" style="height: 4px;">
+                  <div class="progress-bar ${node.currentMastery >= 70 ? 'progress-bar-emerald' : 'progress-bar-cyan'}" style="width: ${node.currentMastery}%;"></div>
+                </div>
+              </div>
+            `;
+            container.appendChild(div);
+          });
+        }
+      } catch (err) {
+        console.error('Error loading learning path:', err);
+      }
+    }
+
+    async function practiceConcept(conceptId, conceptName) {
+      try {
+        // Fetch a question for this concept
+        const res = await window.API.get(`/adaptive/questions?conceptId=${conceptId}`);
+        if (res.success && res.questions && res.questions.length > 0) {
+          const question = res.questions[0];
+          AdaptiveUI.openAttemptModal(question, async () => {
+            Utils.showToast(`Completed question for ${conceptName}!`, 'success');
+            await loadAllDashboardData();
+          });
+        } else {
+          Utils.showToast(`No active questions found for ${conceptName}.`, 'info');
+        }
+      } catch (err) {
+        console.error('Error starting concept practice:', err);
+        Utils.showToast('Could not load question for concept.', 'error');
+      }
+    }
+
+    async function loadTwinScore() {
       try {
         const data = await API.get('/career-twin');
         if (data.success && data.twin) {
-          renderDashboard(data.twin);
+          const score = data.twin.careerReadiness?.score || 72;
+          Utils.renderScoreDial('readiness-dial-container', score, 'Readiness Index');
+          const tierEl = document.getElementById('readiness-tier-badge');
+          tierEl.textContent = data.twin.careerReadiness?.tier || 'Verified Ready';
+          tierEl.className = `badge ${score >= 75 ? 'badge-success' : 'badge-cyan'}`;
         }
-
-        // Fetch recommendations
-        const recsData = await API.get('/career-twin/recommendations');
-        if (recsData.success) {
-          renderRecommendations(recsData.recommendations || []);
-        }
-      } catch (err) {
-        console.error('Error loading dashboard:', err);
-        Utils.showToast(err.message || 'Failed to load Career Twin data.', 'error');
+      } catch (e) {
+        Utils.renderScoreDial('readiness-dial-container', 70, 'Readiness Index');
       }
-    }
-
-    function renderDashboard(twin) {
-      // 1. Role Title
-      document.getElementById('target-role-title').textContent = twin.targetRole || 'Full Stack Developer';
-      document.getElementById('active-goal-desc').textContent = twin.activeGoal?.title 
-        ? `Goal: ${twin.activeGoal.title} (Target: ${twin.activeGoal.targetCompany || 'Top Tech'})` 
-        : 'Set a career goal to align your Twin with specific company expectations.';
-
-      // 2. Readiness Dial
-      const score = twin.careerReadiness?.score;
-      Utils.renderScoreDial('readiness-dial-container', score, 'Readiness Index');
-      
-      const tierEl = document.getElementById('readiness-tier-badge');
-      tierEl.textContent = twin.careerReadiness?.tier || 'Not enough data yet';
-      tierEl.className = `badge ${score >= 75 ? 'badge-success' : score >= 50 ? 'badge-cyan' : 'badge-amber'}`;
-
-      // 3. Four Metric Cards
-      // Interview
-      const invScoreEl = document.getElementById('metric-interview-score');
-      const invSubEl = document.getElementById('metric-interview-sub');
-      if (twin.interviews.avgTechnical !== null) {
-        invScoreEl.textContent = `${twin.interviews.avgTechnical}/100`;
-        invSubEl.textContent = `${twin.interviews.totalCount} interview(s) completed`;
-      } else {
-        invScoreEl.textContent = '--';
-        invSubEl.textContent = 'No interviews yet';
-      }
-
-      // Resume
-      const resScoreEl = document.getElementById('metric-resume-score');
-      const resSubEl = document.getElementById('metric-resume-sub');
-      if (twin.resume.score !== null) {
-        resScoreEl.textContent = `${twin.resume.score}/100`;
-        resSubEl.textContent = 'Resume analyzed & aligned';
-      } else {
-        resScoreEl.textContent = '--';
-        resSubEl.textContent = 'Upload PDF resume';
-      }
-
-      // GitHub
-      const ghScoreEl = document.getElementById('metric-github-score');
-      const ghSubEl = document.getElementById('metric-github-sub');
-      if (twin.github.isConnected) {
-        ghScoreEl.textContent = `${twin.github.score || 70}/100`;
-        ghSubEl.textContent = `@${twin.github.username} synced`;
-      } else {
-        ghScoreEl.textContent = '--';
-        ghSubEl.textContent = 'Connect GitHub profile';
-      }
-
-      // Skills
-      const skillScoreEl = document.getElementById('metric-skills-score');
-      const skillSubEl = document.getElementById('metric-skills-sub');
-      if (twin.skills.coveragePercentage !== null) {
-        skillScoreEl.textContent = `${twin.skills.coveragePercentage}%`;
-        skillSubEl.textContent = `${twin.skills.verified.length} verified &bull; ${twin.skills.gaps.length} gaps`;
-      } else {
-        skillScoreEl.textContent = '--';
-        skillSubEl.textContent = 'Run skill gap analysis';
-      }
-
-      // 4. Render 360 Radar Chart
-      Charts.renderReadinessRadar('readiness-radar-chart', twin.careerReadiness.breakdown || []);
-
-      // 5. Render Recent Interviews List
-      renderRecentInterviews(twin.careerMemory?.timeline || []);
-
-      // 6. Render Roadmap Summary
-      renderRoadmapSummary(twin.roadmap);
-    }
-
-    function renderRecommendations(recs) {
-      const container = document.getElementById('recommendations-list');
-      const countBadge = document.getElementById('recs-count-badge');
-      countBadge.textContent = `${recs.length} Action${recs.length === 1 ? '' : 's'}`;
-
-      if (recs.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎉</div>
-            <p>Your Career Twin is up to date! Keep practicing mock interviews.</p>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = recs.slice(0, 4).map((r) => `
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
-          <div>
-            <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.2rem;">${Utils.escapeHTML(r.title)}</div>
-            <div style="font-size: 0.8rem; color: var(--text-secondary);">${Utils.escapeHTML(r.description)}</div>
-          </div>
-          <a href="${r.actionUrl}" class="btn btn-outline btn-sm" style="white-space: nowrap;">${Utils.escapeHTML(r.actionLabel)}</a>
-        </div>
-      `).join('');
-    }
-
-    function renderRecentInterviews(interviews) {
-      const container = document.getElementById('recent-interviews-list');
-      if (!interviews || interviews.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎙️</div>
-            <p>No completed interviews yet.</p>
-            <a href="/interview.html" class="btn btn-cyan btn-sm" style="margin-top: 1rem;">Start First Mock Session</a>
-          </div>
-        `;
-        return;
-      }
-
-      const rows = interviews.slice(0, 4).map((inv) => `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-          <div>
-            <div style="font-weight: 600; font-size: 0.95rem;">${Utils.escapeHTML(inv.role)} &bull; <span style="color:var(--text-muted); font-size:0.85rem;">${Utils.escapeHTML(inv.company)}</span></div>
-            <div style="font-size: 0.78rem; color: var(--text-muted);">${Utils.formatDate(inv.date)}</div>
-          </div>
-          <div style="display:flex; align-items:center; gap: 1rem;">
-            <div style="text-align:right;">
-              <span style="font-size: 1.15rem; font-weight: 700; color: ${inv.overallScore >= 75 ? 'var(--accent-emerald)' : 'var(--accent-amber)'};">${inv.overallScore}</span>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">/100</span>
-            </div>
-            <a href="/interview-report.html?id=${inv.interviewId}" class="btn btn-outline btn-sm">Report</a>
-          </div>
-        </div>
-      `).join('');
-
-      container.innerHTML = rows;
-    }
-
-    function renderRoadmapSummary(roadmap) {
-      const container = document.getElementById('roadmap-summary-content');
-      if (!roadmap || !roadmap.hasRoadmap) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🗺️</div>
-            <p>No roadmap generated yet.</p>
-            <a href="/roadmap.html" class="btn btn-outline btn-sm" style="margin-top: 0.75rem;">Build Roadmap</a>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = `
-        <div style="margin-bottom: 1rem;">
-          <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.4rem;">
-            <span>Overall Progress</span>
-            <span style="font-weight:700; color:var(--accent-cyan);">${roadmap.progressPercentage}%</span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-bar progress-bar-cyan" style="width: ${roadmap.progressPercentage}%;"></div>
-          </div>
-        </div>
-        <div style="font-size:0.85rem; color:var(--text-secondary);">
-          ${roadmap.milestonesCount} phased monthly milestones tailored to your skill gaps.
-        </div>
-        <a href="/roadmap.html" class="btn btn-secondary btn-sm" style="width:100%; margin-top:1.25rem;">Open Full Roadmap</a>
-      `;
     }
   </script>
 </body>

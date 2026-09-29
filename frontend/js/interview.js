@@ -43,13 +43,27 @@ class InterviewOrchestrator {
         if (config.cameraEnabled) {
           const videoEl = document.getElementById('camera-preview-video');
           const canvasEl = document.getElementById('vision-tracker-canvas');
+          const overlayEl = document.getElementById('camera-tracking-overlay');
           if (videoEl) {
             videoEl.srcObject = this.mediaStream;
-            videoEl.play();
             document.getElementById('camera-off-view').style.display = 'none';
             videoEl.style.display = 'block';
-            this.visionTracker.init(videoEl, canvasEl);
-            this.visionTracker.startTracking();
+
+            const startVision = async () => {
+              try {
+                await videoEl.play();
+              } catch (e) {
+                console.warn('Video play warning:', e.message);
+              }
+              await this.visionTracker.init(videoEl, canvasEl, overlayEl);
+              this.visionTracker.startTracking();
+            };
+
+            if (videoEl.readyState >= 1) {
+              startVision();
+            } else {
+              videoEl.onloadedmetadata = () => startVision();
+            }
           }
         }
 
@@ -129,6 +143,36 @@ class InterviewOrchestrator {
     if (canvas) {
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Render Question Source Type Badge & Why this question tooltip (Requirements 15, 16, 17)
+    const sourceBadge = document.getElementById('question-source-badge');
+    const whyBox = document.getElementById('why-this-question-box');
+    const whyText = document.getElementById('why-this-question-text');
+
+    const sourceType = this.currentQuestion.sourceType || 'generic_role_based';
+    if (sourceBadge) {
+      sourceBadge.style.display = 'inline-flex';
+      if (sourceType === 'database_question') {
+        sourceBadge.textContent = '🏢 Database Question';
+        sourceBadge.className = 'badge badge-purple';
+      } else if (sourceType === 'pattern_derived') {
+        sourceBadge.textContent = '🧬 Pattern-Derived';
+        sourceBadge.className = 'badge badge-cyan';
+      } else {
+        sourceBadge.textContent = '🎯 Role-Based';
+        sourceBadge.className = 'badge badge-emerald';
+      }
+    }
+
+    if (whyBox && whyText) {
+      whyBox.style.display = 'flex';
+      whyText.textContent = this.currentQuestion.whyThisQuestion ||
+        (sourceType === 'database_question'
+          ? "Selected from the company's interview knowledge base."
+          : sourceType === 'pattern_derived'
+          ? "Generated from patterns found in the company's collected interview data."
+          : "Generated from general interview patterns for your selected role.");
     }
 
     this.questionElapsedSeconds = 0;

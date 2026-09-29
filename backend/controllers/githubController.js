@@ -1,6 +1,7 @@
 const GitHubProfile = require('../models/GitHubProfile');
 const CareerProfile = require('../models/CareerProfile');
 const Skill = require('../models/Skill');
+const User = require('../models/User');
 const githubService = require('../services/githubService');
 
 // @desc    Connect and analyze GitHub username
@@ -12,6 +13,26 @@ exports.syncGitHub = async (req, res, next) => {
     if (!username) {
       return res.status(400).json({ success: false, message: 'Please provide a GitHub username.' });
     }
+
+    const cleanUsername = username.trim().toLowerCase().replace(/^@/, '');
+
+    // Check if this GitHub username is already linked to another account
+    const existingGithubUser = await User.findOne({
+      githubUsername: cleanUsername,
+      _id: { $ne: req.user._id },
+    });
+    if (existingGithubUser) {
+      return res.status(400).json({
+        success: false,
+        message: `This GitHub profile (@${cleanUsername}) is already linked to another Career Twin account.`,
+      });
+    }
+
+    // Update User record
+    await User.findByIdAndUpdate(req.user._id, {
+      githubUsername: cleanUsername,
+      githubUrl: `https://github.com/${cleanUsername}`,
+    });
 
     const profile = await CareerProfile.findOne({ user: req.user._id });
     const targetRole = profile?.targetRole || 'Software Engineer';

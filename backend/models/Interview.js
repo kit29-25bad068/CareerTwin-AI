@@ -44,6 +44,19 @@ const interviewQuestionSchema = new mongoose.Schema({
     enum: ['Easy', 'Medium', 'Hard'],
     default: 'Medium',
   },
+  sourceType: {
+    type: String,
+    enum: ['database_question', 'pattern_derived', 'generic_role_based'],
+    default: 'generic_role_based',
+  },
+  sourceId: {
+    type: String,
+    default: null,
+  },
+  whyThisQuestion: {
+    type: String,
+    default: 'Generated from general interview patterns for your selected role.',
+  },
   expectedConcepts: [String],
   answerText: {
     type: String,

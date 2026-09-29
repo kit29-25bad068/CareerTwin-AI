@@ -51,6 +51,10 @@ app.use('/api/mentor', require('./routes/mentorRoutes'));
 app.use('/api/career-twin', require('./routes/careerTwinRoutes'));
 app.use('/api/recommendations', require('./routes/careerTwinRoutes'));
 app.use('/api/privacy', require('./routes/privacyRoutes'));
+app.use('/api/adaptive', require('./routes/adaptiveRoutes'));
+app.use('/api/teacher', require('./routes/teacherRoutes'));
+app.use('/api/codolio', require('./routes/codolioRoutes'));
+app.use('/api/company-interviews', require('./routes/companyInterviewRoutes'));
 
 // Fallback for HTML page navigation
 app.get('*', (req, res, next) => {

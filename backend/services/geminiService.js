@@ -161,9 +161,64 @@ async function generateInterviewQuestion({
   questionIndex,
   previousQuestions = [],
   previousAnswers = [],
+  companyInterviewData = null,
 }) {
   const currentStage = STAGE_PROGRESSION[Math.min(questionIndex, STAGE_PROGRESSION.length - 1)];
   const randomSeed = Math.random().toString(36).substring(7);
+
+  // Extract relevant company database questions if available
+  let companyContextPrompt = '';
+  let sampleDatabaseQuestions = [];
+  const hasCompanyData = Boolean(companyInterviewData && companyInterviewData.categories);
+
+  if (hasCompanyData) {
+    const stageCategoryMap = [
+      ['introduction', 'resume', 'project'],
+      ['dsa', 'programming', 'oop', 'dbms'],
+      ['operatingSystems', 'computerNetworks', 'problemSolving', 'programming', 'dsa'],
+      ['systemDesign', 'scalability', 'performance', 'testing', 'debugging'],
+      ['behavioral', 'hr'],
+    ];
+
+    const currentStageCats = stageCategoryMap[Math.min(questionIndex, stageCategoryMap.length - 1)] || [];
+    
+    // Candidate pool based on stage categories
+    let candidatePool = [];
+    currentStageCats.forEach((cat) => {
+      const qs = companyInterviewData.categories[cat] || [];
+      candidatePool.push(...qs);
+    });
+
+    // If candidatePool is small, backfill from other non-empty categories
+    if (candidatePool.length < 3) {
+      Object.keys(companyInterviewData.categories).forEach((cat) => {
+        const qs = companyInterviewData.categories[cat] || [];
+        if (qs.length > 0 && !currentStageCats.includes(cat)) {
+          candidatePool.push(...qs.slice(0, 2));
+        }
+      });
+    }
+
+    // Filter out questions already asked
+    const askedSet = new Set(previousQuestions.map((q) => q.toLowerCase().trim()));
+    sampleDatabaseQuestions = candidatePool.filter((q) => !askedSet.has(q.question.toLowerCase().trim())).slice(0, 10);
+
+    if (sampleDatabaseQuestions.length > 0) {
+      companyContextPrompt = `
+COMPANY INTERVIEW KNOWLEDGE BASE GROUNDING:
+We have verified, collected interview questions for ${company} in our database.
+Use these real interview questions and patterns as your PRIMARY GROUNDING SOURCE:
+${sampleDatabaseQuestions.map((q, i) => `  [${i + 1}] (Category: ${q.category}, ID: ${q.id || 'N/A'}) "${q.question}"`).join('\n')}
+
+SOURCE TYPE ATTRIBUTION RULES:
+1. "database_question": If you directly select, adapt, or ask one of the verified questions listed above tailored for the candidate's target role (${role}).
+   Set whyThisQuestion: "Selected from the company's interview knowledge base."
+2. "pattern_derived": If you generate a new, personalized question inspired by the company's specific topics/patterns above for ${role}.
+   Set whyThisQuestion: "Generated from patterns found in the company's collected interview data."
+3. "generic_role_based": Only if no company-specific questions or patterns match this stage.
+   Set whyThisQuestion: "Generated from general interview patterns for your selected role."`;
+    }
+  }
 
   const systemInstruction = `You are a world-class technical hiring manager acting as a "${recruiterType}" at "${company}" conducting an interview for the "${role}" position.
 Interview Type: ${interviewType}. Difficulty Level: ${difficulty}.
@@ -179,6 +234,8 @@ STRICT PROFESSIONAL INTERVIEW STRUCTURE:
 - Question 4 (Stage 4): MUST present an advanced real-world production incident or performance scaling scenario (e.g. For Java: 100% CPU deadlock triage, OutOfMemoryError heap dump analysis, database connection pool exhaustion).
 - Question 5 (Stage 5): MUST ask a structured behavioral question using the STAR method (e.g. handling a major production bug, resolving technical disagreements with peers, balancing tech debt with tight deadlines).
 
+${companyContextPrompt || `COMPANY NOTE: No collected interview data found for "${company}". Proceed with standard generic role-based interview generation. Mark sourceType as "generic_role_based".`}
+
 GUIDELINES:
 - Ask ONE clear, scenario-driven question appropriate for Stage ${currentStage.stage}.
 - Never repeat or rephrase previous questions.
@@ -186,10 +243,13 @@ GUIDELINES:
 - Return ONLY valid JSON matching this schema:
 {
   "questionText": "The exact interview question to ask the candidate",
-  "category": "background | technical | problem-solving | architecture | behavioral",
+  "category": "introduction | resume | project | dsa | programming | oop | dbms | operatingSystems | computerNetworks | systemDesign | behavioral | hr | problemSolving | testing | debugging | performance | scalability | other",
   "difficulty": "Easy | Medium | Hard",
   "expectedConcepts": ["concept1", "concept2", "concept3"],
-  "stageName": "${currentStage.name}"
+  "stageName": "${currentStage.name}",
+  "sourceType": "${hasCompanyData ? 'database_question | pattern_derived' : 'generic_role_based'}",
+  "sourceId": "id of question from database if database_question, else null",
+  "whyThisQuestion": "Why this question was selected/derived"
 }`;
 
   const prompt = `Target Role: ${role}
@@ -203,16 +263,74 @@ ${previousQuestions.length > 0
   ? previousQuestions.map((q, i) => `[Turn ${i + 1}] Q: ${q}\nA: ${previousAnswers[i] || 'No answer recorded'}`).join('\n\n')
   : 'None (This is the opening question of the interview)'}
 
-Generate Question #${questionIndex + 1} according to the Stage ${currentStage.stage} rules.`;
+Generate Question #${questionIndex + 1} according to the Stage ${currentStage.stage} rules and company grounding.`;
 
-  return await callGemini(prompt, systemInstruction, true, { temperature: 0.85 });
+  try {
+    const aiResult = await callGemini(prompt, systemInstruction, true, { temperature: 0.85 });
+
+    // Validate and normalize sourceType
+    const validSources = ['database_question', 'pattern_derived', 'generic_role_based'];
+    let finalSourceType = validSources.includes(aiResult.sourceType) ? aiResult.sourceType : (hasCompanyData ? 'pattern_derived' : 'generic_role_based');
+
+    let why = aiResult.whyThisQuestion;
+    if (!why) {
+      if (finalSourceType === 'database_question') why = "Selected from the company's interview knowledge base.";
+      else if (finalSourceType === 'pattern_derived') why = "Generated from patterns found in the company's collected interview data.";
+      else why = "Generated from general interview patterns for your selected role.";
+    }
+
+    return {
+      questionText: aiResult.questionText,
+      category: aiResult.category || 'technical',
+      difficulty: aiResult.difficulty || difficulty,
+      expectedConcepts: aiResult.expectedConcepts || [],
+      stageName: aiResult.stageName || currentStage.name,
+      sourceType: finalSourceType,
+      sourceId: aiResult.sourceId || null,
+      whyThisQuestion: why,
+    };
+  } catch (err) {
+    console.warn('[Gemini Interview Warning] Using company-grounded fallback generator:', err.message);
+    return getDynamicFallbackQuestion(role, questionIndex, difficulty, companyInterviewData, company);
+  }
 }
 
 // -------------------------------------------------------------
 // DYNAMIC MULTI-STAGE FALLBACK QUESTION GENERATOR
 // -------------------------------------------------------------
-function getDynamicFallbackQuestion(role = 'Software Engineer', questionIndex = 0, difficulty = 'Medium') {
+function getDynamicFallbackQuestion(role = 'Software Engineer', questionIndex = 0, difficulty = 'Medium', companyInterviewData = null, company = 'Tech Company') {
   const normalizedRole = role.toLowerCase();
+
+  // If company database data is available, pick directly from the collected dataset!
+  if (companyInterviewData && companyInterviewData.categories) {
+    const stageCategoryMap = [
+      ['introduction', 'project', 'resume'],
+      ['dsa', 'programming', 'oop', 'dbms'],
+      ['operatingSystems', 'computerNetworks', 'problemSolving'],
+      ['systemDesign', 'scalability', 'performance', 'testing', 'debugging'],
+      ['behavioral', 'hr'],
+    ];
+
+    const currentCats = stageCategoryMap[Math.min(questionIndex, stageCategoryMap.length - 1)] || [];
+    let pool = [];
+    currentCats.forEach((cat) => {
+      const qs = companyInterviewData.categories[cat] || [];
+      pool.push(...qs);
+    });
+
+    if (pool.length > 0) {
+      const selected = pool[Math.floor(Math.random() * pool.length)];
+      return {
+        questionText: selected.question,
+        category: selected.category,
+        difficulty,
+        expectedConcepts: [selected.category, company, 'Problem Solving'],
+        sourceType: 'database_question',
+        sourceId: selected.id,
+        whyThisQuestion: "Selected from the company's interview knowledge base.",
+      };
+    }
+  }
 
   const javaQuestions = [
     // Stage 1: Intro & Project Overview
@@ -334,6 +452,9 @@ function getDynamicFallbackQuestion(role = 'Software Engineer', questionIndex = 
     category: chosen.category,
     difficulty,
     expectedConcepts: chosen.expectedConcepts,
+    sourceType: 'generic_role_based',
+    sourceId: null,
+    whyThisQuestion: 'Generated from general interview patterns for your selected role.',
   };
 }
 
@@ -406,7 +527,8 @@ Return ONLY valid JSON matching this schema:
       (q, idx) => `Question ${idx + 1}: ${q.questionText}
 Answer: ${q.answerText || 'None'}
 Evaluation: Tech ${q.evaluation?.technicalScore || 0}, Comm ${q.evaluation?.communicationScore || 0}
-Speech Notes: ${q.speechMetrics?.wordsPerMinute || 0} WPM, ${q.speechMetrics?.fillerWordsCount || 0} fillers`
+Speech Notes: ${q.speechMetrics?.wordsPerMinute || 0} WPM, ${q.speechMetrics?.fillerWordsCount || 0} fillers
+Vision Presence: ${q.visionMetrics?.eyeContactPercentage || 100}% eye contact, ${q.visionMetrics?.lookingAwayCount || 0} gaze shifts away, framing: ${q.visionMetrics?.framingQuality || 'Good'}`
     )
     .join('\n---\n');
 
@@ -633,6 +755,7 @@ Resume Score: ${twinContext.resumeScore || 'N/A'}
 Top Skill Gaps: ${twinContext.topGaps?.join(', ') || 'None identified yet'}
 Projects Count: ${twinContext.projectsCount || 0}
 GitHub Connected: ${twinContext.githubConnected ? 'Yes' : 'No'}
+Codolio Connected: ${twinContext.codolioConnected ? `Yes (${twinContext.codolioSolved} problems solved, Tier: ${twinContext.codolioTier})` : 'No'}
 
 CRITICAL RULES:
 - Always reference the user's ACTUAL Career Twin data in your answers instead of generic advice.

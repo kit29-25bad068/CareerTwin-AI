@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js",
-    "test": "node test/test-app.js"
+    "test": "node test/test-app.js",
+    "seed:adaptive": "node backend/services/conceptSeedService.js",
+    "seed:company-interviews": "node backend/seed/companyInterviewData.js"
   },
   "keywords": [
     "career",

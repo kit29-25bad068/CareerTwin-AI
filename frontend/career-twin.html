@@ -84,21 +84,21 @@
         <!-- Connected Data Streams Grid -->
         <h2 style="margin-bottom: 1.25rem;">Connected Twin Data Streams</h2>
         <div class="twin-signal-grid">
-          <!-- Resume Stream -->
+          <!-- Resume & CV Stream -->
           <div class="signal-card">
             <div>
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
                 <span style="font-size:1.5rem;">📄</span>
-                <span class="badge badge-primary" id="stream-resume-badge">Resume</span>
+                <span class="badge badge-primary" id="stream-resume-badge">Resume & CV</span>
               </div>
-              <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Resume Alignment</h3>
+              <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Resume & CV Analyzer</h3>
               <p id="stream-resume-desc" style="font-size:0.85rem; color:var(--text-secondary);">
-                Analyzing keywords, quantifiable metrics, and structure.
+                AI-Powered Resume & CV Feedback, match engine, and ATS keyword alignment.
               </p>
             </div>
             <div style="margin-top:1.25rem; display:flex; justify-content:space-between; align-items:center;">
               <span id="stream-resume-score" style="font-size:1.25rem; font-weight:700;">--</span>
-              <a href="/resume.html" class="btn btn-outline btn-sm">Manage Resume</a>
+              <a href="/resume.html" class="btn btn-outline btn-sm">Launch Analyzer</a>
             </div>
           </div>
 
@@ -153,6 +153,24 @@
             <div style="margin-top:1.25rem; display:flex; justify-content:space-between; align-items:center;">
               <span id="stream-project-score" style="font-size:1.25rem; font-weight:700;">--</span>
               <a href="/projects.html" class="btn btn-outline btn-sm">Add Project</a>
+            </div>
+          </div>
+
+          <!-- Codolio Coding Platforms Stream -->
+          <div class="signal-card">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <span style="font-size:1.5rem;">⚡</span>
+                <span class="badge badge-amber" id="stream-codolio-badge">Coding Platforms</span>
+              </div>
+              <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Codolio Competitive Coding</h3>
+              <p id="stream-codolio-desc" style="font-size:0.85rem; color:var(--text-secondary);">
+                Problems solved, platform ratings, and DSA performance across LeetCode, Codeforces & CodeChef.
+              </p>
+            </div>
+            <div style="margin-top:1.25rem; display:flex; justify-content:space-between; align-items:center;">
+              <span id="stream-codolio-score" style="font-size:1.25rem; font-weight:700;">--</span>
+              <a href="/settings.html" class="btn btn-outline btn-sm" id="stream-codolio-link">Connect Codolio</a>
             </div>
           </div>
         </div>
@@ -242,6 +260,24 @@
       if (twin.projects.count > 0) {
         document.getElementById('stream-project-score').textContent = `${twin.projects.avgScore}/100`;
         document.getElementById('stream-project-desc').textContent = `${twin.projects.count} showcase project(s) evaluated across 10 dimensions.`;
+      }
+
+      // Codolio Coding Platforms
+      if (twin.codolio && twin.codolio.isConnected) {
+        document.getElementById('stream-codolio-score').textContent = `${twin.codolio.codingScore || 80}/100`;
+        document.getElementById('stream-codolio-desc').textContent = `${twin.codolio.totalSolved} problems solved (${twin.codolio.easySolved}E / ${twin.codolio.mediumSolved}M / ${twin.codolio.hardSolved}H) across LeetCode & Codeforces. Tier: ${twin.codolio.tier || 'Intermediate'}.`;
+        const badge = document.getElementById('stream-codolio-badge');
+        badge.textContent = `${twin.codolio.tier || 'Verified'}`;
+        badge.className = 'badge badge-success';
+        const linkBtn = document.getElementById('stream-codolio-link');
+        if (twin.codolio.profileUrl) {
+          linkBtn.href = twin.codolio.profileUrl;
+          linkBtn.target = '_blank';
+          linkBtn.textContent = 'View Codolio ↗';
+        }
+      } else {
+        document.getElementById('stream-codolio-score').textContent = 'Not Linked';
+        document.getElementById('stream-codolio-desc').textContent = 'Connect your Codolio profile in Settings to track LeetCode and Codeforces signals.';
       }
     }
   </script>

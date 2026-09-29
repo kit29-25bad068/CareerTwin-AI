@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume Intelligence - CareerTwin AI</title>
+  <title>Resume & CV Analyzer - CareerTwin AI</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/pages.css">
@@ -33,102 +33,164 @@
       <div id="topbar-container"></div>
 
       <div class="page-container">
-        <!-- Header -->
-        <div class="card card-glow" style="margin-bottom: 2rem;">
+        <!-- Header Banner -->
+        <div class="card card-glow" style="margin-bottom: 1.5rem;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
             <div>
-              <div class="badge badge-primary" style="margin-bottom:0.4rem;">Resume Alignment Engine</div>
-              <h1 style="font-size: 1.85rem; margin-bottom: 0.25rem;">Resume Intelligence</h1>
+              <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.4rem;">
+                <span class="badge badge-primary">✨ Integrated Project</span>
+                <span class="badge badge-cyan">🔗 resume-cv-analyzer.vercel.app</span>
+              </div>
+              <h1 style="font-size: 1.85rem; margin-bottom: 0.25rem;">Resume & CV Analyzer</h1>
               <p style="font-size: 0.95rem; color: var(--text-secondary);">
-                Extract skills, assess quantifiable impact, and evaluate role alignment.
+                AI-Powered Resume & CV Feedback, ATS Match Engine, and CareerTwin Skill Synchronization.
               </p>
             </div>
-            <button id="delete-resume-btn" class="btn btn-danger btn-sm" style="display:none;" onclick="deleteResume()">
-              🗑️ Delete Resume
-            </button>
+            
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+              <a href="https://resume-cv-analyzer.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="Open standalone web application">
+                ↗️ Open in New Tab
+              </a>
+              <button class="btn btn-secondary btn-sm" onclick="toggleFullscreen()" title="Toggle full-screen view">
+                ⛶ Fullscreen
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="reloadIframe()" title="Reload the embedded application">
+                🔄 Reload App
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Upload Dropzone (Visible if no resume or to replace) -->
-        <div id="resume-upload-section" class="card" style="margin-bottom: 2rem;">
-          <div class="card-header">
-            <div class="card-title">📤 Upload PDF Resume</div>
-          </div>
-          
-          <div id="pdf-dropzone" class="dropzone" onclick="document.getElementById('pdf-file-input').click()">
-            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📄</div>
-            <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Click or drag PDF resume here</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Supports PDF up to 10MB</p>
-            <button type="button" class="btn btn-primary btn-sm">Select PDF File</button>
-            <input type="file" id="pdf-file-input" accept="application/pdf" style="display:none;">
-          </div>
-        </div>
-
-        <!-- Analysis Results (Hidden until loaded) -->
-        <div id="resume-analysis-section" style="display:none;">
-          <!-- 4 Score Cards -->
-          <div class="report-hero-grid">
-            <div class="report-metric-card">
-              <div class="report-metric-label">Overall Resume Score</div>
-              <div id="resume-score-overall" class="report-metric-value" style="color: var(--accent-primary);">--</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Composite Alignment</div>
+        <!-- Analyzer Integration Container with Tabs -->
+        <div class="analyzer-container" style="margin-bottom: 2rem;">
+          <!-- Tabs Navigation Bar -->
+          <div class="analyzer-tabs-bar">
+            <div class="analyzer-tab-buttons">
+              <button id="btn-tab-live" class="analyzer-tab-btn active" onclick="switchAnalyzerTab('live')">
+                <span>🚀</span>
+                <span>Live Resume & CV Analyzer</span>
+              </button>
+              <button id="btn-tab-sync" class="analyzer-tab-btn" onclick="switchAnalyzerTab('sync')">
+                <span>🧬</span>
+                <span>Career Twin Synced ATS & Skills</span>
+              </button>
             </div>
 
-            <div class="report-metric-card">
-              <div class="report-metric-label">Quantified Impact</div>
-              <div id="resume-score-impact" class="report-metric-value" style="color: var(--accent-secondary);">--</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Metrics & Numbers</div>
-            </div>
-
-            <div class="report-metric-card">
-              <div class="report-metric-label">Clarity & Format</div>
-              <div id="resume-score-clarity" class="report-metric-value" style="color: var(--accent-emerald);">--</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Readability & Flow</div>
-            </div>
-
-            <div class="report-metric-card">
-              <div class="report-metric-label">Keyword Density</div>
-              <div id="resume-score-keyword" class="report-metric-value" style="color: var(--accent-violet);">--</div>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Role Competencies</div>
+            <div style="display:flex; align-items:center; gap:0.75rem; font-size:0.78rem; color:var(--text-muted);">
+              <span>⚡ Powered by Resume & CV Analyzer Engine</span>
             </div>
           </div>
 
-          <!-- Grid: Strengths & Quantifiable Suggestions -->
-          <div class="grid grid-cols-2" style="margin-bottom: 2rem;">
-            <!-- Strengths -->
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">✅ Resume Strengths</div>
+          <!-- TAB 1: Live Embedded Resume & CV Analyzer App -->
+          <div id="tab-content-live" class="analyzer-tab-content" style="display:block;">
+            <div class="analyzer-iframe-wrapper" id="analyzer-frame-container">
+              <div id="analyzer-iframe-loader" class="analyzer-iframe-loader">
+                <div class="spinner"></div>
+                <div style="font-weight:600; font-size:0.95rem; color:var(--text-primary);">
+                  Connecting to Resume & CV Analyzer...
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">
+                  Loading https://resume-cv-analyzer.vercel.app/
+                </div>
               </div>
-              <ul id="resume-strengths-list" style="list-style:none; font-size:0.9rem; color:var(--text-secondary); display:flex; flex-direction:column; gap:0.65rem;">
-              </ul>
-            </div>
-
-            <!-- Quantifiable Suggestions -->
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">💡 Quantifiable Action Items</div>
-              </div>
-              <ul id="resume-suggestions-list" style="list-style:none; font-size:0.9rem; color:var(--text-secondary); display:flex; flex-direction:column; gap:0.65rem;">
-              </ul>
+              <iframe
+                id="resume-cv-iframe"
+                src="https://resume-cv-analyzer.vercel.app/"
+                class="analyzer-iframe"
+                title="Resume & CV Analyzer Project"
+                allow="clipboard-read; clipboard-write"
+                onload="document.getElementById('analyzer-iframe-loader').style.display='none';"
+              ></iframe>
             </div>
           </div>
 
-          <!-- Extracted Skills & Missing Skills -->
-          <div class="grid grid-cols-2" style="margin-bottom: 2rem;">
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">⚡ Extracted Skills (Synced to Twin)</div>
+          <!-- TAB 2: Career Twin Synced Resume & ATS Intelligence -->
+          <div id="tab-content-sync" class="analyzer-tab-content" style="display:none; padding:1.5rem;">
+            <!-- Upload Dropzone (Visible if no resume or to replace) -->
+            <div id="resume-upload-section" class="card" style="margin-bottom: 2rem; background:rgba(255,255,255,0.02);">
+              <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="card-title">📤 Upload & Sync PDF Resume to Career Twin</div>
+                <button id="delete-resume-btn" class="btn btn-danger btn-sm" style="display:none;" onclick="deleteResume()">
+                  🗑️ Delete Resume
+                </button>
               </div>
-              <div id="resume-extracted-skills" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+              
+              <div id="pdf-dropzone" class="dropzone" onclick="document.getElementById('pdf-file-input').click()">
+                <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📄</div>
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Click or drag PDF resume/CV here</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Supports PDF up to 10MB &bull; Syncs with Career Readiness Index</p>
+                <button type="button" class="btn btn-primary btn-sm">Select PDF File</button>
+                <input type="file" id="pdf-file-input" accept="application/pdf" style="display:none;">
               </div>
             </div>
 
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">⚠️ Missing Target Role Competencies</div>
+            <!-- Analysis Results (Hidden until loaded) -->
+            <div id="resume-analysis-section" style="display:none;">
+              <!-- 4 Score Cards -->
+              <div class="report-hero-grid">
+                <div class="report-metric-card">
+                  <div class="report-metric-label">Overall Resume Score</div>
+                  <div id="resume-score-overall" class="report-metric-value" style="color: var(--accent-primary);">--</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">Composite Alignment</div>
+                </div>
+
+                <div class="report-metric-card">
+                  <div class="report-metric-label">Quantified Impact</div>
+                  <div id="resume-score-impact" class="report-metric-value" style="color: var(--accent-secondary);">--</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">Metrics & Numbers</div>
+                </div>
+
+                <div class="report-metric-card">
+                  <div class="report-metric-label">Clarity & Format</div>
+                  <div id="resume-score-clarity" class="report-metric-value" style="color: var(--accent-emerald);">--</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">Readability & Flow</div>
+                </div>
+
+                <div class="report-metric-card">
+                  <div class="report-metric-label">Keyword Density</div>
+                  <div id="resume-score-keyword" class="report-metric-value" style="color: var(--accent-violet);">--</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">Role Competencies</div>
+                </div>
               </div>
-              <div id="resume-missing-skills" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+
+              <!-- Grid: Strengths & Quantifiable Suggestions -->
+              <div class="grid grid-cols-2" style="margin-bottom: 2rem;">
+                <!-- Strengths -->
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">✅ Resume Strengths</div>
+                  </div>
+                  <ul id="resume-strengths-list" style="list-style:none; font-size:0.9rem; color:var(--text-secondary); display:flex; flex-direction:column; gap:0.65rem;">
+                  </ul>
+                </div>
+
+                <!-- Quantifiable Suggestions -->
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">💡 Quantifiable Action Items</div>
+                  </div>
+                  <ul id="resume-suggestions-list" style="list-style:none; font-size:0.9rem; color:var(--text-secondary); display:flex; flex-direction:column; gap:0.65rem;">
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Extracted Skills & Missing Skills -->
+              <div class="grid grid-cols-2" style="margin-bottom: 2rem;">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">⚡ Extracted Skills (Synced to Twin)</div>
+                  </div>
+                  <div id="resume-extracted-skills" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title">⚠️ Missing Target Role Competencies</div>
+                  </div>
+                  <div id="resume-missing-skills" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -143,10 +205,51 @@
   <script src="/js/navbar.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      Navbar.init('Resume Intelligence');
+      Navbar.init('Resume & CV Analyzer');
       setupDropzone();
       await loadResumeData();
     });
+
+    function switchAnalyzerTab(tab) {
+      const btnLive = document.getElementById('btn-tab-live');
+      const btnSync = document.getElementById('btn-tab-sync');
+      const tabLive = document.getElementById('tab-content-live');
+      const tabSync = document.getElementById('tab-content-sync');
+
+      if (tab === 'live') {
+        btnLive.classList.add('active');
+        btnSync.classList.remove('active');
+        tabLive.style.display = 'block';
+        tabSync.style.display = 'none';
+      } else {
+        btnSync.classList.add('active');
+        btnLive.classList.remove('active');
+        tabLive.style.display = 'none';
+        tabSync.style.display = 'block';
+      }
+    }
+
+    function reloadIframe() {
+      const iframe = document.getElementById('resume-cv-iframe');
+      const loader = document.getElementById('analyzer-iframe-loader');
+      if (iframe) {
+        if (loader) loader.style.display = 'flex';
+        iframe.src = 'https://resume-cv-analyzer.vercel.app/';
+      }
+    }
+
+    function toggleFullscreen() {
+      const container = document.getElementById('analyzer-frame-container');
+      if (!container) return;
+
+      if (!document.fullscreenElement) {
+        container.requestFullscreen().catch((err) => {
+          Utils.showToast(`Fullscreen error: ${err.message}`, 'error');
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
 
     async function loadResumeData() {
       try {

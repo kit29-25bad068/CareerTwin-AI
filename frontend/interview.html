@@ -60,18 +60,23 @@
                 <div class="form-group">
                   <label class="form-label">Company Twin</label>
                   <select id="setup-company" class="form-select">
-                    <option value="Google">Google</option>
-                    <option value="Microsoft">Microsoft</option>
-                    <option value="Amazon">Amazon</option>
-                    <option value="Apple">Apple</option>
-                    <option value="Adobe">Adobe</option>
-                    <option value="Atlassian">Atlassian</option>
-                    <option value="Zoho">Zoho</option>
-                    <option value="TCS">TCS</option>
-                    <option value="Infosys">Infosys</option>
-                    <option value="High-Growth Startup">High-Growth Startup</option>
-                    <option value="Custom">Custom Company...</option>
+                    <option value="" disabled selected>Loading verified company datasets...</option>
                   </select>
+                </div>
+              </div>
+
+              <!-- Company Knowledge Base Status Panel (Requirement 13) -->
+              <div id="company-knowledge-card" style="display:none; margin-bottom: 1.25rem; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 0.85rem 1.1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);" id="company-card-title">🏢 Company Twin</div>
+                  <span class="badge badge-cyan" id="company-card-count">0 Questions Available</span>
+                </div>
+                <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem;" id="company-card-status">
+                  Company interview knowledge available
+                </div>
+                <div id="company-card-categories" style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.5rem;"></div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.4rem;" id="company-card-source">
+                  ⚡ Source: Collected Interview Dataset (Grounding Layer)
                 </div>
               </div>
 
@@ -167,7 +172,14 @@
                 <span id="question-counter-badge" class="badge badge-primary">Question 1 of 5</span>
                 <span id="company-tag-badge" class="badge badge-cyan">Google</span>
                 <span id="difficulty-tag-badge" class="badge badge-emerald">Medium</span>
+                <span id="question-source-badge" class="badge badge-purple" style="display:none;">🏢 Database Grounded</span>
                 <span id="room-privacy-mode-pill" class="badge badge-cyan">🛡️ Privacy Mode</span>
+              </div>
+
+              <!-- Why this question box (Requirement 17) -->
+              <div id="why-this-question-box" style="display:none; margin: 0.85rem 1.5rem 0.25rem 1.5rem; background: rgba(99, 102, 241, 0.09); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-sm); padding: 7px 12px; font-size: 0.8rem; text-align: left;">
+                <span style="color: var(--accent-primary); font-weight: 600; margin-right: 0.35rem;">ⓘ Why this question?</span>
+                <span id="why-this-question-text" style="color: var(--text-secondary);">Grounded in verified company knowledge base.</span>
               </div>
             </div>
 
@@ -202,6 +214,7 @@
             <!-- Camera Viewfinder -->
             <div class="camera-viewfinder">
               <video id="camera-preview-video" class="camera-video" playsinline muted></video>
+              <canvas id="camera-tracking-overlay" class="camera-tracking-canvas"></canvas>
               <canvas id="vision-tracker-canvas" style="display:none;"></canvas>
               
               <div id="camera-off-view" class="camera-off-viewfinder">
@@ -214,10 +227,13 @@
                 <span style="font-size: 0.7rem; font-weight:600;">LIVE FEED</span>
               </div>
 
-              <!-- Live Eye-Contact & Gaze HUD Indicator -->
-              <div id="camera-gaze-hud" style="display:none; position:absolute; bottom:8px; left:8px; right:8px; background:rgba(11,15,25,0.85); backdrop-filter:blur(8px); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:4px 10px; align-items:center; justify-content:space-between; font-size:0.75rem; z-index:10; transition:all 0.25s ease;">
-                <span id="gaze-status-indicator">🟢 Eye Contact: Direct</span>
-                <span id="gaze-percentage-indicator" style="color:var(--accent-secondary); font-weight:600;">100%</span>
+              <!-- Live Eye-Contact & Eyeball Gaze HUD Indicator -->
+              <div id="camera-gaze-hud" style="display:none; position:absolute; bottom:8px; left:8px; right:8px; background:rgba(11,15,25,0.88); backdrop-filter:blur(8px); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:5px 10px; align-items:center; justify-content:space-between; font-size:0.75rem; z-index:10; transition:all 0.25s ease;">
+                <span id="gaze-status-indicator">🟢 🎯 Direct Eye Contact</span>
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                  <span id="gaze-shifts-indicator" style="color:var(--text-muted); font-size:0.7rem;">0 Shifts</span>
+                  <span id="gaze-percentage-indicator" style="color:var(--accent-secondary); font-weight:600;">100% Contact</span>
+                </div>
               </div>
             </div>
 
@@ -252,9 +268,100 @@
   <script src="/js/vision.js"></script>
   <script src="/js/interview.js"></script>
   <script>
+    let loadedCompanies = [];
+
+    function updateCompanyKnowledgeCard(selectedName) {
+      const card = document.getElementById('company-knowledge-card');
+      const titleEl = document.getElementById('company-card-title');
+      const countEl = document.getElementById('company-card-count');
+      const statusEl = document.getElementById('company-card-status');
+      const catsEl = document.getElementById('company-card-categories');
+      const sourceEl = document.getElementById('company-card-source');
+
+      if (!card) return;
+
+      if (selectedName === 'Custom') {
+        card.style.display = 'block';
+        card.style.borderColor = 'rgba(234, 179, 8, 0.3)';
+        card.style.background = 'rgba(234, 179, 8, 0.05)';
+        titleEl.textContent = '🏢 Custom Company Twin';
+        countEl.textContent = '0 Database Questions';
+        countEl.className = 'badge badge-amber';
+        statusEl.textContent = 'Company-specific interview data is currently unavailable. CareerTwin will use general role-based interview generation.';
+        catsEl.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted);">Generic role questions will be personalized by Gemini AI.</span>';
+        sourceEl.textContent = '⚡ Mode: Generic Role-Based Generation (sourceType: generic_role_based)';
+        return;
+      }
+
+      const comp = loadedCompanies.find((c) => c.company.toLowerCase() === selectedName.toLowerCase());
+      if (!comp) {
+        card.style.display = 'none';
+        return;
+      }
+
+      card.style.display = 'block';
+      card.style.borderColor = 'rgba(99, 102, 241, 0.25)';
+      card.style.background = 'rgba(99, 102, 241, 0.08)';
+      titleEl.textContent = `🏢 ${comp.company} Company Twin`;
+      countEl.textContent = `${comp.totalQuestions} Questions Available`;
+      countEl.className = 'badge badge-cyan';
+      statusEl.textContent = 'Company interview knowledge available';
+
+      // Format category pills with counts
+      const categoryLabels = {
+        introduction: 'Introduction',
+        resume: 'Resume',
+        project: 'Project',
+        dsa: 'DSA',
+        programming: 'Programming',
+        oop: 'OOP',
+        dbms: 'DBMS',
+        operatingSystems: 'OS',
+        computerNetworks: 'Networks',
+        systemDesign: 'System Design',
+        behavioral: 'Behavioral',
+        hr: 'HR',
+        problemSolving: 'Problem Solving',
+        testing: 'Testing',
+        debugging: 'Debugging',
+        performance: 'Performance',
+        scalability: 'Scalability',
+      };
+
+      const pillsHtml = Object.entries(comp.categoryCounts || {})
+        .filter(([cat, count]) => count > 0 && cat !== 'other')
+        .slice(0, 8)
+        .map(([cat, count]) => `<span class="badge badge-primary" style="font-size:0.72rem; padding:2px 8px;">✓ ${categoryLabels[cat] || cat} (${count})</span>`)
+        .join('');
+
+      catsEl.innerHTML = pillsHtml || '<span class="badge badge-primary">✓ Comprehensive Question Bank</span>';
+      sourceEl.textContent = `⚡ Source: Collected Interview Dataset &bull; Grounding Layer Active`;
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       Navbar.init('Mock Interview');
       window.orchestrator = new InterviewOrchestrator();
+
+      // 1. Fetch available companies from MongoDB (Requirement 12)
+      try {
+        const compRes = await API.get('/company-interviews');
+        if (compRes.success && compRes.companies && compRes.companies.length > 0) {
+          loadedCompanies = compRes.companies;
+          const selectEl = document.getElementById('setup-company');
+          selectEl.innerHTML = loadedCompanies
+            .map((c) => `<option value="${c.company}">${c.company} (${c.totalQuestions} questions)</option>`)
+            .join('') + `<option value="Custom">Custom Company...</option>`;
+
+          // Default select Amazon or first company
+          const defaultComp = loadedCompanies.find((c) => c.company === 'Amazon') || loadedCompanies[0];
+          if (defaultComp) {
+            selectEl.value = defaultComp.company;
+            updateCompanyKnowledgeCard(defaultComp.company);
+          }
+        }
+      } catch (err) {
+        console.warn('Could not load company interviews from database:', err.message);
+      }
 
       // Pre-fill target role from profile
       try {
@@ -264,10 +371,12 @@
         }
       } catch (e) {}
 
-      // Handle custom company selector
+      // Handle custom company selector & knowledge card updates
       document.getElementById('setup-company').addEventListener('change', (e) => {
-        const isCustom = e.target.value === 'Custom';
+        const val = e.target.value;
+        const isCustom = val === 'Custom';
         document.getElementById('custom-company-group').style.display = isCustom ? 'block' : 'none';
+        updateCompanyKnowledgeCard(val);
       });
 
       // Setup Form Submit

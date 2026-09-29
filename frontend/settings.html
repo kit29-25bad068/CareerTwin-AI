@@ -81,6 +81,17 @@
               </div>
             </div>
 
+            <div class="grid grid-cols-2">
+              <div class="form-group">
+                <label class="form-label" for="prof-github">GitHub Profile / Username</label>
+                <input type="text" id="prof-github" class="form-input" placeholder="https://github.com/username">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="prof-codolio">Codolio Profile / Username (Competitive Coding)</label>
+                <input type="text" id="prof-codolio" class="form-input" placeholder="https://codolio.com/profile/username">
+              </div>
+            </div>
+
             <div class="form-group">
               <label class="form-label" for="prof-summary">Career Summary / Bio</label>
               <textarea id="prof-summary" class="form-textarea" style="min-height:75px;" placeholder="Brief overview of your focus areas and career ambitions..."></textarea>
@@ -117,6 +128,28 @@
               Update Privacy Preferences
             </button>
           </form>
+        </div>
+
+        <!-- Section: Active Session & Logout -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div class="card-title">👤 Active Session & Authentication</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.25rem;">
+            <div>
+              <div style="font-weight:600; font-size:1.05rem; color:var(--text-primary); margin-bottom:0.25rem;">
+                Signed in as <span class="user-display-name" style="color:var(--accent-primary);">User</span>
+              </div>
+              <div style="font-size:0.85rem; color:var(--text-secondary);" class="user-display-email"></div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.35rem;">
+                Your session is authenticated via secure JWT. Logging out will clear credentials from this device.
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-md logout-btn" onclick="API.logout()" style="display:flex; align-items:center; gap:0.5rem; border-color: rgba(255,255,255,0.25);">
+              <span>🚪</span>
+              <span style="font-weight:700;">Log Out of Account</span>
+            </button>
+          </div>
         </div>
 
         <!-- Section 3: Data Export & Complete Control (Red Zone) -->
@@ -208,9 +241,19 @@
             targetCompanies,
             careerSummary,
           });
+
+          const codolioUrl = document.getElementById('prof-codolio').value.trim();
+          if (codolioUrl) {
+            try {
+              await API.post('/codolio/sync', { codolioUrl });
+            } catch (err) {
+              console.warn('Codolio sync warning:', err.message);
+            }
+          }
+
           Utils.hideLoading();
           if (res.success) {
-            Utils.showToast('Profile updated successfully!', 'success');
+            Utils.showToast('Profile & coding platform handles updated successfully!', 'success');
             await Auth.fetchCurrentUser();
           }
         } catch (err) {
@@ -256,6 +299,14 @@
         }
 
         if (userRes.success && userRes.user) {
+          const u = userRes.user;
+          if (document.getElementById('prof-github')) {
+            document.getElementById('prof-github').value = u.githubUrl || (u.githubUsername ? `https://github.com/${u.githubUsername}` : '');
+          }
+          if (document.getElementById('prof-codolio')) {
+            document.getElementById('prof-codolio').value = u.codolioUrl || (u.codolioUsername ? `https://codolio.com/profile/${u.codolioUsername}` : '');
+          }
+
           const mode = userRes.user.privacySettings?.defaultPrivacyMode || 'privacy';
           if (mode === 'replay') {
             document.getElementById('mode-rep').checked = true;

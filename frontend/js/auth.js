@@ -80,11 +80,8 @@ const Auth = {
       return false;
     }
 
-    if (token && isAuthForm) {
-      window.location.href = '/dashboard.html';
-      return true;
-    }
-
+    // Note: Do not auto-redirect away from register.html or login.html.
+    // If a user explicitly navigates to create an account or sign in, they must see the form.
     return true;
   },
 

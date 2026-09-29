@@ -1,0 +1,3964 @@
+{
+  "Google": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your recent project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your contribution to the project?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose this technology?",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest challenge in your project?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Why do you want to join Google?",
+      "category": "hr"
+    },
+    {
+      "question": "What kind of work are you interested in?",
+      "category": "hr"
+    },
+    {
+      "question": "Two Sum",
+      "category": "dsa"
+    },
+    {
+      "question": "Product of Array Except Self",
+      "category": "dsa"
+    },
+    {
+      "question": "Maximum Subarray",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge Intervals",
+      "category": "dsa"
+    },
+    {
+      "question": "Best Time to Buy and Sell Stock",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Substring Without Repeating Characters",
+      "category": "dsa"
+    },
+    {
+      "question": "Minimum Window Substring",
+      "category": "dsa"
+    },
+    {
+      "question": "Group Anagrams",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Palindromic Substring",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a Linked List",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect Cycle in Linked List",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge Two Sorted Lists",
+      "category": "dsa"
+    },
+    {
+      "question": "Binary Tree Level Order Traversal",
+      "category": "dsa"
+    },
+    {
+      "question": "Lowest Common Ancestor",
+      "category": "dsa"
+    },
+    {
+      "question": "Validate Binary Search Tree",
+      "category": "dsa"
+    },
+    {
+      "question": "Binary Tree Maximum Path Sum",
+      "category": "dsa"
+    },
+    {
+      "question": "Number of Islands",
+      "category": "dsa"
+    },
+    {
+      "question": "Clone Graph",
+      "category": "dsa"
+    },
+    {
+      "question": "Course Schedule",
+      "category": "dsa"
+    },
+    {
+      "question": "Shortest Path",
+      "category": "dsa"
+    },
+    {
+      "question": "Topological Sort",
+      "category": "dsa"
+    },
+    {
+      "question": "Coin Change",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Increasing Subsequence",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Common Subsequence",
+      "category": "dsa"
+    },
+    {
+      "question": "Grid-based DP",
+      "category": "dsa"
+    },
+    {
+      "question": "Difference between process and thread?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is OOP?",
+      "category": "oop"
+    },
+    {
+      "question": "Explain inheritance, polymorphism, encapsulation.",
+      "category": "oop"
+    },
+    {
+      "question": "What is normalization in DBMS?",
+      "category": "dbms"
+    },
+    {
+      "question": "SQL vs NoSQL?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is indexing?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is REST API?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What happens when you enter a URL in a browser?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "TCP vs UDP?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is caching?",
+      "category": "performance"
+    },
+    {
+      "question": "What is concurrency?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain your project's architecture.",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose your database?",
+      "category": "project"
+    }
+  ],
+  "Amazon": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your most important project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your contribution to the project?",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest technical challenge you faced?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose that technology?",
+      "category": "project"
+    },
+    {
+      "question": "Why Amazon?",
+      "category": "hr"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Two Sum",
+      "category": "dsa"
+    },
+    {
+      "question": "Product of Array Except Self",
+      "category": "dsa"
+    },
+    {
+      "question": "Maximum Subarray",
+      "category": "dsa"
+    },
+    {
+      "question": "Best Time to Buy and Sell Stock",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge Intervals",
+      "category": "dsa"
+    },
+    {
+      "question": "Subarray Sum Equals K",
+      "category": "dsa"
+    },
+    {
+      "question": "Top K Frequent Elements",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Substring Without Repeating Characters",
+      "category": "dsa"
+    },
+    {
+      "question": "Group Anagrams",
+      "category": "dsa"
+    },
+    {
+      "question": "Minimum Window Substring",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse Linked List",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge Two Sorted Lists",
+      "category": "dsa"
+    },
+    {
+      "question": "Linked List Cycle",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge K Sorted Lists",
+      "category": "dsa"
+    },
+    {
+      "question": "Binary Tree Level Order Traversal",
+      "category": "dsa"
+    },
+    {
+      "question": "Lowest Common Ancestor",
+      "category": "dsa"
+    },
+    {
+      "question": "Validate Binary Search Tree",
+      "category": "dsa"
+    },
+    {
+      "question": "Maximum Depth of Binary Tree",
+      "category": "dsa"
+    },
+    {
+      "question": "Binary Tree Maximum Path Sum",
+      "category": "dsa"
+    },
+    {
+      "question": "Number of Islands",
+      "category": "dsa"
+    },
+    {
+      "question": "Course Schedule",
+      "category": "dsa"
+    },
+    {
+      "question": "Clone Graph",
+      "category": "dsa"
+    },
+    {
+      "question": "Shortest Path",
+      "category": "dsa"
+    },
+    {
+      "question": "Topological Sort",
+      "category": "dsa"
+    },
+    {
+      "question": "Kth Largest Element",
+      "category": "dsa"
+    },
+    {
+      "question": "Find Median from Data Stream",
+      "category": "dsa"
+    },
+    {
+      "question": "Coin Change",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Increasing Subsequence",
+      "category": "dsa"
+    },
+    {
+      "question": "House Robber",
+      "category": "dsa"
+    },
+    {
+      "question": "0/1 Knapsack",
+      "category": "dsa"
+    },
+    {
+      "question": "Can you optimize your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "What is the time complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "What is the space complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you solve it using another approach?",
+      "category": "problemSolving"
+    },
+    {
+      "question": "What are the edge cases?",
+      "category": "testing"
+    },
+    {
+      "question": "What happens with a very large input?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you test your solution?",
+      "category": "testing"
+    },
+    {
+      "question": "What happens with invalid input?",
+      "category": "testing"
+    },
+    {
+      "question": "Explain your code.",
+      "category": "programming"
+    },
+    {
+      "question": "Design a URL Shortener.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a Shopping Cart.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a Notification System.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a Chat Application.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design an E-commerce System.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a Food Delivery System.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How will you scale your system?",
+      "category": "scalability"
+    },
+    {
+      "question": "Which database would you choose and why?",
+      "category": "dbms"
+    },
+    {
+      "question": "SQL or NoSQL? Why?",
+      "category": "dbms"
+    },
+    {
+      "question": "How will you handle millions of users?",
+      "category": "scalability"
+    },
+    {
+      "question": "How will you handle system failures?",
+      "category": "scalability"
+    },
+    {
+      "question": "How will you reduce latency?",
+      "category": "performance"
+    },
+    {
+      "question": "Tell me about a time you took ownership of a problem.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you disagreed with your teammate.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you disagreed with your manager.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a mistake you made.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a failure and what you learned.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a difficult problem you solved.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you worked under pressure.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you acted with incomplete information.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you showed leadership.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you helped a teammate.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you received negative feedback.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you had to make a quick decision.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you improved a process.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you went beyond your responsibility.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you delivered something under a tight deadline.",
+      "category": "behavioral"
+    }
+  ],
+  "Zoho": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Explain your project.",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "What was your role in the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your database design.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain how routing works in your project.",
+      "category": "project"
+    },
+    {
+      "question": "How does session management work?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose this technology?",
+      "category": "project"
+    },
+    {
+      "question": "Why Zoho?",
+      "category": "hr"
+    },
+    {
+      "question": "Explain OOP concepts.",
+      "category": "oop"
+    },
+    {
+      "question": "What is inheritance?",
+      "category": "oop"
+    },
+    {
+      "question": "What is polymorphism?",
+      "category": "oop"
+    },
+    {
+      "question": "What is encapsulation?",
+      "category": "oop"
+    },
+    {
+      "question": "What is abstraction?",
+      "category": "oop"
+    },
+    {
+      "question": "Difference between class and object.",
+      "category": "oop"
+    },
+    {
+      "question": "What is a constructor?",
+      "category": "oop"
+    },
+    {
+      "question": "What is function overloading and overriding?",
+      "category": "oop"
+    },
+    {
+      "question": "What is a pointer?",
+      "category": "programming"
+    },
+    {
+      "question": "What is pointer arithmetic?",
+      "category": "programming"
+    },
+    {
+      "question": "Predict the output of a C program.",
+      "category": "programming"
+    },
+    {
+      "question": "Predict the output of a program involving arrays and pointers.",
+      "category": "programming"
+    },
+    {
+      "question": "Predict the output of a program involving strings.",
+      "category": "programming"
+    },
+    {
+      "question": "Predict the output of a program involving loops.",
+      "category": "oop"
+    },
+    {
+      "question": "Predict the output of a program involving recursion.",
+      "category": "programming"
+    },
+    {
+      "question": "Predict the output of a program involving structures.",
+      "category": "programming"
+    },
+    {
+      "question": "Solve an aptitude problem involving ratios.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Solve an aptitude problem involving speed and distance.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Solve an aptitude problem involving ages.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Solve a logical reasoning puzzle.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Find the equilibrium index of an array.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Replace every element with the greatest element on its right.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the next greater element for every array element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Group Anagrams.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a substring between each pair of parentheses.",
+      "category": "dsa"
+    },
+    {
+      "question": "Best Time to Buy and Sell Stock.",
+      "category": "dsa"
+    },
+    {
+      "question": "Kth Missing Positive Number.",
+      "category": "dsa"
+    },
+    {
+      "question": "Climbing Stairs.",
+      "category": "dsa"
+    },
+    {
+      "question": "Valid Parentheses.",
+      "category": "dsa"
+    },
+    {
+      "question": "Median of Two Sorted Arrays.",
+      "category": "dsa"
+    },
+    {
+      "question": "Wildcard Pattern Matching.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Word Ladder.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Job Sequencing Problem.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Number of cells a Queen can move on a chessboard with obstacles.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Spiral Fibonacci Matrix.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Decode a nested string such as 3[a2[bc]].",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Solve a graph problem using topological sorting.",
+      "category": "dsa"
+    },
+    {
+      "question": "Remove characters from one string that occur in another string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a problem using arrays and strings efficiently.",
+      "category": "dsa"
+    },
+    {
+      "question": "Optimize your coding solution.",
+      "category": "performance"
+    },
+    {
+      "question": "Reduce the time complexity of your solution.",
+      "category": "performance"
+    },
+    {
+      "question": "Reduce the space complexity of your solution.",
+      "category": "performance"
+    },
+    {
+      "question": "Can you solve the problem in-place?",
+      "category": "performance"
+    },
+    {
+      "question": "Explain your approach before coding.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "How would you handle edge cases?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you test your code?",
+      "category": "testing"
+    },
+    {
+      "question": "Design a Task Management application.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a Railway Reservation system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design an Invoice Management system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Explain the classes/modules you would create for the application.",
+      "category": "project"
+    },
+    {
+      "question": "How would you make your design modular?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you extend your application with a new feature?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you handle invalid input?",
+      "category": "testing"
+    },
+    {
+      "question": "SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is database normalization?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a primary key?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a foreign key?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is database indexing?",
+      "category": "dbms"
+    },
+    {
+      "question": "Write an SQL query to retrieve specific records.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a JOIN?",
+      "category": "dbms"
+    },
+    {
+      "question": "Difference between INNER JOIN and LEFT JOIN.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is ChatGPT?",
+      "category": "programming"
+    },
+    {
+      "question": "ChatGPT vs Google.",
+      "category": "programming"
+    },
+    {
+      "question": "What is Machine Learning?",
+      "category": "programming"
+    },
+    {
+      "question": "Explain a technology you recently learned.",
+      "category": "programming"
+    },
+    {
+      "question": "Tell me about a difficult problem you solved.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a situation where you disagreed with your teammate.",
+      "category": "behavioral"
+    },
+    {
+      "question": "How do you handle pressure?",
+      "category": "behavioral"
+    },
+    {
+      "question": "How long do you plan to stay with Zoho?",
+      "category": "hr"
+    },
+    {
+      "question": "What are your salary expectations?",
+      "category": "hr"
+    },
+    {
+      "question": "What are your career goals?",
+      "category": "hr"
+    }
+  ],
+  "Microsoft": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your role in the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest challenge in your project?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose that technology?",
+      "category": "project"
+    },
+    {
+      "question": "Why Microsoft?",
+      "category": "hr"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Two Sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge Two Sorted Arrays.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a Linked List.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect Cycle in a Linked List.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the first non-repeating character in a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Substring Without Repeating Characters.",
+      "category": "dsa"
+    },
+    {
+      "question": "Valid Parentheses.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge K Sorted Lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Binary Tree Level Order Traversal.",
+      "category": "dsa"
+    },
+    {
+      "question": "Zigzag Tree Traversal.",
+      "category": "dsa"
+    },
+    {
+      "question": "Lowest Common Ancestor.",
+      "category": "dsa"
+    },
+    {
+      "question": "Validate Binary Search Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Number of Islands.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the shortest path in a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Topological Sort.",
+      "category": "dsa"
+    },
+    {
+      "question": "Dijkstra's Algorithm.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the maximum subarray.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the maximum number of people present at the same time.",
+      "category": "dsa"
+    },
+    {
+      "question": "Search in a rotated sorted array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find how many times an array has been rotated.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the Kth largest element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a Trie.",
+      "category": "dsa"
+    },
+    {
+      "question": "Search for a word using Trie.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain Hashing and its implementation.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain HashMap and its working.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain Array vs Linked List.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain Queue vs Priority Queue.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain all four pillars of OOP.",
+      "category": "oop"
+    },
+    {
+      "question": "Explain inheritance vs interface.",
+      "category": "oop"
+    },
+    {
+      "question": "Explain polymorphism.",
+      "category": "oop"
+    },
+    {
+      "question": "Explain encapsulation.",
+      "category": "oop"
+    },
+    {
+      "question": "Explain abstraction.",
+      "category": "oop"
+    },
+    {
+      "question": "Explain process vs thread.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is synchronization?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is mutual exclusion?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain the Producer-Consumer problem.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is the synchronized keyword?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is the volatile keyword?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain database normalization.",
+      "category": "dbms"
+    },
+    {
+      "question": "SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is database indexing?",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain JOINs in SQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "What happens when you enter a URL in a browser?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "Explain TCP vs UDP.",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "Design a cache system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a URL shortener.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a notification system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a file storage system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a rate limiter.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a distributed system for a large file.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you make your system scalable?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle millions of users?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle failures?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you improve system performance?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you test your code?",
+      "category": "testing"
+    },
+    {
+      "question": "What are the edge cases?",
+      "category": "testing"
+    },
+    {
+      "question": "What is the time complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "What is the space complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you optimize your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you solve it without extra space?",
+      "category": "performance"
+    },
+    {
+      "question": "Tell me about a difficult problem you solved.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you received feedback.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you disagreed with a teammate.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you worked under pressure.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a failure and what you learned.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you showed leadership.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you learned something new quickly.",
+      "category": "behavioral"
+    },
+    {
+      "question": "What are your career goals?",
+      "category": "hr"
+    }
+  ],
+  "Apple": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your most important project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your role in the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest technical challenge you faced?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose that technology?",
+      "category": "project"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Why Apple?",
+      "category": "hr"
+    },
+    {
+      "question": "What interests you about the team or role?",
+      "category": "hr"
+    },
+    {
+      "question": "Tell me about a production issue you handled.",
+      "category": "debugging"
+    },
+    {
+      "question": "How did you debug a difficult issue?",
+      "category": "debugging"
+    },
+    {
+      "question": "Explain a technical decision you made and its trade-offs.",
+      "category": "behavioral"
+    },
+    {
+      "question": "What is the time complexity of your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "What is the space complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you optimize your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you solve it using another approach?",
+      "category": "problemSolving"
+    },
+    {
+      "question": "What are the edge cases?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you test your solution?",
+      "category": "testing"
+    },
+    {
+      "question": "Two Sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Add Two Numbers.",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Substring Without Repeating Characters.",
+      "category": "dsa"
+    },
+    {
+      "question": "Median of Two Sorted Arrays.",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Palindromic Substring.",
+      "category": "dsa"
+    },
+    {
+      "question": "Zigzag Conversion.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse Integer.",
+      "category": "dsa"
+    },
+    {
+      "question": "String to Integer (atoi).",
+      "category": "dsa"
+    },
+    {
+      "question": "Palindrome Number.",
+      "category": "dsa"
+    },
+    {
+      "question": "Regular Expression Matching.",
+      "category": "dsa"
+    },
+    {
+      "question": "Number of Islands.",
+      "category": "dsa"
+    },
+    {
+      "question": "Maximum Subarray.",
+      "category": "dsa"
+    },
+    {
+      "question": "Best Time to Buy and Sell Stock.",
+      "category": "dsa"
+    },
+    {
+      "question": "Product of Array Except Self.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge Intervals.",
+      "category": "dsa"
+    },
+    {
+      "question": "Group Anagrams.",
+      "category": "dsa"
+    },
+    {
+      "question": "Top K Frequent Elements.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the Kth Largest Element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Search in a Rotated Sorted Array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge Two Sorted Lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a Linked List.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a Cycle in a Linked List.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the Intersection of Two Linked Lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Binary Tree Level Order Traversal.",
+      "category": "dsa"
+    },
+    {
+      "question": "Lowest Common Ancestor.",
+      "category": "dsa"
+    },
+    {
+      "question": "Validate Binary Search Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Maximum Depth of Binary Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Binary Tree Maximum Path Sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Clone Graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Number of Connected Components.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the Shortest Path in a Graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform Topological Sorting.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement BFS.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement DFS.",
+      "category": "dsa"
+    },
+    {
+      "question": "Solve a problem using Dynamic Programming.",
+      "category": "programming"
+    },
+    {
+      "question": "Solve a Knapsack problem.",
+      "category": "dsa"
+    },
+    {
+      "question": "Design a data structure supporting insert, delete and getRandom in average O(1).",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Explain HashMap and how it works internally.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain arrays vs linked lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain stack vs queue.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain process vs thread.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is synchronization?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a race condition?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain the Producer-Consumer problem.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain memory management.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain concurrency in your programming language.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What happens when you enter a URL in a browser?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "Explain TCP vs UDP.",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is caching?",
+      "category": "performance"
+    },
+    {
+      "question": "Explain database indexing.",
+      "category": "dbms"
+    },
+    {
+      "question": "SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain database normalization.",
+      "category": "dbms"
+    },
+    {
+      "question": "Design a URL shortening service.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design an iCloud-style photo synchronization system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a messaging system like iMessage.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design Apple Push Notification Service.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a distributed job scheduling system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you design a system that decides between on-device and cloud processing?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you make your system scalable?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle millions of users?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle system failures?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you reduce latency?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you handle data consistency?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you protect user privacy in your design?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Tell me about a time you disagreed with a technical decision.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a difficult teammate situation.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you received constructive criticism.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you worked under a tight deadline.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a failure and what you learned.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you took ownership of a problem.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you had to work with incomplete information.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a complex system you designed or improved.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Tell me about a time you had to make a technical trade-off.",
+      "category": "behavioral"
+    },
+    {
+      "question": "How do you prioritize when multiple tasks are urgent?",
+      "category": "behavioral"
+    },
+    {
+      "question": "How do you ensure the quality of your code?",
+      "category": "testing"
+    },
+    {
+      "question": "How do you approach debugging?",
+      "category": "debugging"
+    },
+    {
+      "question": "How do you keep learning new technologies?",
+      "category": "hr"
+    },
+    {
+      "question": "What makes you interested in working at Apple?",
+      "category": "hr"
+    }
+  ],
+  "Meta": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your most important project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your role in the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest technical challenge you faced?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose that technology?",
+      "category": "project"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Why Meta?",
+      "category": "hr"
+    },
+    {
+      "question": "What interests you about this role?",
+      "category": "hr"
+    },
+    {
+      "question": "Tell me about a technical decision you made.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you disagreed with a teammate.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you handled a difficult technical problem.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you received critical feedback.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you had to work under pressure.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a failure and what you learned.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you took ownership of a problem.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Move all zeroes to the end of an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find a subarray with a given sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Two Sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Top K Frequent Elements.",
+      "category": "dsa"
+    },
+    {
+      "question": "Maximum Subarray.",
+      "category": "dsa"
+    },
+    {
+      "question": "Trapping Rain Water.",
+      "category": "dsa"
+    },
+    {
+      "question": "Rotate a Matrix.",
+      "category": "dsa"
+    },
+    {
+      "question": "Product of Array Except Self.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge Intervals.",
+      "category": "dsa"
+    },
+    {
+      "question": "Best Time to Buy and Sell Stock.",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Substring Without Repeating Characters.",
+      "category": "dsa"
+    },
+    {
+      "question": "Group Anagrams.",
+      "category": "dsa"
+    },
+    {
+      "question": "Valid Parentheses.",
+      "category": "dsa"
+    },
+    {
+      "question": "Next Greater Element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Longest Valid Parentheses.",
+      "category": "dsa"
+    },
+    {
+      "question": "Clone a Linked List with Next and Random Pointer.",
+      "category": "programming"
+    },
+    {
+      "question": "Reverse a Linked List.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a Linked List in Groups.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the Intersection Point of Two Linked Lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a Cycle in a Linked List.",
+      "category": "dsa"
+    },
+    {
+      "question": "Remove Duplicates from a Sorted Linked List.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge K Sorted Lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Serialize and Deserialize a Binary Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Level Order Traversal of a Binary Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Lowest Common Ancestor.",
+      "category": "dsa"
+    },
+    {
+      "question": "Validate a Binary Search Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Diameter of a Binary Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find all Root-to-Leaf Paths.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the Inorder Successor in a BST.",
+      "category": "dsa"
+    },
+    {
+      "question": "Clone an Undirected Graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Check whether a Graph is Bipartite.",
+      "category": "dsa"
+    },
+    {
+      "question": "Topological Sort.",
+      "category": "dsa"
+    },
+    {
+      "question": "Number of Islands.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a Cycle in a Directed Graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement Dijkstra's Algorithm.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find Strongly Connected Components.",
+      "category": "dsa"
+    },
+    {
+      "question": "Solve the Course Schedule problem.",
+      "category": "dsa"
+    },
+    {
+      "question": "Word Boggle.",
+      "category": "dsa"
+    },
+    {
+      "question": "Word Break.",
+      "category": "dsa"
+    },
+    {
+      "question": "Wildcard Pattern Matching.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "Longest Increasing Subsequence.",
+      "category": "dsa"
+    },
+    {
+      "question": "Count Possible Decodings of a Digit Sequence.",
+      "category": "dsa"
+    },
+    {
+      "question": "Maximum Size Square Submatrix of 1s.",
+      "category": "dsa"
+    },
+    {
+      "question": "Burst Balloons.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain your approach before coding.",
+      "category": "problemSolving"
+    },
+    {
+      "question": "What is the time complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "What is the space complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you optimize your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you solve it without extra space?",
+      "category": "performance"
+    },
+    {
+      "question": "What are the edge cases?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you test your code?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you debug your solution?",
+      "category": "debugging"
+    },
+    {
+      "question": "Explain HashMap and how it works internally.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain arrays vs linked lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain stacks vs queues.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain heaps and priority queues.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain Trie and its applications.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain process vs thread.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is synchronization?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a race condition?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain memory management.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain database indexing.",
+      "category": "dbms"
+    },
+    {
+      "question": "SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain database normalization.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain database transactions.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain JOINs in SQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "What happens when you enter a URL in a browser?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "Explain HTTP vs HTTPS.",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "Explain TCP/IP.",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "Design a News Feed system like Facebook.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design Instagram.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design WhatsApp/Messenger.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a notification system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a URL shortener.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a distributed file storage system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a large-scale messaging system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you scale your system to billions of users?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle database bottlenecks?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you handle system failures?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you reduce latency and improve system performance?",
+      "category": "performance"
+    }
+  ],
+  "Infosys": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your academic project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your role in the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "Which technologies did you use in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose those technologies?",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest challenge in your project?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Why Infosys?",
+      "category": "hr"
+    },
+    {
+      "question": "Are you comfortable working with different technologies?",
+      "category": "hr"
+    },
+    {
+      "question": "Are you comfortable relocating?",
+      "category": "hr"
+    },
+    {
+      "question": "What are your career goals?",
+      "category": "hr"
+    },
+    {
+      "question": "What are your strengths and weaknesses?",
+      "category": "hr"
+    },
+    {
+      "question": "Why should we hire you?",
+      "category": "hr"
+    },
+    {
+      "question": "What is Java?",
+      "category": "programming"
+    },
+    {
+      "question": "Why is Java platform independent?",
+      "category": "programming"
+    },
+    {
+      "question": "Difference between Java and C.",
+      "category": "programming"
+    },
+    {
+      "question": "What is JIT in Java?",
+      "category": "programming"
+    },
+    {
+      "question": "Explain the four pillars of OOP.",
+      "category": "oop"
+    },
+    {
+      "question": "What is a class?",
+      "category": "oop"
+    },
+    {
+      "question": "What is an object?",
+      "category": "oop"
+    },
+    {
+      "question": "What is inheritance?",
+      "category": "oop"
+    },
+    {
+      "question": "What is polymorphism?",
+      "category": "oop"
+    },
+    {
+      "question": "What is encapsulation?",
+      "category": "oop"
+    },
+    {
+      "question": "What is abstraction?",
+      "category": "oop"
+    },
+    {
+      "question": "What is a constructor?",
+      "category": "oop"
+    },
+    {
+      "question": "What is exception handling?",
+      "category": "programming"
+    },
+    {
+      "question": "What is a thread?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is the difference between process and thread?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is an array?",
+      "category": "dsa"
+    },
+    {
+      "question": "What is a string?",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain different data types.",
+      "category": "programming"
+    },
+    {
+      "question": "Write a program for Linear Search.",
+      "category": "dsa"
+    },
+    {
+      "question": "Write a program for Binary Search.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Check whether a string is a palindrome.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find duplicate elements in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the largest and smallest element in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the second-largest element in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the frequency of each element in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the first non-repeating character in a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a cycle in a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a stack.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a queue.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain BFS and DFS.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain Binary Search Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain Dijkstra's Algorithm.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the shortest path in a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Solve a problem using Greedy Algorithm.",
+      "category": "dsa"
+    },
+    {
+      "question": "Solve a problem using Dynamic Programming.",
+      "category": "programming"
+    },
+    {
+      "question": "Explain time complexity and space complexity.",
+      "category": "performance"
+    },
+    {
+      "question": "What is SQL?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a primary key?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a foreign key?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is normalization?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is denormalization?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is BCNF?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a JOIN?",
+      "category": "dbms"
+    },
+    {
+      "question": "Difference between INNER JOIN and LEFT JOIN.",
+      "category": "dbms"
+    },
+    {
+      "question": "Write an SQL query to find the second-highest salary.",
+      "category": "dbms"
+    },
+    {
+      "question": "Write an SQL query using GROUP BY.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is database indexing?",
+      "category": "dbms"
+    },
+    {
+      "question": "SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "What are ACID properties?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a transaction?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a semaphore?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain Banker’s Algorithm.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is demand paging?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a kernel?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Difference between monolithic kernel and microkernel.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain IPv4 vs IPv6.",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is an IP address?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is HTTP?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is HTTPS?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is encryption?",
+      "category": "other"
+    },
+    {
+      "question": "What is cipher text?",
+      "category": "other"
+    },
+    {
+      "question": "What are MD5 and SHA?",
+      "category": "other"
+    },
+    {
+      "question": "Explain HTML, CSS and JavaScript.",
+      "category": "programming"
+    },
+    {
+      "question": "What is a REST API?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is Spring Boot?",
+      "category": "programming"
+    },
+    {
+      "question": "What are microservices?",
+      "category": "scalability"
+    },
+    {
+      "question": "Explain Kafka and how it works.",
+      "category": "scalability"
+    },
+    {
+      "question": "Explain RabbitMQ.",
+      "category": "scalability"
+    },
+    {
+      "question": "How does your application communicate with the database?",
+      "category": "dbms"
+    },
+    {
+      "question": "Design a URL Shortener.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Explain how you would make your application scalable.",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle system failures?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you improve application performance?",
+      "category": "performance"
+    },
+    {
+      "question": "Tell me about a difficult problem you solved.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you worked in a team.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a disagreement with a teammate.",
+      "category": "other"
+    },
+    {
+      "question": "How do you handle pressure?",
+      "category": "behavioral"
+    },
+    {
+      "question": "If you had six months to learn something new, what would you learn?",
+      "category": "hr"
+    },
+    {
+      "question": "Where do you see yourself in five years?",
+      "category": "hr"
+    },
+    {
+      "question": "Do you have any questions for us?",
+      "category": "hr"
+    }
+  ],
+  "TCS": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your final-year project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your role in the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "What technologies did you use?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose those technologies?",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest challenge in your project?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "How did you handle errors in your project?",
+      "category": "project"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Why TCS?",
+      "category": "hr"
+    },
+    {
+      "question": "What do you know about TCS?",
+      "category": "hr"
+    },
+    {
+      "question": "What are your strengths and weaknesses?",
+      "category": "hr"
+    },
+    {
+      "question": "Where do you see yourself in five years?",
+      "category": "hr"
+    },
+    {
+      "question": "Are you willing to relocate?",
+      "category": "hr"
+    },
+    {
+      "question": "Are you comfortable working in different shifts?",
+      "category": "other"
+    },
+    {
+      "question": "What will you do if you are assigned a technology you don't know?",
+      "category": "other"
+    },
+    {
+      "question": "What is OOP?",
+      "category": "oop"
+    },
+    {
+      "question": "Explain the four pillars of OOP.",
+      "category": "oop"
+    },
+    {
+      "question": "What is inheritance?",
+      "category": "oop"
+    },
+    {
+      "question": "What is polymorphism?",
+      "category": "oop"
+    },
+    {
+      "question": "What is encapsulation?",
+      "category": "oop"
+    },
+    {
+      "question": "What is abstraction?",
+      "category": "oop"
+    },
+    {
+      "question": "Difference between method overloading and method overriding.",
+      "category": "oop"
+    },
+    {
+      "question": "Difference between class and object.",
+      "category": "oop"
+    },
+    {
+      "question": "What is a constructor?",
+      "category": "oop"
+    },
+    {
+      "question": "What is an interface?",
+      "category": "other"
+    },
+    {
+      "question": "Difference between interface and abstract class.",
+      "category": "other"
+    },
+    {
+      "question": "What is exception handling?",
+      "category": "programming"
+    },
+    {
+      "question": "Difference between error and exception.",
+      "category": "other"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What are the challenges of multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is stack memory?",
+      "category": "dsa"
+    },
+    {
+      "question": "Difference between HashMap and Hashtable.",
+      "category": "dsa"
+    },
+    {
+      "question": "What is an array?",
+      "category": "dsa"
+    },
+    {
+      "question": "Difference between array and linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "What is a stack?",
+      "category": "dsa"
+    },
+    {
+      "question": "What is a queue?",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain circular queue.",
+      "category": "dsa"
+    },
+    {
+      "question": "What is a binary tree?",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain tree traversal methods.",
+      "category": "dsa"
+    },
+    {
+      "question": "What is a Binary Search Tree?",
+      "category": "dsa"
+    },
+    {
+      "question": "What is an AVL tree?",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain BFS and DFS.",
+      "category": "dsa"
+    },
+    {
+      "question": "What is recursion?",
+      "category": "programming"
+    },
+    {
+      "question": "Write a program to check whether a number is prime.",
+      "category": "other"
+    },
+    {
+      "question": "Write a program to check whether a string is a palindrome.",
+      "category": "dsa"
+    },
+    {
+      "question": "Write a program to check whether a number is an Armstrong number.",
+      "category": "other"
+    },
+    {
+      "question": "Reverse a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the largest element in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the second-largest element in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find duplicate elements in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the frequency of characters in a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the first non-repeating character in a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the maximum subarray sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the missing number in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Sort an array without using a built-in sorting function.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a cycle in a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a stack using an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a queue using an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain the time complexity of your solution.",
+      "category": "performance"
+    },
+    {
+      "question": "Explain the space complexity of your solution.",
+      "category": "performance"
+    },
+    {
+      "question": "Can you optimize your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "What are the edge cases?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you test your code?",
+      "category": "testing"
+    },
+    {
+      "question": "What is DBMS?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a primary key?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a foreign key?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is normalization?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is denormalization?",
+      "category": "dbms"
+    },
+    {
+      "question": "What are ACID properties?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a database transaction?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a JOIN?",
+      "category": "dbms"
+    },
+    {
+      "question": "Difference between INNER JOIN and OUTER JOIN.",
+      "category": "dbms"
+    },
+    {
+      "question": "Write an SQL query using INNER JOIN.",
+      "category": "dbms"
+    },
+    {
+      "question": "Write an SQL query to find the second-highest salary.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is a database view?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is an index?",
+      "category": "other"
+    },
+    {
+      "question": "SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is XML?",
+      "category": "other"
+    },
+    {
+      "question": "What is JSON?",
+      "category": "other"
+    },
+    {
+      "question": "XML vs JSON.",
+      "category": "other"
+    },
+    {
+      "question": "What is an operating system?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Process vs thread.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is deadlock in OS?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is virtual memory?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a computer network?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is an IP address?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "TCP vs UDP.",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "HTTP vs HTTPS.",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is a REST API?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "How does your application communicate with the backend/database?",
+      "category": "dbms"
+    },
+    {
+      "question": "Tell me about a time you worked in a team.",
+      "category": "behavioral"
+    },
+    {
+      "question": "How would you handle a conflict between two teammates?",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a failure and what you learned.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Why should we hire you?",
+      "category": "hr"
+    }
+  ],
+  "Adobe": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your most important project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your role in the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest technical challenge you faced?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose that technology?",
+      "category": "project"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Why Adobe?",
+      "category": "hr"
+    },
+    {
+      "question": "What do you know about Adobe products?",
+      "category": "hr"
+    },
+    {
+      "question": "What interests you about this role?",
+      "category": "hr"
+    },
+    {
+      "question": "Explain the time and space complexity of your solution.",
+      "category": "performance"
+    },
+    {
+      "question": "Can you optimize your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you solve it without extra space?",
+      "category": "performance"
+    },
+    {
+      "question": "What are the edge cases?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you test your solution?",
+      "category": "testing"
+    },
+    {
+      "question": "Find the next greater element in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find two elements in a BST whose sum equals K.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find all palindromic substrings of a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Check whether parentheses are balanced.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the row with the maximum number of 1s in a binary matrix.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find pairs in an array whose sum equals K.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the first repeated character in a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the first non-repeating character in a string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Check whether a number is a palindrome.",
+      "category": "dsa"
+    },
+    {
+      "question": "Print a matrix in spiral order.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the shortest path between two cells in a matrix.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find whether a path exists between source and destination in a matrix.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the minimum number of moves between two cells.",
+      "category": "other"
+    },
+    {
+      "question": "Perform level-order traversal of a binary tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform zigzag traversal of a binary tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform BFS on a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform DFS on a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement Merge Sort.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement Stack using Queues.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement Queue using Stacks.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find duplicate elements in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the missing number in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the maximum subarray sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the longest substring without repeating characters.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge overlapping intervals.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the Kth largest element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain arrays vs linked lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain stacks and queues.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain binary trees and BSTs.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain hashing and HashMap.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain recursion.",
+      "category": "programming"
+    },
+    {
+      "question": "Explain dynamic programming.",
+      "category": "programming"
+    },
+    {
+      "question": "Explain greedy algorithms.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain process vs thread.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is synchronization?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a synchronized method?",
+      "category": "other"
+    },
+    {
+      "question": "What is a synchronized block?",
+      "category": "other"
+    },
+    {
+      "question": "What is a deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a kernel?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain different types of kernels.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is memory allocation in an operating system?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is paging?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is demand paging?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is internal fragmentation?",
+      "category": "other"
+    },
+    {
+      "question": "What is external fragmentation?",
+      "category": "other"
+    },
+    {
+      "question": "Explain file management in an operating system.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain OOP concepts.",
+      "category": "oop"
+    },
+    {
+      "question": "What is function overloading?",
+      "category": "oop"
+    },
+    {
+      "question": "What is function overriding?",
+      "category": "oop"
+    },
+    {
+      "question": "What are virtual functions?",
+      "category": "other"
+    },
+    {
+      "question": "What is a friend function?",
+      "category": "other"
+    },
+    {
+      "question": "What is a package in Java?",
+      "category": "other"
+    },
+    {
+      "question": "When is a thread's run() method invoked?",
+      "category": "other"
+    },
+    {
+      "question": "What is transient in Java?",
+      "category": "other"
+    },
+    {
+      "question": "Explain String, StringBuffer, and StringBuilder.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is database normalization?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is database indexing?",
+      "category": "dbms"
+    },
+    {
+      "question": "What are ACID properties?",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain SQL JOINs.",
+      "category": "dbms"
+    },
+    {
+      "question": "Write an SQL query to find the second-highest salary.",
+      "category": "dbms"
+    },
+    {
+      "question": "What is TCP vs UDP?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is HTTP vs HTTPS?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "What is a REST API?",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "Design a read-write lock supporting multiple simultaneous readers and one writer.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a scalable file-storage system.",
+      "category": "scalability"
+    },
+    {
+      "question": "Design a document/image storage service.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a notification system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a content-sharing platform.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you make your system scalable?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle millions of users?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle system failures?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you reduce latency?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you choose between SQL and NoSQL?",
+      "category": "other"
+    },
+    {
+      "question": "Explain the SOLID principles.",
+      "category": "other"
+    },
+    {
+      "question": "How would you design test cases for a shopping application?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you test a login page?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you test a new hardware/software feature?",
+      "category": "testing"
+    },
+    {
+      "question": "Tell me about a difficult problem you solved.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you worked with a difficult teammate.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a failure and what you learned.",
+      "category": "behavioral"
+    }
+  ],
+  "Atlassian": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Explain your most important project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your role in the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "What real-world problem does your project solve?",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest technical challenge you faced?",
+      "category": "project"
+    },
+    {
+      "question": "How did you solve that challenge?",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose that technology?",
+      "category": "project"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Why Atlassian?",
+      "category": "hr"
+    },
+    {
+      "question": "What do you know about Jira, Confluence and Trello?",
+      "category": "other"
+    },
+    {
+      "question": "What interests you about this role?",
+      "category": "hr"
+    },
+    {
+      "question": "Tell me about a technical decision you made and its trade-offs.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Explain your approach before writing code.",
+      "category": "other"
+    },
+    {
+      "question": "What is the time complexity of your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "What is the space complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you optimize your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "What edge cases would you consider?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you test your solution?",
+      "category": "testing"
+    },
+    {
+      "question": "Find the minimum number of platforms required for trains.",
+      "category": "other"
+    },
+    {
+      "question": "Find the maximum subarray sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the longest substring without repeating characters.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the smallest window containing all characters of another string.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the number of subarrays whose product is less than K.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find two numbers whose sum equals a target.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the next greater element for every element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge overlapping intervals.",
+      "category": "dsa"
+    },
+    {
+      "question": "Solve the Weighted Job Scheduling problem.",
+      "category": "other"
+    },
+    {
+      "question": "Find the Kth largest element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find duplicate elements in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the missing number in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Sort an array efficiently.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement Quick Sort.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement Merge Sort.",
+      "category": "dsa"
+    },
+    {
+      "question": "Reverse a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a cycle in a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge two sorted linked lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a stack using queues.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a queue using stacks.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the lowest common ancestor of two tree nodes.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform level-order traversal of a binary tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the height of a binary tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Validate a Binary Search Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Serialize and deserialize a binary tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform BFS on a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform DFS on a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a cycle in a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform topological sorting.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the shortest path in a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Solve a problem using Dynamic Programming.",
+      "category": "programming"
+    },
+    {
+      "question": "Solve a problem using Greedy algorithms.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain HashMap and how it works internally.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain arrays vs linked lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain stack vs queue.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain heaps and priority queues.",
+      "category": "dsa"
+    },
+    {
+      "question": "What is a Trie and where would you use it?",
+      "category": "dsa"
+    },
+    {
+      "question": "What is process vs thread?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain CPU scheduling algorithms.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain Round Robin scheduling.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "Explain Shortest Job First scheduling.",
+      "category": "other"
+    },
+    {
+      "question": "What is a deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is synchronization?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a race condition?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is database normalization?",
+      "category": "dbms"
+    },
+    {
+      "question": "What is database indexing?",
+      "category": "dbms"
+    },
+    {
+      "question": "SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain database transactions and ACID properties.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain INNER JOIN and LEFT JOIN.",
+      "category": "dbms"
+    },
+    {
+      "question": "Design a suggestion/autocomplete system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a rate limiter.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a collaborative spreadsheet application.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a social media/news-feed system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a chat application.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a notification system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a file-storage system.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design a URL shortener.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Define the functional requirements for your system.",
+      "category": "other"
+    },
+    {
+      "question": "Define the non-functional requirements.",
+      "category": "other"
+    },
+    {
+      "question": "Design the API endpoints.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Design the database tables.",
+      "category": "systemDesign"
+    },
+    {
+      "question": "Which database would you choose and why?",
+      "category": "dbms"
+    },
+    {
+      "question": "How would you handle millions of users?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you scale your system?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you handle database bottlenecks?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you handle failures and retries?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you improve system latency?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you implement pagination?",
+      "category": "other"
+    },
+    {
+      "question": "How would you use caching?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you implement database indexing?",
+      "category": "dbms"
+    },
+    {
+      "question": "How would you ensure reliability?",
+      "category": "other"
+    },
+    {
+      "question": "Tell me about a time you worked with a difficult teammate.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a conflict you handled.",
+      "category": "other"
+    },
+    {
+      "question": "Tell me about a time you received critical feedback.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you took ownership of a problem.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you made a mistake.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you worked under ambiguity.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you influenced someone without authority.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you delivered a project with a tight deadline.",
+      "category": "behavioral"
+    }
+  ],
+  "High-Growth Startup": [
+    {
+      "question": "Tell me about yourself.",
+      "category": "introduction"
+    },
+    {
+      "question": "Walk me through your resume.",
+      "category": "resume"
+    },
+    {
+      "question": "Why do you want to work at a startup?",
+      "category": "hr"
+    },
+    {
+      "question": "Why do you want to join our company?",
+      "category": "hr"
+    },
+    {
+      "question": "What do you know about our product?",
+      "category": "hr"
+    },
+    {
+      "question": "What problem does our product solve?",
+      "category": "other"
+    },
+    {
+      "question": "What interests you about this role?",
+      "category": "hr"
+    },
+    {
+      "question": "Explain your most important project.",
+      "category": "project"
+    },
+    {
+      "question": "What was your exact contribution to the project?",
+      "category": "project"
+    },
+    {
+      "question": "Explain your project architecture.",
+      "category": "project"
+    },
+    {
+      "question": "Why did you choose this technology?",
+      "category": "project"
+    },
+    {
+      "question": "What was the biggest technical challenge?",
+      "category": "other"
+    },
+    {
+      "question": "How did you debug that problem?",
+      "category": "debugging"
+    },
+    {
+      "question": "What would you improve in your project?",
+      "category": "project"
+    },
+    {
+      "question": "Tell me about something you built from scratch.",
+      "category": "other"
+    },
+    {
+      "question": "Tell me about a feature you shipped.",
+      "category": "other"
+    },
+    {
+      "question": "Tell me about a time you took complete ownership.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you worked with incomplete requirements.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you made a wrong technical decision.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you disagreed with your teammate.",
+      "category": "behavioral"
+    },
+    {
+      "question": "How do you prioritize when everything is urgent?",
+      "category": "other"
+    },
+    {
+      "question": "How do you handle tight deadlines?",
+      "category": "other"
+    },
+    {
+      "question": "How quickly can you learn a new technology?",
+      "category": "other"
+    },
+    {
+      "question": "Tell me about a time you learned something quickly to complete a task.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a production bug you handled.",
+      "category": "other"
+    },
+    {
+      "question": "How would you debug an API that suddenly became slow?",
+      "category": "other"
+    },
+    {
+      "question": "How would you debug a service that is crashing randomly?",
+      "category": "other"
+    },
+    {
+      "question": "How would you investigate a sudden increase in error rates?",
+      "category": "other"
+    },
+    {
+      "question": "How would you investigate high CPU usage?",
+      "category": "other"
+    },
+    {
+      "question": "How would you investigate high memory usage?",
+      "category": "other"
+    },
+    {
+      "question": "Two Sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the longest substring without repeating characters.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the maximum subarray sum.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge overlapping intervals.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the Kth largest element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find duplicate elements in an array.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the first non-repeating character.",
+      "category": "other"
+    },
+    {
+      "question": "Find the missing number.",
+      "category": "other"
+    },
+    {
+      "question": "Find the next greater element.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the longest consecutive sequence.",
+      "category": "other"
+    },
+    {
+      "question": "Reverse a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a cycle in a linked list.",
+      "category": "dsa"
+    },
+    {
+      "question": "Merge two sorted linked lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a stack using queues.",
+      "category": "dsa"
+    },
+    {
+      "question": "Implement a queue using stacks.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the lowest common ancestor of two nodes.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform level-order traversal of a binary tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Validate a Binary Search Tree.",
+      "category": "dsa"
+    },
+    {
+      "question": "Find the shortest path in a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Detect a cycle in a graph.",
+      "category": "dsa"
+    },
+    {
+      "question": "Perform topological sorting.",
+      "category": "dsa"
+    },
+    {
+      "question": "Solve a problem using Dynamic Programming.",
+      "category": "programming"
+    },
+    {
+      "question": "What is the time complexity of your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "What is the space complexity?",
+      "category": "performance"
+    },
+    {
+      "question": "Can you optimize your solution?",
+      "category": "performance"
+    },
+    {
+      "question": "What edge cases would you test?",
+      "category": "testing"
+    },
+    {
+      "question": "How would you write production-quality code for this problem?",
+      "category": "other"
+    },
+    {
+      "question": "How would you test your code?",
+      "category": "testing"
+    },
+    {
+      "question": "Explain HashMap and its internal working.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain arrays vs linked lists.",
+      "category": "dsa"
+    },
+    {
+      "question": "Explain process vs thread.",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is multithreading?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a race condition?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is a deadlock?",
+      "category": "operatingSystems"
+    },
+    {
+      "question": "What is database indexing?",
+      "category": "dbms"
+    },
+    {
+      "question": "SQL vs NoSQL.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain database transactions and ACID properties.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain database normalization.",
+      "category": "dbms"
+    },
+    {
+      "question": "Explain REST APIs.",
+      "category": "computerNetworks"
+    },
+    {
+      "question": "How would you design a URL shortener?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you design a notification system?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you design a chat application?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you design a rate limiter?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you design an image/file upload service?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you design a scalable search system?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you design a payment system?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you design an analytics/event-tracking system?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "What are the functional requirements?",
+      "category": "other"
+    },
+    {
+      "question": "What are the non-functional requirements?",
+      "category": "other"
+    },
+    {
+      "question": "Which database would you choose and why?",
+      "category": "dbms"
+    },
+    {
+      "question": "Where would you use caching?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you handle millions of users?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you scale the backend?",
+      "category": "other"
+    },
+    {
+      "question": "How would you handle database bottlenecks?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you handle failures and retries?",
+      "category": "scalability"
+    },
+    {
+      "question": "How would you ensure data consistency?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "How would you reduce API latency?",
+      "category": "performance"
+    },
+    {
+      "question": "How would you monitor a production system?",
+      "category": "other"
+    },
+    {
+      "question": "What metrics would you monitor after launching a feature?",
+      "category": "other"
+    },
+    {
+      "question": "How would you decide whether a feature was successful?",
+      "category": "other"
+    },
+    {
+      "question": "How would you launch a feature safely?",
+      "category": "other"
+    },
+    {
+      "question": "How would you implement feature flags?",
+      "category": "other"
+    },
+    {
+      "question": "How would you design an A/B test?",
+      "category": "systemDesign"
+    },
+    {
+      "question": "What would you do if a new feature increased sign-ups but reduced retention?",
+      "category": "other"
+    },
+    {
+      "question": "How would you prioritize fixing a bug versus building a new feature?",
+      "category": "other"
+    },
+    {
+      "question": "Tell me about a time your decision directly improved a measurable outcome.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you disagreed with a product manager.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a time you influenced someone without authority.",
+      "category": "behavioral"
+    },
+    {
+      "question": "Tell me about a failure and what you learned.",
+      "category": "behavioral"
+    },
+    {
+      "question": "If you joined us tomorrow, what would you learn first?",
+      "category": "hr"
+    }
+  ]
+}

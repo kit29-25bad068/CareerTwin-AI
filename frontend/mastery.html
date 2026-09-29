@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mastery & Uncertainty - CareerTwin AI</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <link rel="stylesheet" href="/css/adaptive.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Dynamic Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+      <!-- Dynamic Topbar -->
+      <div id="topbar-container"></div>
+
+      <div class="page-container">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+          <div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.06em; font-weight: 700;">
+              Epistemic Learner State Analytics
+            </div>
+            <h1 style="font-size: 1.85rem; color: #fff; margin-top: 0.25rem;">
+              Mastery & Uncertainty Intelligence
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
+              Dual-metric epistemic model: Tracking what the learner knows (Mastery 0-100%) vs system confidence (Uncertainty 5-100%).
+            </p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <select id="mastery-learner-selector" class="form-control" style="width: auto; background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-color); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.88rem; cursor: pointer;">
+              <option value="64f1a2b3c4d5e6f7a8b9c0d1">Alex Rivers (Demo)</option>
+              <option value="64f1a2b3c4d5e6f7a8b9c0d2">Sam Chen</option>
+              <option value="64f1a2b3c4d5e6f7a8b9c0d3">Elena Rostova</option>
+            </select>
+            <a href="/dashboard.html" class="btn btn-secondary btn-sm">Dashboard</a>
+          </div>
+        </div>
+
+        <!-- Mastery vs. Uncertainty Dual Chart -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📊 Mastery vs. Epistemic Uncertainty Distribution</span>
+            </div>
+            <span class="badge badge-cyan">12 Java Concepts</span>
+          </div>
+          <div style="height: 320px; position: relative;">
+            <canvas id="mastery-uncertainty-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">FILTER CONCEPTS:</span>
+          <button class="btn btn-secondary btn-sm filter-btn active" data-filter="all">All (12)</button>
+          <button class="btn btn-secondary btn-sm filter-btn" data-filter="mastered">🏆 Mastered</button>
+          <button class="btn btn-secondary btn-sm filter-btn" data-filter="learning">⚡ In Progress</button>
+          <button class="btn btn-secondary btn-sm filter-btn" data-filter="uncertain">🎯 High Uncertainty</button>
+          <button class="btn btn-secondary btn-sm filter-btn" data-filter="review">⌛ Needs Review</button>
+        </div>
+
+        <!-- 12 Concept Detail Cards Grid -->
+        <div class="grid grid-cols-3" id="concept-cards-container" style="gap: 1.25rem;">
+          <!-- Dynamically populated concept cards -->
+          <div class="skeleton" style="height: 220px;"></div>
+          <div class="skeleton" style="height: 220px;"></div>
+          <div class="skeleton" style="height: 220px;"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/adaptive-api.js"></script>
+  <script>
+    let overviewData = [];
+    let chartInstance = null;
+    let activeFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      Navbar.init('Mastery & Uncertainty');
+
+      const selector = document.getElementById('mastery-learner-selector');
+      const activeId = AdaptiveAPI.getLearnerId();
+      if (activeId && selector) selector.value = activeId;
+
+      selector.addEventListener('change', async (e) => {
+        AdaptiveAPI.setDemoLearner(e.target.value);
+        Utils.showToast(`Switched active learner: ${e.target.options[e.target.selectedIndex].text}`, 'info');
+        await loadMasteryData();
+      });
+
+      // Filter Buttons
+      document.querySelectorAll('.filter-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.getAttribute('data-filter');
+          renderCards();
+        });
+      });
+
+      await loadMasteryData();
+    });
+
+    async function loadMasteryData() {
+      try {
+        const res = await AdaptiveAPI.getMastery();
+        if (res.success && res.overview) {
+          overviewData = res.overview;
+          renderChart();
+          renderCards();
+        }
+      } catch (err) {
+        console.error('Error fetching mastery data:', err);
+      }
+    }
+
+    function renderChart() {
+      const ctx = document.getElementById('mastery-uncertainty-chart');
+      if (!ctx) return;
+
+      const labels = overviewData.map((c) => `#${c.order} ${c.name.split(' ')[0]}`);
+      const masteryValues = overviewData.map((c) => c.mastery);
+      const uncertaintyValues = overviewData.map((c) => c.uncertainty);
+
+      if (chartInstance) chartInstance.destroy();
+
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Mastery (%)',
+              data: masteryValues,
+              backgroundColor: 'rgba(99, 102, 241, 0.75)',
+              borderColor: '#6366f1',
+              borderWidth: 1,
+              borderRadius: 6,
+            },
+            {
+              label: 'Uncertainty (%)',
+              data: uncertaintyValues,
+              backgroundColor: 'rgba(245, 158, 11, 0.65)',
+              borderColor: '#f59e0b',
+              borderWidth: 1,
+              borderRadius: 6,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#9ca3af' },
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#9ca3af', font: { size: 11 } },
+            },
+          },
+          plugins: {
+            legend: {
+              labels: { color: '#f3f4f6', font: { size: 12 } },
+            },
+            tooltip: {
+              backgroundColor: 'rgba(17, 24, 39, 0.95)',
+              titleColor: '#fff',
+              bodyColor: '#e5e7eb',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: 1,
+            },
+          },
+        },
+      });
+    }
+
+    function renderCards() {
+      const container = document.getElementById('concept-cards-container');
+      container.innerHTML = '';
+
+      const filtered = overviewData.filter((c) => {
+        if (activeFilter === 'all') return true;
+        if (activeFilter === 'mastered') return c.mastery >= c.requiredMastery && c.uncertainty <= 30;
+        if (activeFilter === 'learning') return c.evidenceCount > 0 && c.mastery < c.requiredMastery;
+        if (activeFilter === 'uncertain') return c.uncertainty > 60;
+        if (activeFilter === 'review') return c.isStale;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-3 card" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+            No concepts match the selected filter.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach((c) => {
+        const isMastered = c.mastery >= c.requiredMastery && c.uncertainty <= 30;
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.display = 'flex';
+        card.style.flexDirection = 'column';
+        card.style.justifyContent = 'space-between';
+
+        card.innerHTML = `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+              <span class="badge ${isMastered ? 'badge-success' : c.isStale ? 'badge-purple' : c.uncertainty > 60 ? 'badge-amber' : 'badge-cyan'}">
+                #${c.order} ${isMastered ? 'MASTERED' : c.isStale ? 'NEEDS REVIEW' : c.uncertainty > 60 ? 'UNCERTAIN' : 'LEARNING'}
+              </span>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+                ${c.evidenceCount} attempt(s)
+              </span>
+            </div>
+
+            <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">${c.name}</h3>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 1.25rem;">
+              slug: ${c.slug} | req: ${c.requiredMastery}%
+            </div>
+
+            <!-- Dial + Progress Layout -->
+            <div style="display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem;">
+              <div class="uncertainty-dial" style="--uncertainty: ${c.uncertainty};">
+                <div class="uncertainty-dial-inner">
+                  <div class="uncertainty-dial-number">${c.uncertainty}%</div>
+                  <div class="uncertainty-dial-label">Uncertainty</div>
+                </div>
+              </div>
+
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.35rem;">
+                  <span style="color: var(--text-muted);">Mastery Level:</span>
+                  <span style="font-weight: 700; color: ${c.mastery >= c.requiredMastery ? '#34d399' : '#fff'};">${c.mastery}%</span>
+                </div>
+                <div class="progress-track" style="height: 8px;">
+                  <div class="progress-bar ${c.mastery >= c.requiredMastery ? 'progress-bar-emerald' : 'progress-bar-indigo'}" style="width: ${c.mastery}%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.4rem;">
+                  <span>Recent: ${c.recentPerformance}%</span>
+                  <span>Hist: ${c.historicalPerformance}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border-color); padding-top: 0.85rem; margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.75rem; color: ${c.isStale ? '#fb7185' : 'var(--text-muted)'};">
+              ${c.isStale ? '⚠️ Inactive &gt;14 days' : 'Active status'}
+            </span>
+            <button class="btn btn-secondary btn-sm" onclick="practiceConcept('${c.conceptId}', '${c.name}')">
+              Practice ➔
+            </button>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    async function practiceConcept(conceptId, conceptName) {
+      try {
+        const res = await window.API.get(`/adaptive/questions?conceptId=${conceptId}`);
+        if (res.success && res.questions && res.questions.length > 0) {
+          const question = res.questions[0];
+          AdaptiveUI.openAttemptModal(question, async () => {
+            Utils.showToast(`Attempt registered for ${conceptName}!`, 'success');
+            await loadMasteryData();
+          });
+        } else {
+          Utils.showToast('No questions found for this concept.', 'info');
+        }
+      } catch (err) {
+        console.error('Error starting practice:', err);
+      }
+    }
+  </script>
+</body>
+</html>

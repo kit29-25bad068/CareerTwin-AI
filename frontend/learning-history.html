@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning History - CareerTwin AI</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <link rel="stylesheet" href="/css/adaptive.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Dynamic Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+      <!-- Dynamic Topbar -->
+      <div id="topbar-container"></div>
+
+      <div class="page-container">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+          <div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.06em; font-weight: 700;">
+              Traceability &amp; Epistemic Audit
+            </div>
+            <h1 style="font-size: 1.85rem; color: #fff; margin-top: 0.25rem;">
+              Learning &amp; Decision History
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
+              Complete immutable event audit trail of evidence attempts, response timings, anti-gaming flags, and adaptive recommendations.
+            </p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <select id="history-learner-selector" class="form-control" style="width: auto; background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-color); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.88rem; cursor: pointer;">
+              <option value="64f1a2b3c4d5e6f7a8b9c0d1">Alex Rivers (Demo)</option>
+              <option value="64f1a2b3c4d5e6f7a8b9c0d2">Sam Chen</option>
+              <option value="64f1a2b3c4d5e6f7a8b9c0d3">Elena Rostova</option>
+            </select>
+            <a href="/dashboard.html" class="btn btn-secondary btn-sm">Dashboard</a>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div style="display: flex; gap: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+          <button class="btn btn-sm active-tab-btn" id="tab-attempts-btn" style="background: transparent; border: none; border-bottom: 2px solid var(--accent-primary); color: #fff; padding: 0.65rem 1rem; font-weight: 600; cursor: pointer;">
+            📝 Attempt Evidence Log (<span id="attempts-count-badge">0</span>)
+          </button>
+          <button class="btn btn-sm" id="tab-decisions-btn" style="background: transparent; border: none; color: var(--text-muted); padding: 0.65rem 1rem; font-weight: 600; cursor: pointer;">
+            🧠 Adaptive Decision Audit Log (<span id="decisions-count-badge">0</span>)
+          </button>
+        </div>
+
+        <!-- View 1: Attempt Evidence Table -->
+        <div class="card" id="attempts-view-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>Attempt Evidence Submissions</span>
+            </div>
+            <span class="badge badge-cyan">Persisted in MongoDB</span>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                  <th style="padding: 0.75rem 1rem;">Time</th>
+                  <th style="padding: 0.75rem 1rem;">Concept</th>
+                  <th style="padding: 0.75rem 1rem;">Type</th>
+                  <th style="padding: 0.75rem 1rem;">Question Prompt</th>
+                  <th style="padding: 0.75rem 1rem;">Result</th>
+                  <th style="padding: 0.75rem 1rem;">Timing</th>
+                  <th style="padding: 0.75rem 1rem;">Confidence</th>
+                  <th style="padding: 0.75rem 1rem;">Hints</th>
+                  <th style="padding: 0.75rem 1rem;">Evidence Quality</th>
+                </tr>
+              </thead>
+              <tbody id="attempts-table-body">
+                <tr>
+                  <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading attempt history...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- View 2: Decision Log -->
+        <div class="card" id="decisions-view-card" style="display: none;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>Adaptive Decision Explanations &amp; Factors</span>
+            </div>
+            <span class="badge badge-primary">Machine-Readable &amp; Human Explainable</span>
+          </div>
+          <div id="decisions-list-container" style="display: flex; flex-direction: column; gap: 1rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Loading decision records...</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/adaptive-api.js"></script>
+  <script>
+    let attemptsList = [];
+    let decisionsList = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      Navbar.init('Learning History');
+
+      const selector = document.getElementById('history-learner-selector');
+      const activeId = AdaptiveAPI.getLearnerId();
+      if (activeId && selector) selector.value = activeId;
+
+      selector.addEventListener('change', async (e) => {
+        AdaptiveAPI.setDemoLearner(e.target.value);
+        Utils.showToast(`Switched active learner: ${e.target.options[e.target.selectedIndex].text}`, 'info');
+        await loadAllHistory();
+      });
+
+      // Tabs Setup
+      const attemptsTab = document.getElementById('tab-attempts-btn');
+      const decisionsTab = document.getElementById('tab-decisions-btn');
+      const attemptsCard = document.getElementById('attempts-view-card');
+      const decisionsCard = document.getElementById('decisions-view-card');
+
+      attemptsTab.addEventListener('click', () => {
+        attemptsTab.style.borderBottom = '2px solid var(--accent-primary)';
+        attemptsTab.style.color = '#fff';
+        decisionsTab.style.borderBottom = 'none';
+        decisionsTab.style.color = 'var(--text-muted)';
+        attemptsCard.style.display = 'block';
+        decisionsCard.style.display = 'none';
+      });
+
+      decisionsTab.addEventListener('click', () => {
+        decisionsTab.style.borderBottom = '2px solid var(--accent-primary)';
+        decisionsTab.style.color = '#fff';
+        attemptsTab.style.borderBottom = 'none';
+        attemptsTab.style.color = 'var(--text-muted)';
+        decisionsCard.style.display = 'block';
+        attemptsCard.style.display = 'none';
+      });
+
+      await loadAllHistory();
+    });
+
+    async function loadAllHistory() {
+      try {
+        const [attemptsRes, decisionsRes] = await Promise.all([
+          AdaptiveAPI.getAttempts(),
+          AdaptiveAPI.getDecisions(),
+        ]);
+
+        if (attemptsRes.success) {
+          attemptsList = attemptsRes.attempts || [];
+          document.getElementById('attempts-count-badge').textContent = attemptsList.length;
+          renderAttemptsTable(attemptsList);
+        }
+
+        if (decisionsRes.success) {
+          decisionsList = decisionsRes.decisions || [];
+          document.getElementById('decisions-count-badge').textContent = decisionsList.length;
+          renderDecisionsList(decisionsList);
+        }
+      } catch (err) {
+        console.error('Error fetching history:', err);
+      }
+    }
+
+    function renderAttemptsTable(attempts) {
+      const tbody = document.getElementById('attempts-table-body');
+      tbody.innerHTML = '';
+
+      if (attempts.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+              No attempts registered yet for this learner. Complete questions or the diagnostic to generate records.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      attempts.forEach((a) => {
+        const d = new Date(a.timestamp || a.createdAt);
+        const timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const conceptName = a.conceptId?.name || 'Java Concept';
+        const qText = a.questionId?.question || 'Diagnostic / Practice Question';
+        const qType = a.questionType || a.questionId?.type || 'MCQ';
+
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid var(--border-color)';
+        tr.innerHTML = `
+          <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">${timeStr}</td>
+          <td style="padding: 0.75rem 1rem; font-weight: 600; color: #fff;">${conceptName}</td>
+          <td style="padding: 0.75rem 1rem;"><span class="badge badge-primary" style="font-size: 0.65rem;">${qType}</span></td>
+          <td style="padding: 0.75rem 1rem; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(qText)}">
+            ${escapeHtml(qText)}
+          </td>
+          <td style="padding: 0.75rem 1rem;">
+            <span class="badge ${a.correct ? 'badge-success' : 'badge-danger'}">
+              ${a.correct ? '✓ Correct' : '✗ Incorrect'}
+            </span>
+          </td>
+          <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem;">${a.responseTime || 0}s</td>
+          <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem;">${a.confidence || 3}/5</td>
+          <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem;">${a.hintsUsed || 0}</td>
+          <td style="padding: 0.75rem 1rem;">
+            <span class="badge badge-cyan" style="font-size: 0.7rem;">
+              ${a.evidenceQuality || 'STANDARD'} (${a.evidenceWeight?.toFixed(2) || '1.00'}x)
+            </span>
+            ${a.isRapidRetry ? '<span class="badge badge-amber" style="font-size: 0.65rem; margin-left: 0.25rem;">Rapid Retry</span>' : ''}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderDecisionsList(decisions) {
+      const container = document.getElementById('decisions-list-container');
+      container.innerHTML = '';
+
+      if (decisions.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            No decisions logged yet. Decisions are created each time the adaptive engine evaluates the next action.
+          </div>
+        `;
+        return;
+      }
+
+      decisions.forEach((d) => {
+        const dateStr = new Date(d.timestamp || d.createdAt).toLocaleString();
+        const action = d.action || 'PRACTICE';
+        const concept = d.conceptId?.name || 'Java Core';
+
+        const actionClasses = {
+          ADVANCE: 'action-advance',
+          PRACTICE: 'action-practice',
+          REVIEW: 'action-review',
+          REMEDIATE_PREREQUISITE: 'action-remediate_prerequisite',
+          CHALLENGE: 'action-challenge',
+          TEACHER_INTERVENTION: 'action-teacher_intervention',
+        };
+
+        const item = document.createElement('div');
+        item.style.background = 'rgba(255, 255, 255, 0.02)';
+        item.style.border = '1px solid var(--border-color)';
+        item.style.borderRadius = 'var(--radius-md)';
+        item.style.padding = '1.25rem';
+
+        item.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span class="action-badge-pill ${actionClasses[action] || 'action-practice'}">
+                ${action.replace('_', ' ')}
+              </span>
+              <span style="font-weight: 700; color: #fff; font-size: 1.05rem;">Target: ${concept}</span>
+            </div>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">${dateStr}</span>
+          </div>
+
+          <div style="font-size: 0.92rem; color: var(--text-primary); margin: 0.65rem 0; line-height: 1.5;">
+            <strong>Reason:</strong> ${escapeHtml(d.reason)}
+          </div>
+
+          <details style="margin-top: 0.5rem;">
+            <summary style="font-size: 0.78rem; color: var(--accent-secondary); cursor: pointer; font-family: var(--font-mono);">
+              Inspect Machine Decision Factors (JSON)
+            </summary>
+            <pre style="background: #080c16; padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.75rem; color: #38bdf8; margin-top: 0.5rem; overflow-x: auto;">${JSON.stringify(d.decisionFactors, null, 2)}</pre>
+          </details>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

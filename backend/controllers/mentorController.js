@@ -62,7 +62,24 @@ exports.sendMessage = async (req, res, next) => {
       },
     });
 
-    // 4. Generate AI Mentor response with injected context
+    // 4. Load Live Adaptive Learning Context
+    const Decision = require('../models/Decision');
+    const LearnerState = require('../models/LearnerState');
+    const latestDecision = await Decision.findOne({ learnerId: req.user._id })
+      .populate('conceptId', 'name slug order')
+      .sort({ timestamp: -1 });
+
+    const activeStates = await LearnerState.find({ learnerId: req.user._id })
+      .populate('conceptId', 'name slug order');
+
+    const adaptiveContext = {
+      activeAction: latestDecision?.action || 'PRACTICE',
+      targetConcept: latestDecision?.conceptId?.name || 'Java Core Fundamentals',
+      decisionReason: latestDecision?.reason || 'System recommends guided exercises on core fundamentals.',
+      conceptMasterySummary: activeStates.map((s) => `${s.conceptId?.name || 'Concept'}: ${s.mastery}% mastery`),
+    };
+
+    // 5. Generate AI Mentor response with injected context
     let mentorReply;
     try {
       mentorReply = await geminiService.mentorChat({
@@ -77,14 +94,21 @@ exports.sendMessage = async (req, res, next) => {
           topGaps: twinState.skills.gaps.map((g) => g.name),
           projectsCount: twinState.projects.count,
           githubConnected: twinState.github.isConnected,
+          codolioConnected: twinState.codolio?.isConnected || false,
+          codolioSolved: twinState.codolio?.totalSolved || 0,
+          codolioTier: twinState.codolio?.tier || 'N/A',
+          activeAction: adaptiveContext.activeAction,
+          targetConcept: adaptiveContext.targetConcept,
+          decisionReason: adaptiveContext.decisionReason,
+          conceptMasterySummary: adaptiveContext.conceptMasterySummary,
         },
       });
     } catch (aiErr) {
       console.warn('[Mentor AI Warning] Fallback mentor reply used:', aiErr.message);
-      mentorReply = generateContextualMentorFallback(message.trim(), twinState, req.user);
+      mentorReply = generateContextualMentorFallback(message.trim(), twinState, req.user, adaptiveContext);
     }
 
-    // 5. Add mentor reply to conversation
+    // 6. Add mentor reply to conversation
     conversation.messages.push({
       sender: 'mentor',
       text: mentorReply,
@@ -106,14 +130,34 @@ exports.sendMessage = async (req, res, next) => {
 /**
  * Intelligent context-aware mentor fallback when external LLM is unreachable
  */
-function generateContextualMentorFallback(message, twinState, user) {
+function generateContextualMentorFallback(message, twinState, user, adaptiveContext = {}) {
   const query = message.toLowerCase().trim();
   const targetRole = twinState.targetRole || 'Software Engineer';
   const score = twinState.careerReadiness.score !== null ? `${twinState.careerReadiness.score}/100` : 'Not calculated yet';
   const topGaps = twinState.skills.gaps.slice(0, 3).map((g) => g.name);
   const userName = user?.name || 'there';
 
-  // 1. Detect random gibberish or non-words (e.g. asdfghjk, qwerty, zxcvb)
+  // 1. Detect questions about Adaptive Learning Path, Next Action, or Study Recommendations
+  if (/next|study|action|adaptive|learn|path|struggle|confused|stuck|recommend|mastery|uncertainty/i.test(query)) {
+    const action = adaptiveContext.activeAction || 'PRACTICE';
+    const target = adaptiveContext.targetConcept || 'Java Programming Fundamentals';
+    const reason = adaptiveContext.decisionReason || 'Guided practice to build core foundational confidence.';
+    return `Hello ${userName}! Based on your live **Adaptive Knowledge Model**:
+
+🎯 **Your Recommended Next Action is: ${action.replace('_', ' ')} on ${target}**
+
+**Why the adaptive engine selected this:**
+> *"${reason}"*
+
+### Pedagogical Strategy:
+1. **Targeted Mastery**: Head to your [Adaptive Dashboard](/dashboard.html) and tackle the selected question.
+2. **Epistemic Certainty**: Focus on high-confidence, deliberate answers rather than quick guesses to reduce epistemic uncertainty.
+3. **Prerequisite Map**: If you encounter difficulty, check the [Concept Graph](/concept-graph.html) to verify your foundational prerequisites.
+
+Would you like me to explain the core mechanics of **${target}** with an example?`;
+  }
+
+  // 2. Detect random gibberish or non-words (e.g. asdfghjk, qwerty, zxcvb)
   const isVowelDeficient = !/[aeiouy]/i.test(query) && query.length >= 4;
   const isRepetitive = /(.)\1{3,}/.test(query);
   const isRandomKeySmash = /^[b-df-hj-np-tv-z]{4,}$/i.test(query) || /^[^a-zA-Z0-9\s]{3,}$/.test(query);
@@ -122,27 +166,28 @@ function generateContextualMentorFallback(message, twinState, user) {
     return `I noticed your message ("${message}") didn't come through clearly! 
 
 As your CareerTwin AI Mentor, I'm here to help guide your preparation for **${targetRole}**. You can ask me questions like:
+- *"What should I study next on my adaptive learning path?"*
+- *"Why is my recommended action ${adaptiveContext.activeAction || 'PRACTICE'} on ${adaptiveContext.targetConcept || 'Java'}?"*
 - *"How can I improve my Career Readiness score (${score})?"*
-- *"What are the most common Spring Boot and Java concurrency interview questions?"*
-- *"Can you review my skill gaps (${topGaps.join(', ') || 'Spring Boot, Docker, System Design'}) and suggest what to study next?"*
-- *"How should I structure my answer for an architectural system design question?"*`;
+- *"Can you explain OOP encapsulation and access modifiers with a code example?"*`;
   }
 
-  // 2. Greetings
+  // 3. Greetings
   if (/^(hi|hello|hey|greetings|good\s*(morning|afternoon|evening))\b/i.test(query)) {
     return `Hello ${userName}! 👋 Great to connect with you. 
 
 Your Digital Career Twin is currently set to **${targetRole}** with an overall Readiness Index of **${score}**. 
+🎯 Current Adaptive Focus: **${adaptiveContext.activeAction || 'PRACTICE'} on ${adaptiveContext.targetConcept || 'Java Basics'}**.
 
 Here is what we can work on today:
-1. **Mock Interview Preparation**: Practice answering core and advanced technical questions with live speech and gaze analysis.
-2. **Addressing Skill Gaps**: Focus on key areas like ${topGaps.length ? `**${topGaps.join('**, **')}**` : '**Framework Architecture & Concurrency**'}.
-3. **Resume & Project Review**: Ensure your projects showcase high-impact engineering metrics.
+1. **Adaptive Syllabus**: Complete recommended exercises for **${adaptiveContext.targetConcept || 'Java'}**.
+2. **Mock Interview Preparation**: Practice core technical and architectural questions.
+3. **Addressing Skill Gaps**: Focus on key areas like ${topGaps.length ? `**${topGaps.join('**, **')}**` : '**Framework Architecture & Concurrency**'}.
 
 What would you like to dive into?`;
   }
 
-  // 3. Questions about Readiness Score or Why it is low / How to improve
+  // 4. Questions about Readiness Score or Why it is low / How to improve
   if (/score|readiness|why|low|improve|index|rank/i.test(query)) {
     const resumeScore = twinState.resume.score !== null ? `${twinState.resume.score}/100` : 'No resume uploaded yet';
     const interviewScore = twinState.interviews.avgOverall !== null ? `${twinState.interviews.avgOverall}/100` : 'No completed interviews yet';

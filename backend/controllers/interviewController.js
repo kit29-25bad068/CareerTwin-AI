@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Interview = require('../models/Interview');
 const CareerProfile = require('../models/CareerProfile');
+const CompanyInterviewData = require('../models/CompanyInterviewData');
 const geminiService = require('../services/geminiService');
 const whisperService = require('../services/whisperService');
 
@@ -29,7 +30,12 @@ exports.createInterview = async (req, res, next) => {
     const chosenRecruiter = recruiterType || 'Technical Interviewer';
     const chosenPrivacyMode = privacyMode === 'replay' ? 'replay' : 'privacy';
 
-    // 1. Generate First Question using Gemini
+    // 1. Retrieve company grounding data from MongoDB
+    const companyData = await CompanyInterviewData.findOne({
+      company: new RegExp('^' + targetCompany.trim().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '$', 'i'),
+    });
+
+    // 2. Generate First Question using Gemini (Dual-Source Grounded)
     let firstQuestion;
     try {
       firstQuestion = await geminiService.generateInterviewQuestion({
@@ -41,13 +47,14 @@ exports.createInterview = async (req, res, next) => {
         questionIndex: 0,
         previousQuestions: [],
         previousAnswers: [],
+        companyInterviewData: companyData,
       });
     } catch (aiErr) {
       console.warn('[Interview Gemini Warning] Fallback question used:', aiErr.message);
-      firstQuestion = geminiService.getDynamicFallbackQuestion(targetRole, 0, chosenDifficulty);
+      firstQuestion = geminiService.getDynamicFallbackQuestion(targetRole, 0, chosenDifficulty, companyData, targetCompany);
     }
 
-    // 2. Create Interview document in MongoDB
+    // 3. Create Interview document in MongoDB
     const interview = await Interview.create({
       user: req.user._id,
       role: targetRole,
@@ -67,6 +74,9 @@ exports.createInterview = async (req, res, next) => {
           category: firstQuestion.category || 'technical',
           difficulty: firstQuestion.difficulty || chosenDifficulty,
           expectedConcepts: firstQuestion.expectedConcepts || [],
+          sourceType: firstQuestion.sourceType || (companyData ? 'pattern_derived' : 'generic_role_based'),
+          sourceId: firstQuestion.sourceId || null,
+          whyThisQuestion: firstQuestion.whyThisQuestion || (companyData ? "Generated from patterns found in the company's collected interview data." : "Generated from general interview patterns for your selected role."),
         },
       ],
       events: [
@@ -190,16 +200,27 @@ exports.submitAnswer = async (req, res, next) => {
       };
     }
 
+    let parsedVisionMetrics = {};
+    if (typeof visionMetrics === 'string') {
+      try {
+        parsedVisionMetrics = JSON.parse(visionMetrics);
+      } catch (e) {
+        parsedVisionMetrics = {};
+      }
+    } else if (typeof visionMetrics === 'object' && visionMetrics !== null) {
+      parsedVisionMetrics = visionMetrics;
+    }
+
     // 3. Save Question Details
     currentQ.answerText = finalTranscript;
     currentQ.durationSeconds = Number(durationSeconds) || 30;
     currentQ.answeredAt = new Date();
     currentQ.speechMetrics = speechResult.speechMetrics;
     currentQ.visionMetrics = {
-      faceDetectedPercentage: visionMetrics.faceDetectedPercentage ?? 100,
-      eyeContactPercentage: visionMetrics.eyeContactPercentage ?? 100,
-      lookingAwayCount: visionMetrics.lookingAwayCount ?? 0,
-      framingQuality: visionMetrics.framingQuality || 'Good',
+      faceDetectedPercentage: parsedVisionMetrics.faceDetectedPercentage ?? 100,
+      eyeContactPercentage: parsedVisionMetrics.eyeContactPercentage ?? 100,
+      lookingAwayCount: parsedVisionMetrics.lookingAwayCount ?? 0,
+      framingQuality: parsedVisionMetrics.framingQuality || 'Good',
     };
     currentQ.evaluation = answerEvaluation;
 
@@ -232,6 +253,32 @@ exports.submitAnswer = async (req, res, next) => {
       });
     }
 
+    // Add vision and eye contact events
+    if (interview.cameraEnabled) {
+      const eyePct = currentQ.visionMetrics.eyeContactPercentage;
+      const awayCount = currentQ.visionMetrics.lookingAwayCount;
+
+      if (eyePct < 70 || awayCount >= 2) {
+        interview.events.push({
+          timestampSeconds: baseSecs + 8,
+          formattedTime: formatTime(baseSecs + 8),
+          type: 'NEEDS_IMPROVEMENT',
+          category: 'vision',
+          title: `Gaze Shift Detected (Q${currentQIdx + 1})`,
+          description: `Averted eye contact ${awayCount} times (${eyePct}% eye contact). Practice looking directly into the camera lens to project confidence.`,
+        });
+      } else if (eyePct >= 85) {
+        interview.events.push({
+          timestampSeconds: baseSecs + 8,
+          formattedTime: formatTime(baseSecs + 8),
+          type: 'GOOD',
+          category: 'vision',
+          title: `Strong Eye Contact (Q${currentQIdx + 1})`,
+          description: `Maintained consistent direct eye contact (${eyePct}%) and steady presence throughout this explanation.`,
+        });
+      }
+    }
+
     // Add speech events
     if (speechResult.speechMetrics.timestampEvents) {
       speechResult.speechMetrics.timestampEvents.forEach((ev) => {
@@ -255,6 +302,11 @@ exports.submitAnswer = async (req, res, next) => {
       const previousQuestions = interview.questions.map((q) => q.questionText);
       const previousAnswers = interview.questions.map((q) => q.answerText);
 
+      // Retrieve company grounding data from MongoDB
+      const companyData = await CompanyInterviewData.findOne({
+        company: new RegExp('^' + interview.company.trim().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '$', 'i'),
+      });
+
       try {
         const nextQData = await geminiService.generateInterviewQuestion({
           role: interview.role,
@@ -265,6 +317,7 @@ exports.submitAnswer = async (req, res, next) => {
           questionIndex: interview.questions.length,
           previousQuestions,
           previousAnswers,
+          companyInterviewData: companyData,
         });
 
         interview.questions.push({
@@ -273,6 +326,9 @@ exports.submitAnswer = async (req, res, next) => {
           category: nextQData.category || 'technical',
           difficulty: nextQData.difficulty || interview.difficulty,
           expectedConcepts: nextQData.expectedConcepts || [],
+          sourceType: nextQData.sourceType || (companyData ? 'pattern_derived' : 'generic_role_based'),
+          sourceId: nextQData.sourceId || null,
+          whyThisQuestion: nextQData.whyThisQuestion || (companyData ? "Generated from patterns found in the company's collected interview data." : "Generated from general interview patterns for your selected role."),
         });
         nextQuestion = interview.questions[interview.questions.length - 1];
       } catch (aiErr) {
@@ -280,7 +336,9 @@ exports.submitAnswer = async (req, res, next) => {
         const fallbackQ = geminiService.getDynamicFallbackQuestion(
           interview.role,
           interview.questions.length,
-          interview.difficulty
+          interview.difficulty,
+          companyData,
+          interview.company
         );
         interview.questions.push({
           questionIndex: interview.questions.length,
@@ -288,6 +346,9 @@ exports.submitAnswer = async (req, res, next) => {
           category: fallbackQ.category || 'technical',
           difficulty: fallbackQ.difficulty || interview.difficulty,
           expectedConcepts: fallbackQ.expectedConcepts || [],
+          sourceType: fallbackQ.sourceType || (companyData ? 'database_question' : 'generic_role_based'),
+          sourceId: fallbackQ.sourceId || null,
+          whyThisQuestion: fallbackQ.whyThisQuestion || (companyData ? "Selected from the company's interview knowledge base." : "Generated from general interview patterns for your selected role."),
         });
         nextQuestion = interview.questions[interview.questions.length - 1];
       }
@@ -342,14 +403,30 @@ exports.finishInterview = async (req, res, next) => {
         ? Math.round(answered.reduce((a, c) => a + c.evaluation.communicationScore, 0) / answered.length)
         : 76;
 
+      const strengths = ['Demonstrated clear familiarity with core development topics', 'Good articulation of project workflow'];
+      const weaknesses = ['Add deeper trade-off discussions regarding performance and scalability'];
+
+      if (interview.cameraEnabled && interview.questions.length > 0) {
+        const avgEye = Math.round(
+          interview.questions.reduce((a, c) => a + (c.visionMetrics?.eyeContactPercentage || 100), 0) /
+            interview.questions.length
+        );
+        const totalAway = interview.questions.reduce((a, c) => a + (c.visionMetrics?.lookingAwayCount || 0), 0);
+        if (avgEye >= 85) {
+          strengths.push(`Excellent camera eye contact: Maintained ${avgEye}% direct gaze, conveying strong presence.`);
+        } else if (avgEye < 70 || totalAway >= 3) {
+          weaknesses.push(`Averted eye contact during responses (${avgEye}% average, ${totalAway} gaze shifts). Practice maintaining direct camera focus.`);
+        }
+      }
+
       finalReport = {
         overallScore: Math.round((techAvg + commAvg) / 2),
         technicalScore: techAvg,
         communicationScore: commAvg,
         problemSolvingScore: 74,
         answerStructureScore: 70,
-        strengths: ['Demonstrated clear familiarity with core development topics', 'Good articulation of project workflow'],
-        weaknesses: ['Add deeper trade-off discussions regarding performance and scalability'],
+        strengths,
+        weaknesses,
         mostImportantImprovement: 'Incorporate quantifiable results and concrete architectural choices into technical answers.',
         recommendedPractice: ['Practice STAR structured behavioral questions', 'Review system design scaling techniques'],
         roleReadiness: techAvg >= 80 ? 'Interview Ready' : 'Developing',

@@ -177,9 +177,13 @@ CareerTwin AI is built with privacy at its foundation:
 15. **Personal Career Roadmap:** Month-by-month learning milestones with interactive task checklists.
 16. **Career Goal Engine:** Define target roles and deadlines to dynamically sync skill gaps and recommendations.
 17. **Career Readiness Index:** Explainable composite score (0-100) supported by real evidence.
-18. **Mentor AI:** Chatbot injected with live Career Twin context (scores, gaps, goals) for grounded career guidance.
-19. **Smart Recommendations:** Proactive, data-backed suggestions prioritizing your highest-leverage next action.
-20. **Complete Data Control:** One-click JSON data export, recording wipes, memory resets, and permanent account deletion.
+18. **Evidence-Driven Adaptive Learning System:** 12-concept bounded Knowledge Graph with 15 prerequisite edges, real-time epistemic mastery (0-100%) and uncertainty (5-100%) tracking, anti-gaming penalty heuristics, 14-day inactivity decay, and 6 instructional decision actions (`ADVANCE`, `PRACTICE`, `REVIEW`, `REMEDIATE_PREREQUISITE`, `CHALLENGE`, `TEACHER_INTERVENTION`).
+19. **Company-Wise Interview Database & Dual-Source Grounding:** 985 verified questions across 11 top companies (Amazon, Google, Microsoft, Zoho, Apple, Meta, Infosys, TCS, Adobe, Atlassian, Startups) categorized into 18 standardized domains. Mock interviews ground questions in verified company patterns while using Gemini AI for role-specific personalization and dynamic fallback.
+20. **Vision & Eyeball/Gaze Tracking:** MediaPipe face mesh tracking analyzing eye contact, gaze orientation, head pose stability, and facial presence during interviews.
+21. **Codolio & GitHub Cross-Platform Coding Verification:** Tracks coding performance across competitive programming platforms (LeetCode, CodeChef, Codeforces) and GitHub repositories with account-level anti-sharing constraints.
+22. **Dual-Engine Resume & CV Analyzer:** Integrates a live interactive matching engine with CareerTwin's MongoDB ATS and Skill Extraction pipeline.
+23. **Teacher Governance Dashboard:** Cohort overview, prerequisite bottleneck alerts, and mandatory pedagogical rationale overrides backed by an immutable audit log.
+24. **Complete Data Control:** One-click JSON data export, recording wipes, memory resets, and permanent account deletion.
 
 ---
 
@@ -187,20 +191,27 @@ CareerTwin AI is built with privacy at its foundation:
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/api/auth/register` | Register new candidate account |
+| `POST` | `/api/auth/register` | Register new candidate account (enforces unique GitHub/Codolio) |
 | `POST` | `/api/auth/login` | Authenticate user & receive JWT |
 | `GET` | `/api/profile` | Retrieve user career profile |
 | `PUT` | `/api/profile` | Update profile and target role |
 | `GET` | `/api/career-twin` | Retrieve 360-degree aggregated Twin state & Readiness Index |
-| `POST` | `/api/interviews` | Initialize new AI mock interview |
+| `GET` | `/api/company-interviews` | List all 11 company interview datasets & question counts |
+| `GET` | `/api/company-interviews/:company` | Get questions and category breakdown for a company |
+| `POST` | `/api/interviews` | Initialize dual-source grounded AI mock interview |
 | `POST` | `/api/interviews/:id/answer` | Submit answer (audio/text) for evaluation |
-| `POST` | `/api/interviews/:id/end` | Finish interview & generate final report |
-| `POST` | `/api/resume/upload` | Upload & analyze PDF resume |
+| `POST` | `/api/interviews/:id/end` | Finish interview & generate report with question source badges |
+| `GET` | `/api/adaptive/concept-graph` | Fetch 12-concept Knowledge Graph and prerequisite edges |
+| `GET` | `/api/adaptive/learner-state` | Fetch real-time mastery and uncertainty profile |
+| `POST` | `/api/adaptive/submit-attempt` | Process attempt evidence, apply anti-gaming, and compute next action |
+| `POST` | `/api/resume/upload` | Upload & analyze PDF resume / sync ATS skills |
 | `POST` | `/api/github/sync` | Sync and inspect GitHub username |
 | `POST` | `/api/projects` | Evaluate showcase project on 10 dimensions |
 | `POST` | `/api/skills/gap-analysis` | Run AI skill gap detection |
 | `POST` | `/api/roadmap/generate` | Generate personalized phased roadmap |
 | `POST` | `/api/mentor/chat` | Chat with Context-Aware Mentor AI |
+| `GET` | `/api/teacher/cohort` | Fetch teacher cohort telemetry and intervention alerts |
+| `POST` | `/api/teacher/override` | Submit mandatory pedagogical override with rationale |
 | `GET` | `/api/privacy/export` | Download full Career Twin as JSON |
 | `DELETE` | `/api/privacy/account` | Permanently delete account and all data |
 

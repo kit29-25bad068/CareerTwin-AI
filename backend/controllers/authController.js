@@ -4,6 +4,8 @@ const User = require('../models/User');
 const CareerProfile = require('../models/CareerProfile');
 const GitHubProfile = require('../models/GitHubProfile');
 const githubService = require('../services/githubService');
+const CodolioProfile = require('../models/CodolioProfile');
+const codolioService = require('../services/codolioService');
 
 const generateToken = (id) => {
   return jwt.sign(
@@ -30,7 +32,7 @@ function extractGitHubUsername(input) {
 // @access  Public
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, githubUrl } = req.body;
+    const { name, email, password, githubUrl, codolioUrl } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide name, email, and password.' });
@@ -46,9 +48,41 @@ exports.register = async (req, res, next) => {
     }
 
     const parsedGitHubUsername = extractGitHubUsername(githubUrl);
+    if (!parsedGitHubUsername) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid GitHub profile link or username.' });
+    }
+
+    // Check if GitHub profile is already linked to another account
+    const existingGithubUser = await User.findOne({ githubUsername: parsedGitHubUsername });
+    if (existingGithubUser) {
+      return res.status(400).json({
+        success: false,
+        message: `This GitHub profile (@${parsedGitHubUsername}) is already linked to another account. Each account must have a unique GitHub profile.`,
+      });
+    }
+
     const cleanGitHubUrl = githubUrl.trim().startsWith('http')
       ? githubUrl.trim()
       : `https://github.com/${parsedGitHubUsername}`;
+
+    let parsedCodolioUsername = null;
+    let cleanCodolioUrl = null;
+    if (codolioUrl && codolioUrl.trim()) {
+      parsedCodolioUsername = codolioService.extractCodolioUsername(codolioUrl);
+      if (parsedCodolioUsername) {
+        // Check if Codolio profile is already linked to another account
+        const existingCodolioUser = await User.findOne({ codolioUsername: parsedCodolioUsername });
+        if (existingCodolioUser) {
+          return res.status(400).json({
+            success: false,
+            message: `This Codolio profile (@${parsedCodolioUsername}) is already linked to another account. Each account must have a unique Codolio profile.`,
+          });
+        }
+        cleanCodolioUrl = codolioUrl.trim().startsWith('http')
+          ? codolioUrl.trim()
+          : `https://codolio.com/profile/${parsedCodolioUsername}`;
+      }
+    }
 
     const user = await User.create({
       name: name.trim(),
@@ -56,6 +90,8 @@ exports.register = async (req, res, next) => {
       password,
       githubUrl: cleanGitHubUrl,
       githubUsername: parsedGitHubUsername,
+      codolioUrl: cleanCodolioUrl,
+      codolioUsername: parsedCodolioUsername,
     });
 
     // Automatically create initial CareerProfile
@@ -80,11 +116,26 @@ exports.register = async (req, res, next) => {
         });
     }
 
+    // Automatically trigger Codolio coding platform performance sync in background
+    if (parsedCodolioUsername) {
+      codolioService.fetchAndAnalyzeCodolio(parsedCodolioUsername, user._id)
+        .then((codolioData) => {
+          return CodolioProfile.findOneAndUpdate(
+            { user: user._id },
+            { user: user._id, ...codolioData },
+            { upsert: true, new: true }
+          );
+        })
+        .catch((err) => {
+          console.warn('[Codolio Auto-Sync Warning]:', err.message);
+        });
+    }
+
     const token = generateToken(user._id);
 
     res.status(201).json({
       success: true,
-      message: 'Account registered successfully with GitHub profile.',
+      message: 'Account registered successfully with GitHub & Codolio profiles.',
       token,
       user: {
         id: user._id,
@@ -92,10 +143,33 @@ exports.register = async (req, res, next) => {
         email: user.email,
         githubUsername: user.githubUsername,
         githubUrl: user.githubUrl,
+        codolioUsername: user.codolioUsername,
+        codolioUrl: user.codolioUrl,
         privacySettings: user.privacySettings,
       },
     });
   } catch (error) {
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern || {})[0] || '';
+      if (field === 'githubUsername') {
+        return res.status(400).json({
+          success: false,
+          message: 'This GitHub profile is already linked to another Career Twin account.',
+        });
+      }
+      if (field === 'codolioUsername') {
+        return res.status(400).json({
+          success: false,
+          message: 'This Codolio profile is already linked to another Career Twin account.',
+        });
+      }
+      if (field === 'email') {
+        return res.status(400).json({
+          success: false,
+          message: 'An account with this email address already exists.',
+        });
+      }
+    }
     next(error);
   }
 };

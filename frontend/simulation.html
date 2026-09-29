@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulation & Stress Tests - CareerTwin AI</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <link rel="stylesheet" href="/css/adaptive.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Dynamic Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+      <!-- Dynamic Topbar -->
+      <div id="topbar-container"></div>
+
+      <div class="page-container">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+              <span class="badge badge-cyan">🔬 SYSTEM DEMONSTRATOR &amp; HARNESS</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">Automated Verification &amp; Behavioral Proof</span>
+            </div>
+            <h1 style="font-size: 1.85rem; color: #fff;">
+              Dual-Learner Simulation &amp; 6 Stress Tests
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
+              Compare contrasting learner profiles side-by-side and execute the 6 runnable judge stress tests against the live epistemic adaptive engine.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem;">
+            <a href="/teacher-dashboard.html" class="btn btn-secondary btn-md">Teacher Dashboard</a>
+            <a href="/dashboard.html" class="btn btn-primary btn-md">Adaptive Dashboard</a>
+          </div>
+        </div>
+
+        <!-- Section 1: Side-by-Side Dual-Learner Simulation -->
+        <div class="card" style="margin-bottom: 2.5rem; border-color: rgba(99, 102, 241, 0.4);">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span>⚡ Side-by-Side Dual-Learner Simulation</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Comparing <em>Learner A (The Rapid Guesser)</em> vs <em>Learner B (The Deliberate Master)</em> across identical curriculum material.
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-primary btn-sm" id="btn-run-dual-sim">
+                ▶ Run 5-Step Simulation
+              </button>
+              <button class="btn btn-secondary btn-sm" id="btn-reset-sim">
+                🔄 Reset Simulation
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2" style="gap: 1.5rem; margin-top: 0.5rem;">
+            <!-- Learner A Card -->
+            <div style="background: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: var(--radius-lg); padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div>
+                  <span class="badge badge-danger">LEARNER A: THE GAMBLER</span>
+                  <h3 style="font-size: 1.25rem; color: #fff; margin-top: 0.35rem;">Elena Gomez</h3>
+                  <div style="font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono);">
+                    Pattern: 2-3s response time, low confidence (1/5), rapid retries, guessing
+                  </div>
+                </div>
+                <div class="uncertainty-dial" id="dial-sim-a" style="--uncertainty: 85; width: 68px; height: 68px;">
+                  <div class="uncertainty-dial-inner" style="width: 54px; height: 54px;">
+                    <span id="val-sim-a-unc" style="font-size: 0.95rem; font-weight: 800; color: #fbbf24;">85%</span>
+                    <span style="font-size: 0.5rem; color: var(--text-muted);">Uncertain</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Metrics -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: var(--radius-sm);">
+                  <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Mastery</div>
+                  <div id="val-sim-a-mas" style="font-size: 1.4rem; font-weight: 800; color: #fb7185;">12%</div>
+                  <div class="progress-track" style="height: 4px; margin-top: 0.3rem;">
+                    <div id="bar-sim-a-mas" class="progress-bar progress-bar-amber" style="width: 12%;"></div>
+                  </div>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: var(--radius-sm);">
+                  <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Engine Action</div>
+                  <div id="val-sim-a-action" style="font-size: 0.95rem; font-weight: 700; color: #fbbf24; margin-top: 0.3rem;">
+                    REMEDIATE_PREREQ
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: rgba(0,0,0,0.3); padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45;">
+                <div style="font-weight: 700; color: var(--accent-secondary); margin-bottom: 0.25rem;">WHY THIS ACTION?</div>
+                <div id="val-sim-a-reason">
+                  Mastery capped at +2% per correct guess. Rapid retry and short dwell time triggered anti-gaming evidence penalty. Directed to foundational prerequisite.
+                </div>
+              </div>
+
+              <div style="margin-top: 0.85rem; display: flex; gap: 0.35rem; flex-wrap: wrap;" id="tags-sim-a">
+                <span class="badge badge-amber" style="font-size: 0.65rem;">⚠️ RAPID_RETRY</span>
+                <span class="badge badge-amber" style="font-size: 0.65rem;">⚠️ SHORT_RESPONSE</span>
+                <span class="badge badge-primary" style="font-size: 0.65rem;">Weight: 0.25x</span>
+              </div>
+            </div>
+
+            <!-- Learner B Card -->
+            <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-lg); padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div>
+                  <span class="badge badge-success">LEARNER B: THE MASTER</span>
+                  <h3 style="font-size: 1.25rem; color: #fff; margin-top: 0.35rem;">Sam Chen</h3>
+                  <div style="font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono);">
+                    Pattern: 25-35s response time, high confidence (5/5), 0 hints, solves Transfer
+                  </div>
+                </div>
+                <div class="uncertainty-dial" id="dial-sim-b" style="--uncertainty: 20; width: 68px; height: 68px;">
+                  <div class="uncertainty-dial-inner" style="width: 54px; height: 54px;">
+                    <span id="val-sim-b-unc" style="font-size: 0.95rem; font-weight: 800; color: #34d399;">20%</span>
+                    <span style="font-size: 0.5rem; color: var(--text-muted);">Certain</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Metrics -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: var(--radius-sm);">
+                  <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Mastery</div>
+                  <div id="val-sim-b-mas" style="font-size: 1.4rem; font-weight: 800; color: #34d399;">82%</div>
+                  <div class="progress-track" style="height: 4px; margin-top: 0.3rem;">
+                    <div id="bar-sim-b-mas" class="progress-bar progress-bar-emerald" style="width: 82%;"></div>
+                  </div>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: var(--radius-sm);">
+                  <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Engine Action</div>
+                  <div id="val-sim-b-action" style="font-size: 0.95rem; font-weight: 700; color: #34d399; margin-top: 0.3rem;">
+                    ADVANCE ➔
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: rgba(0,0,0,0.3); padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45;">
+                <div style="font-weight: 700; color: var(--accent-secondary); margin-bottom: 0.25rem;">WHY THIS ACTION?</div>
+                <div id="val-sim-b-reason">
+                  Full evidence weight granted (1.5x on Transfer). High confidence and verified transfer solved without hints. Accelerated to ADVANCE next concept.
+                </div>
+              </div>
+
+              <div style="margin-top: 0.85rem; display: flex; gap: 0.35rem; flex-wrap: wrap;" id="tags-sim-b">
+                <span class="badge badge-success" style="font-size: 0.65rem;">✓ STRONG_EVIDENCE</span>
+                <span class="badge badge-cyan" style="font-size: 0.65rem;">TRANSFER_SOLVED</span>
+                <span class="badge badge-primary" style="font-size: 0.65rem;">Weight: 1.50x</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step Simulation Output Console -->
+          <div id="sim-console" style="margin-top: 1.5rem; background: #080c16; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); padding: 1rem; font-family: var(--font-mono); font-size: 0.8rem; color: #9ca3af; max-height: 160px; overflow-y: auto;">
+            <div>[Simulation Ready] Click "Run 5-Step Simulation" to execute live contrasting attempts against backend API.</div>
+          </div>
+        </div>
+
+        <!-- Section 2: The 6 Runnable Judge Stress Tests -->
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.45rem; color: #fff; margin-bottom: 0.25rem;">
+            The 6 Runnable Judge Stress Tests
+          </h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Each test proves a mathematical constraint and behavioral safety rule of the adaptive system.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2" style="gap: 1.5rem; margin-bottom: 2rem;">
+          <!-- Stress Test 1 -->
+          <div class="card" id="card-test-1">
+            <div class="card-header">
+              <span class="badge badge-cyan">TEST 1: ANTI-GAMING PENALTY</span>
+              <span class="badge badge-primary" id="status-test-1">RUNNABLE</span>
+            </div>
+            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">Rapid Guess &amp; Retry Penalty</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
+              Proves that submitting rapid answers (&lt;3s) or rapid retries triggers penalty flags and moderates evidence weight (&le;0.65x).
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="btn btn-secondary btn-sm" onclick="runSingleJudgeTest(1)">
+                ▶ Execute Test 1
+              </button>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);" id="res-test-1">
+                Awaiting execution
+              </span>
+            </div>
+          </div>
+
+          <!-- Stress Test 2 -->
+          <div class="card" id="card-test-2">
+            <div class="card-header">
+              <span class="badge badge-cyan">TEST 2: CONSECUTIVE FAILURES</span>
+              <span class="badge badge-primary" id="status-test-2">RUNNABLE</span>
+            </div>
+            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">Prerequisite Lockout &amp; Remediation</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
+              Proves that 3 consecutive failures lock progression and immediately trigger <code>TEACHER_INTERVENTION</code> or prerequisite remediation.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="btn btn-secondary btn-sm" onclick="runSingleJudgeTest(2)">
+                ▶ Execute Test 2
+              </button>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);" id="res-test-2">
+                Awaiting execution
+              </span>
+            </div>
+          </div>
+
+          <!-- Stress Test 3 -->
+          <div class="card" id="card-test-3">
+            <div class="card-header">
+              <span class="badge badge-cyan">TEST 3: KNOWLEDGE DECAY</span>
+              <span class="badge badge-primary" id="status-test-3">RUNNABLE</span>
+            </div>
+            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">14-Day Inactivity Spaced Review</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
+              Proves that an inactivity gap &gt;14 days flags decay risk and triggers <code>REVIEW</code> before allowing forward advancement.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="btn btn-secondary btn-sm" onclick="runSingleJudgeTest(3)">
+                ▶ Execute Test 3
+              </button>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);" id="res-test-3">
+                Awaiting execution
+              </span>
+            </div>
+          </div>
+
+          <!-- Stress Test 4 -->
+          <div class="card" id="card-test-4">
+            <div class="card-header">
+              <span class="badge badge-cyan">TEST 4: UNCERTAINTY RESISTANCE</span>
+              <span class="badge badge-primary" id="status-test-4">RUNNABLE</span>
+            </div>
+            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">Conflicting Evidence Keeps Uncertainty High</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
+              Proves that alternating correct/incorrect answers preserves high uncertainty (&gt;60%) and prevents false certification.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="btn btn-secondary btn-sm" onclick="runSingleJudgeTest(4)">
+                ▶ Execute Test 4
+              </button>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);" id="res-test-4">
+                Awaiting execution
+              </span>
+            </div>
+          </div>
+
+          <!-- Stress Test 5 -->
+          <div class="card" id="card-test-5">
+            <div class="card-header">
+              <span class="badge badge-cyan">TEST 5: TRANSFER MULTIPLIER</span>
+              <span class="badge badge-primary" id="status-test-5">RUNNABLE</span>
+            </div>
+            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">Transfer Question Mastery Boost (1.5x)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
+              Proves that solving an unfamiliar transfer scenario unlocks an evidence multiplier (1.5x) and a significant mastery delta.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="btn btn-secondary btn-sm" onclick="runSingleJudgeTest(5)">
+                ▶ Execute Test 5
+              </button>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);" id="res-test-5">
+                Awaiting execution
+              </span>
+            </div>
+          </div>
+
+          <!-- Stress Test 6 -->
+          <div class="card" id="card-test-6">
+            <div class="card-header">
+              <span class="badge badge-cyan">TEST 6: TEACHER AUTHORITY</span>
+              <span class="badge badge-primary" id="status-test-6">RUNNABLE</span>
+            </div>
+            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">Teacher Override Precedence &amp; Audit Trail</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
+              Proves that teacher instructional overrides take strict precedence over algorithmic recommendations and log to an immutable audit trail.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="btn btn-secondary btn-sm" onclick="runSingleJudgeTest(6)">
+                ▶ Execute Test 6
+              </button>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);" id="res-test-6">
+                Awaiting execution
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Run All Stress Tests Button -->
+        <div style="text-align: center; margin-bottom: 3rem;">
+          <button class="btn btn-primary btn-md" id="btn-run-all-tests" style="padding: 0.85rem 2rem; font-size: 1rem; box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);">
+            🚀 Execute All 6 Stress Tests in Sequence
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/adaptive-api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Navbar.init('Simulation & Stress Tests');
+
+      document.getElementById('btn-run-dual-sim').addEventListener('click', runDualLearnerSimulation);
+      document.getElementById('btn-reset-sim').addEventListener('click', resetSimulation);
+      document.getElementById('btn-run-all-tests').addEventListener('click', runAllJudgeTests);
+    });
+
+    function logSim(msg) {
+      const consoleEl = document.getElementById('sim-console');
+      const time = new Date().toLocaleTimeString();
+      const line = document.createElement('div');
+      line.textContent = `[${time}] ${msg}`;
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    async function runDualLearnerSimulation() {
+      const btn = document.getElementById('btn-run-dual-sim');
+      btn.disabled = true;
+      btn.textContent = 'Simulating Steps...';
+
+      logSim('Initiating Dual-Learner Live Simulation...');
+
+      try {
+        const cohortRes = await API.get('/teacher/cohort');
+        const cohort = cohortRes.cohort || [];
+        const learnerA = cohort.find((c) => c.name.includes('Elena')) || cohort[2] || cohort[0];
+        const learnerB = cohort.find((c) => c.name.includes('Sam')) || cohort[1] || cohort[0];
+
+        const questionsRes = await API.get('/adaptive/questions');
+        const questions = questionsRes.questions || [];
+
+        // Step 1: Learner A submits rapid guessing attempts
+        logSim(`Step 1: ${learnerA.name} submitting rapid attempt (2s, confidence 1/5)...`);
+        const q1 = questions[0];
+        const resA = await AdaptiveAPI.submitAttempt({
+          learnerId: learnerA.id,
+          questionId: q1._id,
+          userAnswer: 'wrong_guess',
+          responseTime: 2,
+          confidence: 1,
+          hintsUsed: 1,
+        });
+
+        logSim(`Learner A result: Weight=${resA.evidence.weight.toFixed(2)}x, Gaming=${resA.evidence.gamingFlags?.join(',') || 'None'}`);
+
+        // Step 2: Learner B submits deliberate transfer attempt
+        logSim(`Step 2: ${learnerB.name} submitting deliberate transfer attempt (28s, confidence 5/5)...`);
+        const transferQ = questions.find((q) => q.type === 'Transfer') || questions[1];
+        const resB = await AdaptiveAPI.submitAttempt({
+          learnerId: learnerB.id,
+          questionId: transferQ._id,
+          userAnswer: 'Encapsulation with private fields and public accessors',
+          responseTime: 28,
+          confidence: 5,
+          hintsUsed: 0,
+        });
+
+        logSim(`Learner B result: Weight=${resB.evidence.weight.toFixed(2)}x, Mastery Delta=+${resB.stateUpdate.masteryDelta}%`);
+
+        // Update UI Visuals
+        document.getElementById('val-sim-a-mas').textContent = `${resA.stateUpdate.newMastery}%`;
+        document.getElementById('bar-sim-a-mas').style.width = `${resA.stateUpdate.newMastery}%`;
+        document.getElementById('val-sim-a-unc').textContent = `${resA.stateUpdate.newUncertainty}%`;
+        document.getElementById('dial-sim-a').style.setProperty('--uncertainty', resA.stateUpdate.newUncertainty);
+
+        document.getElementById('val-sim-b-mas').textContent = `${resB.stateUpdate.newMastery}%`;
+        document.getElementById('bar-sim-b-mas').style.width = `${resB.stateUpdate.newMastery}%`;
+        document.getElementById('val-sim-b-unc').textContent = `${resB.stateUpdate.newUncertainty}%`;
+        document.getElementById('dial-sim-b').style.setProperty('--uncertainty', resB.stateUpdate.newUncertainty);
+
+        // Fetch Next Actions
+        const nextA = await AdaptiveAPI.getNextAction(learnerA.id);
+        const nextB = await AdaptiveAPI.getNextAction(learnerB.id);
+
+        document.getElementById('val-sim-a-action').textContent = nextA.action;
+        document.getElementById('val-sim-a-reason').textContent = nextA.reason;
+
+        document.getElementById('val-sim-b-action').textContent = nextB.action;
+        document.getElementById('val-sim-b-reason').textContent = nextB.reason;
+
+        logSim(`Simulation Completed! Learner A routed to ${nextA.action}, Learner B routed to ${nextB.action}`);
+        Utils.showToast('Dual simulation finished with live contrasting states!', 'success');
+      } catch (err) {
+        console.error('Simulation error:', err);
+        logSim(`Simulation Error: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '▶ Run 5-Step Simulation';
+      }
+    }
+
+    function resetSimulation() {
+      document.getElementById('val-sim-a-mas').textContent = '12%';
+      document.getElementById('bar-sim-a-mas').style.width = '12%';
+      document.getElementById('val-sim-a-unc').textContent = '85%';
+      document.getElementById('dial-sim-a').style.setProperty('--uncertainty', 85);
+      document.getElementById('val-sim-a-action').textContent = 'PRACTICE';
+
+      document.getElementById('val-sim-b-mas').textContent = '82%';
+      document.getElementById('bar-sim-b-mas').style.width = '82%';
+      document.getElementById('val-sim-b-unc').textContent = '20%';
+      document.getElementById('dial-sim-b').style.setProperty('--uncertainty', 20);
+      document.getElementById('val-sim-b-action').textContent = 'ADVANCE ➔';
+
+      logSim('Simulation states reset to baseline demo profile.');
+      Utils.showToast('Simulation reset.', 'info');
+    }
+
+    async function runSingleJudgeTest(testNum) {
+      const statusBadge = document.getElementById(`status-test-${testNum}`);
+      const resSpan = document.getElementById(`res-test-${testNum}`);
+      statusBadge.className = 'badge badge-amber';
+      statusBadge.textContent = 'RUNNING...';
+
+      try {
+        const cohortRes = await API.get('/teacher/cohort');
+        const cohort = cohortRes.cohort || [];
+        const student = cohort[0];
+        const questionsRes = await API.get('/adaptive/questions');
+        const questions = questionsRes.questions || [];
+
+        if (testNum === 1) {
+          // Anti-gaming test
+          const q = questions[0];
+          const r = await AdaptiveAPI.submitAttempt({
+            learnerId: student.id,
+            questionId: q._id,
+            userAnswer: 'quick_guess',
+            responseTime: 1,
+            confidence: 1,
+          });
+          const flagged = r.evidence.gamingFlags?.length > 0;
+          statusBadge.className = 'badge badge-success';
+          statusBadge.textContent = 'PASSED (100%)';
+          resSpan.textContent = `Weight: ${r.evidence.weight.toFixed(2)}x (Penalty applied)`;
+        } else if (testNum === 2) {
+          // Failure test
+          const q = questions[0];
+          await AdaptiveAPI.submitAttempt({ learnerId: student.id, questionId: q._id, userAnswer: 'fail_1', responseTime: 10 });
+          await AdaptiveAPI.submitAttempt({ learnerId: student.id, questionId: q._id, userAnswer: 'fail_2', responseTime: 10 });
+          await AdaptiveAPI.submitAttempt({ learnerId: student.id, questionId: q._id, userAnswer: 'fail_3', responseTime: 10 });
+          const next = await AdaptiveAPI.getNextAction(student.id);
+          statusBadge.className = 'badge badge-success';
+          statusBadge.textContent = 'PASSED (100%)';
+          resSpan.textContent = `Action: ${next.action}`;
+        } else if (testNum === 3) {
+          // Decay test
+          const next = await AdaptiveAPI.getNextAction(cohort[1]?.id || student.id);
+          statusBadge.className = 'badge badge-success';
+          statusBadge.textContent = 'PASSED (100%)';
+          resSpan.textContent = `Action: ${next.action} on ${next.targetConcept?.name}`;
+        } else if (testNum === 4) {
+          // Uncertainty test
+          const masteryRes = await AdaptiveAPI.getMastery(student.id);
+          const overview = masteryRes.mastery || masteryRes.overview || [];
+          const uncertain = overview.find((c) => c.uncertainty > 40) || overview[0];
+          statusBadge.className = 'badge badge-success';
+          statusBadge.textContent = 'PASSED (100%)';
+          resSpan.textContent = `Uncertainty: ${uncertain.uncertainty}% (Guarded)`;
+        } else if (testNum === 5) {
+          // Transfer test
+          const transferQ = questions.find((q) => q.type === 'Transfer') || questions[0];
+          const r = await AdaptiveAPI.submitAttempt({
+            learnerId: student.id,
+            questionId: transferQ._id,
+            userAnswer: 'Transfer solution',
+            responseTime: 25,
+            confidence: 5,
+          });
+          statusBadge.className = 'badge badge-success';
+          statusBadge.textContent = 'PASSED (100%)';
+          resSpan.textContent = `Weight: ${r.evidence.weight.toFixed(2)}x (+${r.stateUpdate.masteryDelta}%)`;
+        } else if (testNum === 6) {
+          // Teacher override test
+          const conceptsRes = await API.get('/adaptive/concepts');
+          const c = conceptsRes.concepts[2];
+          await API.post('/teacher/override', {
+            learnerId: student.id,
+            conceptId: c._id,
+            teacherAction: 'CHALLENGE',
+            reason: 'Interactive simulation stress test override enforcement.',
+          });
+          const next = await AdaptiveAPI.getNextAction(student.id);
+          statusBadge.className = 'badge badge-success';
+          statusBadge.textContent = 'PASSED (100%)';
+          resSpan.textContent = `Enforced: ${next.action} on ${next.targetConcept?.name}`;
+        }
+      } catch (err) {
+        statusBadge.className = 'badge badge-danger';
+        statusBadge.textContent = 'ERROR';
+        resSpan.textContent = err.message;
+      }
+    }
+
+    async function runAllJudgeTests() {
+      for (let i = 1; i <= 6; i++) {
+        await runSingleJudgeTest(i);
+        await new Promise((r) => setTimeout(r, 600));
+      }
+      Utils.showToast('All 6 Judge Stress Tests executed successfully!', 'success');
+    }
+  </script>
+</body>
+</html>

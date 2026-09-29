@@ -140,11 +140,27 @@ const ReportViewer = {
 
   renderQuestionsAccordion(questions) {
     const container = document.getElementById('questions-accordion-container');
-    container.innerHTML = questions.map((q, idx) => `
+    container.innerHTML = questions.map((q, idx) => {
+      const srcType = q.sourceType || 'generic_role_based';
+      let srcBadge = '<span class="badge badge-emerald" style="font-size:0.7rem;">🎯 Role-Based</span>';
+      if (srcType === 'database_question') {
+        srcBadge = '<span class="badge badge-purple" style="font-size:0.7rem;">🏢 Database Grounded</span>';
+      } else if (srcType === 'pattern_derived') {
+        srcBadge = '<span class="badge badge-cyan" style="font-size:0.7rem;">🧬 Pattern-Derived</span>';
+      }
+
+      const whyText = q.whyThisQuestion || (srcType === 'database_question'
+        ? "Selected from the company's interview knowledge base."
+        : srcType === 'pattern_derived'
+        ? "Generated from patterns found in the company's collected interview data."
+        : "Generated from general interview patterns for your selected role.");
+
+      return `
       <div class="question-accordion-item">
         <div class="question-accordion-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
-          <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
             <span class="badge badge-primary">Q${idx + 1}</span>
+            ${srcBadge}
             <span style="font-weight:600; font-size:0.95rem;">${Utils.escapeHTML(q.questionText)}</span>
           </div>
           <div style="display:flex; align-items:center; gap:1rem;">
@@ -155,12 +171,21 @@ const ReportViewer = {
         </div>
 
         <div class="question-accordion-body" style="display: ${idx === 0 ? 'block' : 'none'};">
+          <!-- Why this question grounding explanation (Requirement 17 & 22) -->
+          <div style="margin-bottom: 0.85rem; background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.22); border-radius:var(--radius-sm); padding:6px 12px; font-size:0.8rem; display:flex; align-items:center; gap:0.5rem;">
+            <span style="font-weight:600; color:var(--accent-primary);">ⓘ Why this question?</span>
+            <span style="color:var(--text-secondary);">${Utils.escapeHTML(whyText)}</span>
+          </div>
+
           <div style="margin-bottom: 1rem;">
             <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); font-weight:600; margin-bottom:0.25rem;">Candidate Answer</div>
             <div style="background:rgba(0,0,0,0.3); padding:0.85rem; border-radius:var(--radius-sm); font-size:0.9rem; font-style:italic; border-left:3px solid var(--accent-primary);">
               "${Utils.escapeHTML(q.answerText || 'No verbal answer recorded.')}"
             </div>
           </div>
+      `;
+    }).join('');
+  },
 
           <!-- Speech & Vision Indicators -->
           <div class="grid grid-cols-2" style="margin-bottom: 1rem; font-size:0.82rem;">
@@ -172,7 +197,8 @@ const ReportViewer = {
 
             <div style="background:rgba(255,255,255,0.02); padding:0.75rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
               <div style="font-weight:600; color:var(--accent-secondary); margin-bottom:0.35rem;">👁️ Vision Indicators</div>
-              <div>&bull; Eye Contact Consistency: ${q.visionMetrics?.eyeContactPercentage || 100}%</div>
+              <div>&bull; Eye Contact Consistency: ${q.visionMetrics?.eyeContactPercentage ?? 100}%</div>
+              <div>&bull; Looking Away Incidents: ${q.visionMetrics?.lookingAwayCount || 0} times</div>
               <div>&bull; Camera Framing: ${q.visionMetrics?.framingQuality || 'Good'}</div>
             </div>
           </div>

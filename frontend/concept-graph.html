@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Concept Graph - CareerTwin AI</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <link rel="stylesheet" href="/css/adaptive.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Dynamic Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+      <!-- Dynamic Topbar -->
+      <div id="topbar-container"></div>
+
+      <div class="page-container">
+        <!-- Header & Controls -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.06em; font-weight: 700;">
+              Instructional Dependency Graph
+            </div>
+            <h1 style="font-size: 1.85rem; color: #fff; margin-top: 0.25rem;">
+              Java Programming Concept Graph
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
+              Interactive prerequisite map: 12 nodes, 15 directed prerequisite edges, recursive dependency resolution.
+            </p>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-tertiary); padding: 0.35rem 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">LEARNER:</span>
+              <select id="graph-learner-selector" class="form-control" style="background: transparent; border: none; color: #fff; font-size: 0.85rem; padding: 0.2rem; cursor: pointer;">
+                <option value="64f1a2b3c4d5e6f7a8b9c0d1">Alex Rivers (Demo)</option>
+                <option value="64f1a2b3c4d5e6f7a8b9c0d2">Sam Chen</option>
+                <option value="64f1a2b3c4d5e6f7a8b9c0d3">Elena Rostova</option>
+              </select>
+            </div>
+            <a href="/dashboard.html" class="btn btn-secondary btn-sm">⬅ Back to Dashboard</a>
+          </div>
+        </div>
+
+        <!-- Legend Bar -->
+        <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; background: rgba(17, 24, 39, 0.6); padding: 0.75rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+          <span style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Status Legend:</span>
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
+            <span style="width: 12px; height: 12px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+            <span>Mastered (≥70%, Low Uncertainty)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
+            <span style="width: 12px; height: 12px; border-radius: 50%; background: #06b6d4; display: inline-block;"></span>
+            <span>Learning (In Progress)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
+            <span style="width: 12px; height: 12px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+            <span>High Uncertainty (&gt;60%)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
+            <span style="width: 12px; height: 12px; border-radius: 50%; background: #8b5cf6; display: inline-block;"></span>
+            <span>Needs Review (Decay Risk)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
+            <span style="width: 12px; height: 12px; border-radius: 50%; background: #f43f5e; display: inline-block;"></span>
+            <span>Blocked by Prerequisite</span>
+          </div>
+        </div>
+
+        <!-- Main Graph Canvas & Inspector Side-Panel Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem;">
+          <!-- Left: SVG Graph Canvas -->
+          <div class="concept-graph-canvas" id="canvas-container">
+            <svg class="graph-svg" id="graph-svg" viewBox="0 0 1150 720">
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="rgba(99, 102, 241, 0.6)" />
+                </marker>
+                <marker id="arrowhead-highlight" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="#06b6d4" />
+                </marker>
+              </defs>
+              <g id="edges-layer"></g>
+              <g id="nodes-layer"></g>
+            </svg>
+          </div>
+
+          <!-- Right: Concept Inspector Panel -->
+          <div class="card" id="inspector-panel" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="card-header">
+              <div class="card-title">
+                <span>🔎 Concept Inspector</span>
+              </div>
+              <span id="inspector-status-badge" class="badge badge-primary">Click a Node</span>
+            </div>
+
+            <div id="inspector-content">
+              <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Select any concept node in the dependency graph to inspect its recursive prerequisites, mastery, and epistemic uncertainty.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/adaptive-api.js"></script>
+  <script>
+    let graphData = null;
+    let learnerMasteryMap = new Map();
+    let selectedConceptId = null;
+
+    // Structured 2D layout for the 12 Java Concepts
+    const NODE_COORDINATES = {
+      'programming-basics':      { x: 100,  y: 340, col: 1 },
+      'variables-datatypes':     { x: 230,  y: 340, col: 2 },
+      'operators':               { x: 360,  y: 340, col: 3 },
+      'conditionals':            { x: 490,  y: 340, col: 4 },
+      'loops':                   { x: 620,  y: 340, col: 5 },
+      'functions':               { x: 750,  y: 340, col: 6 },
+      'oop-basics':              { x: 880,  y: 340, col: 7 },
+      'encapsulation':           { x: 1010, y: 230, col: 8 },
+      'inheritance':             { x: 1010, y: 450, col: 8 },
+      'collections':             { x: 1020, y: 100, col: 9 },
+      'exception-handling':      { x: 500,  y: 110, col: 4 },
+      'problem-solving':         { x: 1020, y: 600, col: 9 },
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      Navbar.init('Concept Graph');
+
+      const selector = document.getElementById('graph-learner-selector');
+      const activeId = AdaptiveAPI.getLearnerId();
+      if (activeId && selector) selector.value = activeId;
+
+      selector.addEventListener('change', async (e) => {
+        AdaptiveAPI.setDemoLearner(e.target.value);
+        Utils.showToast(`Switched active learner: ${e.target.options[e.target.selectedIndex].text}`, 'info');
+        await loadGraphData();
+      });
+
+      await loadGraphData();
+    });
+
+    async function loadGraphData() {
+      try {
+        const [graphRes, masteryRes] = await Promise.all([
+          AdaptiveAPI.getConceptGraph(),
+          AdaptiveAPI.getMastery(),
+        ]);
+
+        if (graphRes.success && graphRes.graph) {
+          graphData = graphRes.graph;
+        }
+
+        if (masteryRes.success && masteryRes.overview) {
+          learnerMasteryMap.clear();
+          masteryRes.overview.forEach((c) => {
+            learnerMasteryMap.set(c.conceptId, c);
+            learnerMasteryMap.set(c.slug, c);
+          });
+        }
+
+        renderGraph();
+
+        // Default inspect first node or first learning node
+        if (graphData && graphData.nodes.length > 0) {
+          inspectConcept(graphData.nodes[0].id);
+        }
+      } catch (err) {
+        console.error('Error loading concept graph:', err);
+      }
+    }
+
+    function renderGraph() {
+      if (!graphData) return;
+
+      const edgesLayer = document.getElementById('edges-layer');
+      const nodesLayer = document.getElementById('nodes-layer');
+      edgesLayer.innerHTML = '';
+      nodesLayer.innerHTML = '';
+
+      const nodeMap = new Map();
+      graphData.nodes.forEach((n) => nodeMap.set(n.id, n));
+
+      // 1. Draw Edges
+      graphData.edges.forEach((edge) => {
+        const sourceNode = nodeMap.get(edge.source);
+        const targetNode = nodeMap.get(edge.target);
+        if (!sourceNode || !targetNode) return;
+
+        const p1 = NODE_COORDINATES[sourceNode.slug] || { x: 100, y: 100 };
+        const p2 = NODE_COORDINATES[targetNode.slug] || { x: 200, y: 200 };
+
+        // Card dimensions: width 150, height 70
+        const startX = p1.x + 75;
+        const startY = p1.y + 35;
+        const endX = p2.x + 75;
+        const endY = p2.y + 35;
+
+        // Curved control points for smooth bezier lines
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const cx1 = startX + dx * 0.5;
+        const cy1 = startY;
+        const cx2 = startX + dx * 0.5;
+        const cy2 = endY;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${startX} ${startY} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${endX} ${endY}`);
+        path.setAttribute('class', 'edge-path');
+        path.setAttribute('marker-end', 'url(#arrowhead)');
+        path.setAttribute('data-source', edge.source);
+        path.setAttribute('data-target', edge.target);
+
+        edgesLayer.appendChild(path);
+      });
+
+      // 2. Draw Nodes
+      graphData.nodes.forEach((node) => {
+        const pos = NODE_COORDINATES[node.slug] || { x: 100, y: 100 };
+        const state = learnerMasteryMap.get(node.id) || { mastery: 0, uncertainty: 100, evidenceCount: 0 };
+
+        // Determine node status color
+        let strokeColor = '#3b82f6';
+        let fillColor = '#111827';
+        let statusText = 'NOT STARTED';
+
+        if (state.mastery >= node.requiredMastery && state.uncertainty <= 30) {
+          strokeColor = '#10b981';
+          fillColor = 'rgba(16, 185, 129, 0.12)';
+          statusText = 'MASTERED';
+        } else if (state.uncertainty > 60 && state.evidenceCount > 0) {
+          strokeColor = '#f59e0b';
+          fillColor = 'rgba(245, 158, 11, 0.12)';
+          statusText = 'UNCERTAIN';
+        } else if (state.isStale) {
+          strokeColor = '#8b5cf6';
+          fillColor = 'rgba(139, 92, 246, 0.12)';
+          statusText = 'REVIEW';
+        } else if (state.evidenceCount > 0) {
+          strokeColor = '#06b6d4';
+          fillColor = 'rgba(6, 182, 212, 0.12)';
+          statusText = 'LEARNING';
+        }
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('class', 'graph-node-group');
+        g.setAttribute('transform', `translate(${pos.x}, ${pos.y})`);
+        g.setAttribute('data-id', node.id);
+        g.onclick = () => inspectConcept(node.id);
+
+        g.innerHTML = `
+          <rect class="graph-node-rect" width="150" height="70" rx="10" ry="10" 
+                fill="${fillColor}" stroke="${strokeColor}" stroke-width="2" />
+          
+          <text x="12" y="22" fill="#9ca3af" font-size="10" font-family="var(--font-mono)" font-weight="700">
+            #${node.order}
+          </text>
+          
+          <text x="138" y="22" text-anchor="end" fill="${strokeColor}" font-size="9" font-family="var(--font-mono)" font-weight="700">
+            ${statusText}
+          </text>
+          
+          <text x="12" y="42" fill="#ffffff" font-size="12" font-weight="600" font-family="var(--font-main)">
+            ${this.truncate(node.name, 17)}
+          </text>
+          
+          <!-- Mini Progress Bar inside node -->
+          <rect x="12" y="52" width="126" height="4" rx="2" ry="2" fill="rgba(255,255,255,0.1)" />
+          <rect x="12" y="52" width="${(state.mastery / 100) * 126}" height="4" rx="2" ry="2" fill="${strokeColor}" />
+        `;
+
+        nodesLayer.appendChild(g);
+      });
+    }
+
+    function inspectConcept(conceptId) {
+      selectedConceptId = conceptId;
+      if (!graphData) return;
+
+      const node = graphData.nodes.find((n) => n.id === conceptId);
+      if (!node) return;
+
+      const state = learnerMasteryMap.get(node.id) || { mastery: 0, uncertainty: 100, evidenceCount: 0 };
+      const badge = document.getElementById('inspector-status-badge');
+      const container = document.getElementById('inspector-content');
+
+      // Highlight active edges connected to this node
+      document.querySelectorAll('.edge-path').forEach((edge) => {
+        const isIncoming = edge.getAttribute('data-target') === conceptId;
+        const isOutgoing = edge.getAttribute('data-source') === conceptId;
+        if (isIncoming || isOutgoing) {
+          edge.classList.add('highlighted');
+          edge.setAttribute('marker-end', 'url(#arrowhead-highlight)');
+        } else {
+          edge.classList.remove('highlighted');
+          edge.setAttribute('marker-end', 'url(#arrowhead)');
+        }
+      });
+
+      // Highlight active node
+      document.querySelectorAll('.graph-node-rect').forEach((rect) => {
+        rect.setAttribute('stroke-width', '2');
+      });
+      const activeGroup = document.querySelector(`.graph-node-group[data-id="${conceptId}"]`);
+      if (activeGroup) {
+        activeGroup.querySelector('.graph-node-rect').setAttribute('stroke-width', '4');
+      }
+
+      badge.textContent = `Concept #${node.order}`;
+
+      // Build Recursive Prerequisite List
+      const prereqNodes = node.prerequisites.map((pId) => graphData.nodes.find((n) => n.id === pId)).filter(Boolean);
+      let prereqHtml = '';
+      if (prereqNodes.length === 0) {
+        prereqHtml = '<div style="color: #34d399; font-size: 0.82rem;">✅ Root concept (No prerequisites required)</div>';
+      } else {
+        prereqHtml = prereqNodes
+          .map((p) => {
+            const pState = learnerMasteryMap.get(p.id) || { mastery: 0 };
+            const satisfied = pState.mastery >= p.requiredMastery;
+            return `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0.6rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 0.35rem;">
+                <span style="color: ${satisfied ? '#34d399' : '#fb7185'}; font-weight: 500;">
+                  ${satisfied ? '✓' : '✗'} #${p.order} ${p.name}
+                </span>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+                  ${pState.mastery}% / req: ${p.requiredMastery}%
+                </span>
+              </div>
+            `;
+          })
+          .join('');
+      }
+
+      container.innerHTML = `
+        <div>
+          <h2 style="font-size: 1.35rem; color: #fff; margin-bottom: 0.35rem;">${node.name}</h2>
+          <div style="font-size: 0.78rem; color: var(--accent-secondary); font-family: var(--font-mono); margin-bottom: 0.75rem;">
+            slug: ${node.slug} | Difficulty: ${node.difficultyRange?.min || 1} - ${node.difficultyRange?.max || 5}
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+            ${node.description}
+          </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Mastery</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #fff; margin: 0.25rem 0;">${state.mastery}%</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Goal: ≥${node.requiredMastery}%</div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Uncertainty</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #fbbf24; margin: 0.25rem 0;">${state.uncertainty}%</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Verified if &le;30%</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.05em;">
+            Prerequisite Dependency Status:
+          </div>
+          ${prereqHtml}
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <button class="btn btn-primary btn-md" style="width: 100%;" onclick="practiceSelectedConcept()">
+            🚀 Practice ${node.name}
+          </button>
+        </div>
+      `;
+    }
+
+    async function practiceSelectedConcept() {
+      if (!selectedConceptId) return;
+      const node = graphData.nodes.find((n) => n.id === selectedConceptId);
+      try {
+        const res = await window.API.get(`/adaptive/questions?conceptId=${selectedConceptId}`);
+        if (res.success && res.questions && res.questions.length > 0) {
+          const question = res.questions[0];
+          AdaptiveUI.openAttemptModal(question, async () => {
+            Utils.showToast(`Attempt registered for ${node.name}!`, 'success');
+            await loadGraphData();
+          });
+        } else {
+          Utils.showToast('No active questions found for this concept.', 'info');
+        }
+      } catch (err) {
+        console.error('Error starting practice:', err);
+      }
+    }
+
+    function truncate(str, max) {
+      if (!str) return '';
+      return str.length > max ? str.substring(0, max - 1) + '…' : str;
+    }
+  </script>
+</body>
+</html>

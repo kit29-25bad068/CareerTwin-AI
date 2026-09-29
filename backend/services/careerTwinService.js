@@ -5,6 +5,7 @@ const Interview = require('../models/Interview');
 const Resume = require('../models/Resume');
 const Project = require('../models/Project');
 const GitHubProfile = require('../models/GitHubProfile');
+const CodolioProfile = require('../models/CodolioProfile');
 const Roadmap = require('../models/Roadmap');
 const Recommendation = require('../models/Recommendation');
 
@@ -22,6 +23,7 @@ async function getCareerTwinState(userId) {
     projects,
     github,
     roadmap,
+    codolio,
   ] = await Promise.all([
     CareerProfile.findOne({ user: userId }),
     CareerGoal.findOne({ user: userId, status: 'Active' }).sort({ updatedAt: -1 }),
@@ -31,6 +33,7 @@ async function getCareerTwinState(userId) {
     Project.find({ user: userId }).sort({ updatedAt: -1 }),
     GitHubProfile.findOne({ user: userId }),
     Roadmap.findOne({ user: userId }),
+    CodolioProfile.findOne({ user: userId }),
   ]);
 
   const targetRole = activeGoal?.targetRole || profile?.targetRole || 'Full Stack Developer';
@@ -102,25 +105,43 @@ async function getCareerTwinState(userId) {
     });
   }
 
-  // Dimension 2: Problem Solving & Projects (Weight: 20%)
-  const psScoreCandidate = avgProjectScore !== null ? avgProjectScore : avgProblemSolvingScore;
+  // Dimension 2: Problem Solving & Coding Platforms (Weight: 20%)
+  const codolioScore = codolio?.analysis?.codingScore ?? null;
+  const psComponents = [];
+  if (avgProjectScore !== null) psComponents.push(avgProjectScore);
+  if (avgProblemSolvingScore !== null) psComponents.push(avgProblemSolvingScore);
+  if (codolioScore !== null) psComponents.push(codolioScore);
+
+  const psScoreCandidate = psComponents.length > 0
+    ? Math.round(psComponents.reduce((a, b) => a + b, 0) / psComponents.length)
+    : null;
+
   if (psScoreCandidate !== null) {
     totalWeightedScore += psScoreCandidate * 0.2;
     totalWeightApplied += 0.2;
+    let evidenceText = `Based on problem solving evaluation`;
+    if (codolio && codolio.totalSolved > 0) {
+      evidenceText += ` including ${codolio.totalSolved} Codolio problems solved (${codolio.analysis?.problemSolvingTier || 'Intermediate'}, Score: ${codolioScore}/100)`;
+    }
+    if (projectsCount > 0) {
+      evidenceText += ` and ${projectsCount} evaluated project(s)`;
+    }
+    evidenceText += `.`;
+
     breakdown.push({
-      dimension: 'Problem Solving & Projects',
+      dimension: 'Problem Solving & Coding Performance',
       weight: 20,
       score: psScoreCandidate,
       status: 'Calculated',
-      evidence: `Based on ${projectsCount} evaluated project(s) (Avg: ${psScoreCandidate}/100).`,
+      evidence: evidenceText,
     });
   } else {
     breakdown.push({
-      dimension: 'Problem Solving & Projects',
+      dimension: 'Problem Solving & Coding Performance',
       weight: 20,
       score: null,
       status: 'No data yet',
-      evidence: 'Submit projects to the AI Project Evaluator to assess engineering complexity.',
+      evidence: 'Connect your Codolio profile or submit projects to assess algorithmic and coding performance.',
     });
   }
 
@@ -278,6 +299,23 @@ async function getCareerTwinState(userId) {
       hasRoadmap: Boolean(roadmap),
       progressPercentage: roadmapProgress,
       milestonesCount: roadmap?.milestones?.length || 0,
+    },
+    codolio: {
+      isConnected: Boolean(codolio),
+      username: codolio?.username || null,
+      profileUrl: codolio?.profileUrl || null,
+      totalSolved: codolio?.totalSolved || 0,
+      easySolved: codolio?.easySolved || 0,
+      mediumSolved: codolio?.mediumSolved || 0,
+      hardSolved: codolio?.hardSolved || 0,
+      activeStreakDays: codolio?.activeStreakDays || 0,
+      totalContests: codolio?.totalContests || 0,
+      codingScore: codolio?.analysis?.codingScore ?? null,
+      tier: codolio?.analysis?.problemSolvingTier || null,
+      platforms: codolio?.platforms || [],
+      topicBreakdown: codolio?.topicBreakdown || [],
+      analysis: codolio?.analysis || null,
+      lastSyncedAt: codolio?.lastSyncedAt || null,
     },
     careerMemory: {
       historyCount: memoryTimeline.length,

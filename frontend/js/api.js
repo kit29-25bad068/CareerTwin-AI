@@ -39,8 +39,9 @@ const API = {
   logout() {
     this.setToken(null);
     this.setUser(null);
+    localStorage.removeItem('careertwin_active_learner');
     const path = window.location.pathname.toLowerCase();
-    if (!path.includes('login') && !path.includes('register') && path !== '/' && !path.includes('index')) {
+    if (!path.includes('login')) {
       window.location.href = '/login.html';
     }
   },
