@@ -18,6 +18,10 @@
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-Vision%20Tracking-ff6f00?style=flat-square)](https://developers.google.com/mediapipe)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=flat-square)](LICENSE)
 
+<br/><br/>
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkit29-25bad068%2FCareerTwin-AI&root-directory=client)
+
 </div>
 
 ---
