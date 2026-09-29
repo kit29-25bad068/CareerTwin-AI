@@ -12,9 +12,6 @@ const errorHandler = require('./middleware/errorHandler');
 // Initialize Express App
 const app = express();
 
-// Connect to Database
-connectDB();
-
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '15mb' }));
@@ -94,7 +91,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 let server;
-if (process.env.NODE_ENV !== 'test' || require.main === module) {
+if (require.main === module) {
   server = app.listen(PORT, () => {
     console.log(`====================================================`);
     console.log(`🚀 CareerTwin1 AI Server running on port ${PORT}`);
