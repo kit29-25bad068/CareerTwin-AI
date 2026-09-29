@@ -1,12 +1,13 @@
 import type { NextConfig } from "next";
 
 const BACKEND_URL =
-  process.env.BACKEND_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  "http://localhost:5000";
+  process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL;
 
 const nextConfig: NextConfig = {
   async rewrites() {
+    if (!BACKEND_URL) {
+      return [];
+    }
     return [
       {
         source: "/api/:path*",
@@ -15,18 +16,6 @@ const nextConfig: NextConfig = {
       {
         source: "/uploads/:path*",
         destination: `${BACKEND_URL}/uploads/:path*`,
-      },
-      {
-        source: "/:file(.*\\.html)",
-        destination: "http://localhost:5000/:file",
-      },
-      {
-        source: "/css/:path*",
-        destination: "http://localhost:5000/css/:path*",
-      },
-      {
-        source: "/js/:path*",
-        destination: "http://localhost:5000/js/:path*",
       },
     ];
   },
