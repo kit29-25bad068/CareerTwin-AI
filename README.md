@@ -38,36 +38,8 @@
 
 ## 🚀 Live Localhost Navigation
 
-When running locally, access all features directly through the following links:
-
-### 1. Modern Next.js 15 Client (Port 3000)
-
-| Module | URL | Description |
-|---|---|---|
-| **Landing Page** | [http://localhost:3000](http://localhost:3000) | Platform showcase, feature highlights, and onboarding |
-| **Command Central Dashboard** | [http://localhost:3000/dashboard](http://localhost:3000/dashboard) | Career Readiness score dial, Adaptive Learning Action Hero, 12-concept pipeline |
-| **Mock Interview & Eye HUD** | [http://localhost:3000/interview](http://localhost:3000/interview) | Dual-source grounded interview room, live camera gaze tracking & speech input |
-| **Resume & CV Analyzer** | [http://localhost:3000/resume](http://localhost:3000/resume) | Dual-engine: Live Vercel CV Analyzer + CareerTwin ATS skills extractor |
-| **Adaptive Concept Graph** | [http://localhost:3000/adaptive/concept-graph](http://localhost:3000/adaptive/concept-graph) | Interactive 12-concept SVG dependency graph & prerequisite inspector |
-| **Mastery & Epistemic Uncertainty** | [http://localhost:3000/adaptive/mastery](http://localhost:3000/adaptive/mastery) | Dual metric tracking (Mastery vs Uncertainty) across all 12 concepts |
-| **Teacher Governance Dashboard** | [http://localhost:3000/adaptive/teacher-dashboard](http://localhost:3000/adaptive/teacher-dashboard) | Cohort telemetry, bottleneck alerts, and mandatory pedagogical overrides |
-| **Digital Career Twin 360°** | [http://localhost:3000/career-twin](http://localhost:3000/career-twin) | Evidence dimension breakdown, verified skills matrix, prioritized gap tasks |
-| **User Sign-In** | [http://localhost:3000/login](http://localhost:3000/login) | JWT authentication with session persistence |
-| **User Registration** | [http://localhost:3000/register](http://localhost:3000/register) | Account creation with unique GitHub & Codolio constraints |
-| **Privacy & Settings** | [http://localhost:3000/settings](http://localhost:3000/settings) | Export Career Twin JSON, reset memory, permanent account wipe |
-
-### 2. Express Backend & API Services (Port 5000)
-
-| Service | URL | Description |
-|---|---|---|
-| **API Base Health Check** | [http://localhost:5000/api](http://localhost:5000/api) | Express API entrypoint & health check |
-| **Company Interviews API** | [http://localhost:5000/api/company-interviews](http://localhost:5000/api/company-interviews) | Curated 11-company dataset metadata and question counts |
-| **Amazon Interview Dataset** | [http://localhost:5000/api/company-interviews/Amazon](http://localhost:5000/api/company-interviews/Amazon) | 75 verified Amazon questions with category breakdown |
-| **Static Mock Interview Room** | [http://localhost:5000/interview.html](http://localhost:5000/interview.html) | Vanilla JS mock interview room with MediaPipe & speech API |
-| **Static Central Dashboard** | [http://localhost:5000/dashboard.html](http://localhost:5000/dashboard.html) | Vanilla JS dashboard with interactive attempt modal |
-| **Static Concept Graph** | [http://localhost:5000/concept-graph.html](http://localhost:5000/concept-graph.html) | Vanilla JS SVG concept dependency graph |
-| **Dual-Learner Simulation** | [http://localhost:5000/simulation.html](http://localhost:5000/simulation.html) | Side-by-side simulation (The Gambler vs The Master) + 6 Stress Tests |
-| **Learning & Audit History** | [http://localhost:5000/learning-history.html](http://localhost:5000/learning-history.html) | Full chronological audit log of attempts and anti-gaming flags |
+🌐 **Complete Project Localhost Link:**  
+👉 **[http://localhost:2926](http://localhost:2926)**
 
 ---
 
@@ -328,15 +300,16 @@ npm start
 # Output: Server running on port 5000 | MongoDB connected
 ```
 
-In Terminal 2 (Start the Next.js Frontend on Port 3000):
+In Terminal 2 (Start the Next.js Frontend on Port 2926):
 ```bash
 cd client
-npm run dev -- -p 3000
-# Output: Ready in 2.5s | http://localhost:3000
+npm run dev -- -p 2926
+# Output: Ready | http://localhost:2926
 ```
 
 Open your browser to:
-👉 **[http://localhost:3000](http://localhost:3000)**
+🌐 **Complete Project Localhost Link:**  
+👉 **[http://localhost:2926](http://localhost:2926)**
 
 ---
 
