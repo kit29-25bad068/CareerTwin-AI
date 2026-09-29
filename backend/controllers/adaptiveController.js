@@ -148,7 +148,36 @@ exports.submitAttempt = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'questionId and userAnswer are required' });
     }
 
-    const question = await Question.findById(questionId).populate('conceptId');
+    const mongoose = require('mongoose');
+    let question = null;
+    if (mongoose.Types.ObjectId.isValid(questionId)) {
+      question = await Question.findById(questionId).populate('conceptId');
+    }
+
+    if (!question) {
+      const { QUESTIONS_DATA } = require('../services/questionData');
+      const { CONCEPTS_DATA } = require('../services/conceptData');
+      const slug = String(questionId).replace('builtin_', '');
+      const qData = QUESTIONS_DATA.find((item) => item.conceptSlug === slug || item.question === req.body.question);
+      if (qData) {
+        let concept = await Concept.findOne({ slug: qData.conceptSlug });
+        if (!concept) {
+          const cData = CONCEPTS_DATA.find((c) => c.slug === qData.conceptSlug);
+          concept = { _id: new mongoose.Types.ObjectId(), name: cData ? cData.name : slug, slug };
+        }
+        question = {
+          _id: new mongoose.Types.ObjectId(),
+          question: qData.question,
+          type: qData.type || 'MCQ',
+          difficulty: qData.difficulty || 1,
+          correctAnswer: qData.correctAnswer,
+          options: qData.options || [],
+          explanation: qData.explanation || '',
+          conceptId: concept,
+        };
+      }
+    }
+
     if (!question) {
       return res.status(404).json({ success: false, message: 'Question not found' });
     }
@@ -515,6 +544,32 @@ exports.getDiagnosticQuestions = async (req, res, next) => {
           .select('-correctAnswer')
           .sort({ difficulty: 1 });
         if (q) questions.push(q);
+      }
+    }
+
+    // Resilience fallback: If DB questions are empty, provide questions directly from curriculum definitions
+    if (questions.length === 0) {
+      const { QUESTIONS_DATA } = require('../services/questionData');
+      const { CONCEPTS_DATA } = require('../services/conceptData');
+      for (const slug of diagnosticSlugs) {
+        const c = CONCEPTS_DATA.find((item) => item.slug === slug);
+        const q = QUESTIONS_DATA.find((item) => item.conceptSlug === slug);
+        if (q) {
+          questions.push({
+            _id: `builtin_${slug}`,
+            conceptId: {
+              slug,
+              name: c ? c.name : slug,
+              order: c ? c.order : 1,
+            },
+            question: q.question,
+            type: q.type || 'MCQ',
+            difficulty: q.difficulty || 1,
+            options: q.options || [],
+            codeSnippet: q.codeSnippet || '',
+            explanation: q.explanation || '',
+          });
+        }
       }
     }
 
