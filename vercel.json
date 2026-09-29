@@ -28,12 +28,20 @@
       "dest": "frontend/js/$1"
     },
     {
+      "src": "/",
+      "dest": "frontend/index.html"
+    },
+    {
       "src": "/(.*)\\.html",
       "dest": "frontend/$1.html"
     },
     {
+      "src": "/([a-zA-Z0-9_-]+)",
+      "dest": "frontend/$1.html"
+    },
+    {
       "src": "/(.*)",
-      "dest": "backend/server.js"
+      "dest": "frontend/index.html"
     }
   ]
 }

@@ -3,7 +3,7 @@
  */
 
 // Dynamic Backend URL for separated frontend/backend deployments
-const BACKEND_ORIGIN = window.CAREERTWIN_BACKEND_URL || localStorage.getItem('careertwin_backend_url') || (typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname) ? window.location.origin : 'https://web-production-77833.up.railway.app');
+const BACKEND_ORIGIN = window.CAREERTWIN_BACKEND_URL || localStorage.getItem('careertwin_backend_url') || (typeof window !== 'undefined' ? window.location.origin : '');
 const API_BASE = `${BACKEND_ORIGIN}/api`;
 
 const API = {

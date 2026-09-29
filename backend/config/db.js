@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
   try {
     const connUri = process.env.MONGODB_URI || process.env.MONGO_URL || 'mongodb://localhost:27017/careertwin';
     const conn = await mongoose.connect(connUri, {
