@@ -50,65 +50,48 @@ async function callGemini(prompt, systemInstruction = '', jsonMode = true, optio
   const modelsToTry = [
     process.env.GEMINI_MODEL || 'gemini-1.5-flash',
     'gemini-2.0-flash',
-    'gemini-1.5-pro',
-    'gemini-1.5-flash-8b',
   ];
 
   let lastError = null;
 
   for (const modelName of modelsToTry) {
-    // Try both with top-level systemInstruction and prompt-embedded system instruction
-    const formatsToTry = systemInstruction ? [true, false] : [false];
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
-    for (const useSystemObject of formatsToTry) {
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-
-        const effectivePrompt = !useSystemObject && systemInstruction
-          ? `[SYSTEM INSTRUCTION]\n${systemInstruction}\n\n[USER REQUEST]\n${prompt}`
-          : prompt;
-
-        const requestBody = {
-          contents: [
-            {
-              role: 'user',
-              parts: [{ text: effectivePrompt }],
-            },
-          ],
-          generationConfig: {
-            temperature: options.temperature !== undefined ? options.temperature : 0.85,
-            topP: 0.95,
-            maxOutputTokens: options.maxTokens || 2500,
+      const requestBody = {
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: systemInstruction ? `[SYSTEM INSTRUCTION]\n${systemInstruction}\n\n[USER REQUEST]\n${prompt}` : prompt }],
           },
-        };
+        ],
+        generationConfig: {
+          temperature: options.temperature !== undefined ? options.temperature : 0.85,
+          topP: 0.95,
+          maxOutputTokens: options.maxTokens || 2500,
+        },
+      };
 
-        if (useSystemObject && systemInstruction) {
-          requestBody.systemInstruction = {
-            parts: [{ text: systemInstruction }],
-          };
-        }
-
-        if (jsonMode) {
-          requestBody.generationConfig.responseMimeType = 'application/json';
-        }
-
-        const response = await axios.post(url, requestBody, {
-          headers: { 'Content-Type': 'application/json' },
-          timeout: 30000,
-        });
-
-        const candidates = response.data?.candidates;
-        if (!candidates || candidates.length === 0 || !candidates[0].content) {
-          throw new Error('Gemini returned an empty response.');
-        }
-
-        const outputText = candidates[0].content.parts.map((p) => p.text).join('\n');
-        return jsonMode ? cleanJsonText(outputText) : outputText;
-      } catch (error) {
-        lastError = error;
-        const errMsg = error.response?.data?.error?.message || error.message;
-        console.warn(`[Gemini API Warning] Model ${modelName} (systemObj: ${useSystemObject}) failed: ${errMsg}`);
+      if (jsonMode) {
+        requestBody.generationConfig.responseMimeType = 'application/json';
       }
+
+      const response = await axios.post(url, requestBody, {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 8000,
+      });
+
+      const candidates = response.data?.candidates;
+      if (!candidates || candidates.length === 0 || !candidates[0].content) {
+        throw new Error('Gemini returned an empty response.');
+      }
+
+      const outputText = candidates[0].content.parts.map((p) => p.text).join('\n');
+      return jsonMode ? cleanJsonText(outputText) : outputText;
+    } catch (error) {
+      lastError = error;
+      const errMsg = error.response?.data?.error?.message || error.message;
+      console.warn(`[Gemini API Warning] Model ${modelName} failed: ${errMsg}`);
     }
   }
 
