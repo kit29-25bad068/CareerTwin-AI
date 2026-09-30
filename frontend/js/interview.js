@@ -113,7 +113,7 @@ class InterviewOrchestrator {
 
     // Recruiter & Company headers
     document.getElementById('interviewer-name-display').textContent = this.interview.recruiterType;
-    document.getElementById('interviewer-role-display').textContent = `${this.interview.role} Interview &bull; ${this.interview.company}`;
+    document.getElementById('interviewer-role-display').textContent = `${this.interview.role} Interview • ${this.interview.company}`;
     document.getElementById('company-tag-badge').textContent = `🏢 ${this.interview.company}`;
     document.getElementById('difficulty-tag-badge').textContent = `⚡ ${this.interview.difficulty}`;
     

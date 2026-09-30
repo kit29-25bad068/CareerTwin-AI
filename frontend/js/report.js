@@ -28,7 +28,7 @@ const ReportViewer = {
 
     // Header info
     document.getElementById('report-role-title').textContent = `${inv.role} Simulation Report`;
-    document.getElementById('report-company-meta').textContent = `${inv.company} &bull; ${inv.interviewType} &bull; Recruiter: ${inv.recruiterType}`;
+    document.getElementById('report-company-meta').textContent = `${inv.company} • ${inv.interviewType} • Recruiter: ${inv.recruiterType}`;
     document.getElementById('report-date-meta').textContent = Utils.formatDate(inv.completedAt || inv.createdAt);
 
     // Privacy badge

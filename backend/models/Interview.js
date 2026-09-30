@@ -176,7 +176,7 @@ const interviewSchema = new mongoose.Schema(
       recommendedPractice: [String],
       roleReadiness: {
         type: String,
-        enum: ['Early Stage', 'Developing', 'Ready with Minor Polish', 'Interview Ready', 'Strong Fit'],
+        enum: ['Early Stage', 'Developing', 'Ready with Minor Polish', 'Interview Ready', 'Strong Fit', 'Foundational'],
         default: 'Developing',
       },
       summary: String,

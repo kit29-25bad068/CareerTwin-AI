@@ -430,7 +430,7 @@ function generateDeterministicReport(interview) {
     weaknesses,
     mostImportantImprovement: 'Incorporate quantifiable results and concrete architectural choices into technical answers.',
     recommendedPractice: ['Practice STAR structured behavioral questions', 'Review system design scaling techniques'],
-    roleReadiness: techAvg >= 80 ? 'Interview Ready' : (techAvg >= 70 ? 'Developing' : 'Foundational'),
+    roleReadiness: techAvg >= 80 ? 'Interview Ready' : (techAvg >= 70 ? 'Developing' : 'Early Stage'),
     summary: `Completed mock interview simulation for ${interview.role || 'Software Engineer'} at ${interview.company || 'Target Company'}. Demonstrated solid foundational competencies with clear opportunities for refinement.`,
   };
 }
