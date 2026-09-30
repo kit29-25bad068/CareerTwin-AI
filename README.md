@@ -317,5 +317,5 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 ```text
 MIT License
-Copyright (c) 2026 CareerTwin AI Team
+Copyright (c) 2026 Joshika Manikandan / CareerTwin AI Team
 ```
