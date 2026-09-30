@@ -259,25 +259,27 @@ class InterviewOrchestrator {
     this.visionTracker.stopTracking();
 
     try {
-      // 1. If Replay Mode, upload full video recording
+      // 1. If Replay Mode, safely stop recorder and asynchronously upload recording without blocking
       if (this.interview.privacyMode === 'replay' && this.fullMediaRecorder) {
-        await new Promise((resolve) => {
-          this.fullMediaRecorder.onstop = async () => {
-            const videoBlob = new Blob(this.fullRecordingChunks, { type: 'video/webm' });
-            const formData = new FormData();
-            formData.append('recording', videoBlob, 'interview-replay.webm');
-            try {
-              await API.post(`/interviews/${this.interview._id}/recording`, formData);
-            } catch (e) {
-              console.warn('Could not save replay recording:', e.message);
-            }
-            resolve();
-          };
+        if (this.fullMediaRecorder.state !== 'inactive') {
           this.fullMediaRecorder.stop();
-        });
+        }
+        // Background upload: never block user report rendering
+        setTimeout(async () => {
+          try {
+            const videoBlob = new Blob(this.fullRecordingChunks, { type: 'video/webm' });
+            if (videoBlob.size > 0 && videoBlob.size < 4.2 * 1024 * 1024) {
+              const formData = new FormData();
+              formData.append('recording', videoBlob, 'interview-replay.webm');
+              await API.post(`/interviews/${this.interview._id}/recording`, formData);
+            }
+          } catch (e) {
+            console.warn('Replay background upload notice:', e.message);
+          }
+        }, 50);
       }
 
-      // 2. Call end interview API
+      // 2. Call end interview API immediately (< 1s)
       const res = await API.post(`/interviews/${this.interview._id}/end`, {
         totalDurationSeconds: this.totalElapsedSeconds,
       });

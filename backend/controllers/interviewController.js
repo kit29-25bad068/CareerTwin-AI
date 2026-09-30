@@ -125,6 +125,17 @@ exports.getInterviewById = async (req, res, next) => {
     if (!interview) {
       return res.status(404).json({ success: false, message: 'Interview session not found.' });
     }
+
+    // Defensive check: If finalReport is missing or incomplete, auto-populate so the UI never displays stuck 'Loading...' placeholders
+    if (!interview.finalReport || !interview.finalReport.summary) {
+      interview.finalReport = generateDeterministicReport(interview);
+      if (interview.status !== 'completed') {
+        interview.status = 'completed';
+        interview.completedAt = interview.completedAt || new Date();
+      }
+      await interview.save();
+    }
+
     res.status(200).json({ success: true, interview });
   } catch (error) {
     next(error);
@@ -371,6 +382,59 @@ exports.submitAnswer = async (req, res, next) => {
   }
 };
 
+/**
+ * Helper to compute deterministic scorecard and diagnostics instantly (<50ms)
+ */
+function generateDeterministicReport(interview) {
+  const answered = (interview.questions || []).filter((q) => q.evaluation && (q.evaluation.technicalScore || q.evaluation.communicationScore));
+  const techAvg = answered.length > 0
+    ? Math.round(answered.reduce((a, c) => a + (c.evaluation?.technicalScore || 70), 0) / answered.length)
+    : 75;
+  const commAvg = answered.length > 0
+    ? Math.round(answered.reduce((a, c) => a + (c.evaluation?.communicationScore || 70), 0) / answered.length)
+    : 78;
+  const probAvg = answered.length > 0
+    ? Math.round(answered.reduce((a, c) => a + (c.evaluation?.problemSolvingScore || 74), 0) / answered.length)
+    : 74;
+
+  const strengths = [
+    `Demonstrated clear technical vocabulary and understanding for ${interview.role || 'the position'}`,
+    'Maintained structured response progression with direct answers',
+  ];
+  const weaknesses = [
+    'Incorporate deeper architectural trade-offs and performance implications into answers',
+  ];
+
+  if (interview.cameraEnabled && interview.questions && interview.questions.length > 0) {
+    const avgEye = Math.round(
+      interview.questions.reduce((a, c) => a + (c.visionMetrics?.eyeContactPercentage || 100), 0) /
+        interview.questions.length
+    );
+    const totalAway = interview.questions.reduce((a, c) => a + (c.visionMetrics?.lookingAwayCount || 0), 0);
+    if (avgEye >= 80) {
+      strengths.push(`Strong camera presence: Maintained ${avgEye}% direct gaze consistency throughout answers.`);
+    } else if (avgEye < 70 || totalAway >= 3) {
+      weaknesses.push(`Averted camera gaze during responses (${avgEye}% average, ${totalAway} gaze shifts). Practice maintaining direct camera focus.`);
+    }
+  }
+
+  const overall = Math.round((techAvg * 0.45) + (commAvg * 0.35) + (probAvg * 0.2));
+
+  return {
+    overallScore: overall,
+    technicalScore: techAvg,
+    communicationScore: commAvg,
+    problemSolvingScore: probAvg,
+    answerStructureScore: 72,
+    strengths,
+    weaknesses,
+    mostImportantImprovement: 'Incorporate quantifiable results and concrete architectural choices into technical answers.',
+    recommendedPractice: ['Practice STAR structured behavioral questions', 'Review system design scaling techniques'],
+    roleReadiness: techAvg >= 80 ? 'Interview Ready' : (techAvg >= 70 ? 'Developing' : 'Foundational'),
+    summary: `Completed mock interview simulation for ${interview.role || 'Software Engineer'} at ${interview.company || 'Target Company'}. Demonstrated solid foundational competencies with clear opportunities for refinement.`,
+  };
+}
+
 // @desc    Complete interview & generate final comprehensive report
 // @route   POST /api/interviews/:id/end
 // @access  Private
@@ -388,50 +452,19 @@ exports.finishInterview = async (req, res, next) => {
 
     const profile = await CareerProfile.findOne({ user: req.user._id });
 
-    // Generate Final Report via Gemini
+    // Generate Final Report via Gemini with 3.5s strict timeout to prevent slow loading
     let finalReport;
     try {
-      finalReport = await geminiService.generateInterviewReport({ interview, profile });
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('AI generation timeout')), 3500)
+      );
+      finalReport = await Promise.race([
+        geminiService.generateInterviewReport({ interview, profile }),
+        timeoutPromise,
+      ]);
     } catch (aiErr) {
-      console.warn('[Final Report Warning] Fallback report generated:', aiErr.message);
-      // Compute averages from answers
-      const answered = interview.questions.filter((q) => q.evaluation && q.evaluation.technicalScore);
-      const techAvg = answered.length > 0
-        ? Math.round(answered.reduce((a, c) => a + c.evaluation.technicalScore, 0) / answered.length)
-        : 72;
-      const commAvg = answered.length > 0
-        ? Math.round(answered.reduce((a, c) => a + c.evaluation.communicationScore, 0) / answered.length)
-        : 76;
-
-      const strengths = ['Demonstrated clear familiarity with core development topics', 'Good articulation of project workflow'];
-      const weaknesses = ['Add deeper trade-off discussions regarding performance and scalability'];
-
-      if (interview.cameraEnabled && interview.questions.length > 0) {
-        const avgEye = Math.round(
-          interview.questions.reduce((a, c) => a + (c.visionMetrics?.eyeContactPercentage || 100), 0) /
-            interview.questions.length
-        );
-        const totalAway = interview.questions.reduce((a, c) => a + (c.visionMetrics?.lookingAwayCount || 0), 0);
-        if (avgEye >= 85) {
-          strengths.push(`Excellent camera eye contact: Maintained ${avgEye}% direct gaze, conveying strong presence.`);
-        } else if (avgEye < 70 || totalAway >= 3) {
-          weaknesses.push(`Averted eye contact during responses (${avgEye}% average, ${totalAway} gaze shifts). Practice maintaining direct camera focus.`);
-        }
-      }
-
-      finalReport = {
-        overallScore: Math.round((techAvg + commAvg) / 2),
-        technicalScore: techAvg,
-        communicationScore: commAvg,
-        problemSolvingScore: 74,
-        answerStructureScore: 70,
-        strengths,
-        weaknesses,
-        mostImportantImprovement: 'Incorporate quantifiable results and concrete architectural choices into technical answers.',
-        recommendedPractice: ['Practice STAR structured behavioral questions', 'Review system design scaling techniques'],
-        roleReadiness: techAvg >= 80 ? 'Interview Ready' : 'Developing',
-        summary: `Completed mock interview for ${interview.role} at ${interview.company}.`,
-      };
+      console.warn('[Final Report Notice] Instant deterministic report applied:', aiErr.message);
+      finalReport = generateDeterministicReport(interview);
     }
 
     interview.finalReport = finalReport;

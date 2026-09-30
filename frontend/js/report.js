@@ -182,11 +182,6 @@ const ReportViewer = {
             <div style="background:rgba(0,0,0,0.3); padding:0.85rem; border-radius:var(--radius-sm); font-size:0.9rem; font-style:italic; border-left:3px solid var(--accent-primary);">
               "${Utils.escapeHTML(q.answerText || 'No verbal answer recorded.')}"
             </div>
-          </div>
-      `;
-    }).join('');
-  },
-
           <!-- Speech & Vision Indicators -->
           <div class="grid grid-cols-2" style="margin-bottom: 1rem; font-size:0.82rem;">
             <div style="background:rgba(255,255,255,0.02); padding:0.75rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
@@ -217,7 +212,8 @@ const ReportViewer = {
           </div>
         </div>
       </div>
-    `).join('');
+      `;
+    }).join('');
   },
 
   async deleteRecording() {
