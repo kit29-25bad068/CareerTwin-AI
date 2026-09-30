@@ -42,8 +42,8 @@
 
 ## 🚀 Live Localhost Navigation
 
-🌐 **Complete Project Localhost Link:**  
-👉 **[http://localhost:2926](http://localhost:2926)**
+🌐 **Complete Project Link:**  
+👉 **[https://careertwin-ai-green.vercel.app](https://careertwin-ai-green.vercel.app)**
 
 ---
 
