@@ -449,42 +449,9 @@ class VisionTracker {
     ctx.moveTo(fx + fw - bLen, fy + fh); ctx.lineTo(fx + fw, fy + fh); ctx.lineTo(fx + fw, fy + fh - bLen);
     ctx.stroke();
 
-    // 2. Draw Eye Tracking Sockets & Tracked Pupils
-    if (eyeRegions && eyeRegions.length > 0) {
-      eyeRegions.forEach((eye, idx) => {
-        const ex = eye.x * scaleX;
-        const ey = eye.y * scaleY;
-        const ew = eye.w * scaleX;
-        const eh = eye.h * scaleY;
-
-        // Eye bounding box
-        ctx.strokeStyle = isDirectEyeContact ? 'rgba(6, 182, 212, 0.45)' : 'rgba(245, 158, 11, 0.55)';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([2, 2]);
-        ctx.strokeRect(ex, ey, ew, eh);
-        ctx.setLineDash([]);
-
-        // Pupil reticle
-        const pupil = detectedPupils[idx];
-        if (pupil) {
-          const px = pupil.pupilX * scaleX;
-          const py = pupil.pupilY * scaleY;
-
-          // Glowing pupil target point
-          ctx.beginPath();
-          ctx.arc(px, py, 4, 0, Math.PI * 2);
-          ctx.fillStyle = eyeColor;
-          ctx.fill();
-
-          // Reticle ring
-          ctx.beginPath();
-          ctx.arc(px, py, 7, 0, Math.PI * 2);
-          ctx.strokeStyle = eyeColor;
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-        }
-      });
-    }
+    // Note: Eyeball dots and eye bounding boxes are intentionally not rendered 
+    // on the camera feed to keep the live viewfinder clean and natural. 
+    // Gaze tracking calculations continue to operate in the background.
   }
 
   updateHUD(isFaceDetected, isDirectEyeContact, direction, description) {
