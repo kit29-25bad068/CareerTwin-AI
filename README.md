@@ -7,20 +7,22 @@
 
 > **"Don't just prepare for interviews. Build your career with an AI that grows with you."**
 
-[![Next.js 15](https://img.shields.io/badge/Next.js-15.3-black?style=flat-square&logo=next.js)](https://nextjs.org/)
-[![React 19](https://img.shields.io/badge/React-19.2-61dafb?style=flat-square&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-CSS%20v4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
+[![Production Live](https://img.shields.io/badge/Live%20Production-careertwin--ai--green.vercel.app-10b981?style=for-the-badge&logo=vercel&logoColor=white)](https://careertwin-ai-green.vercel.app/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/kit29-25bad068/CareerTwin-AI)
+<br/>
+
 [![Node.js](https://img.shields.io/badge/Node.js-24.x-339933?style=flat-square&logo=node.js)](https://nodejs.org/)
-[![Express.js](https://img.shields.io/badge/Express-4.21-000000?style=flat-square&logo=express)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47a248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
-[![Google Gemini API](https://img.shields.io/badge/Google%20Gemini-AI%20Engine-4285f4?style=flat-square&logo=google)](https://aistudio.google.com/)
-[![MediaPipe](https://img.shields.io/badge/MediaPipe-Vision%20Tracking-ff6f00?style=flat-square)](https://developers.google.com/mediapipe)
+[![Express.js](https://img.shields.io/badge/Express-4.21.2-000000?style=flat-square&logo=express)](https://expressjs.com/)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas%20Cloud-47a248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
+[![Google Gemini API](https://img.shields.io/badge/Google%20Gemini-1.5%20%2F%202.0-4285f4?style=flat-square&logo=google)](https://aistudio.google.com/)
+[![Chart.js](https://img.shields.io/badge/Chart.js-Data%20Visualization-ff6384?style=flat-square&logo=chartdotjs)](https://www.chartjs.org/)
+[![Vercel Serverless](https://img.shields.io/badge/Deployment-Vercel%20Serverless-black?style=flat-square&logo=vercel)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=flat-square)](LICENSE)
 
-<br/><br/>
+<br/>
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkit29-25bad068%2FCareerTwin-AI&root-directory=client)
+### 🌐 Live Production Deployment
+### 👉 **[https://careertwin-ai-green.vercel.app/](https://careertwin-ai-green.vercel.app/)**
 
 </div>
 
@@ -28,22 +30,60 @@
 
 ## 📖 Executive Summary
 
-**CareerTwin AI** is a privacy-first, evidence-driven career intelligence platform engineered for aspiring software engineers, students, and tech professionals. Unlike generic conversational chatbots that offer superficial practice, CareerTwin constructs an evolving **Digital Career Twin** that aggregates verified coding proficiency, authentic company interview datasets, real-time eye-contact & speech telemetry, and structured knowledge graphs.
+**CareerTwin AI** is a privacy-first, evidence-driven career intelligence platform engineered for aspiring software engineers, students, and tech professionals. Unlike generic conversational chatbots that offer superficial practice, CareerTwin constructs an evolving, verifiable **Digital Career Twin** that aggregates verified coding proficiency, authentic company interview datasets, real-time eye-contact and speech telemetry, Bayesian adaptive knowledge tracing, and explainable career readiness indices.
 
-### Core Breakthroughs
-* **Dual-Source Interview Grounding:** Grounded in a curated database of **985 verified interview questions across 11 top companies**, personalized dynamically using Google Gemini AI.
-* **Computer Vision HUD:** Live camera overlay measuring **eye contact percentage**, gaze tracking (`focused`, `drifting`, `away`), and facial presence using MediaPipe.
-* **Evidence-Driven Adaptive Learning System:** 12-concept bounded Knowledge Graph with 15 prerequisite edges, anti-gaming heuristic penalties, 14-day decay tracking, and 6 instructional decision actions.
-* **Teacher Governance Oversight:** Cohort telemetry, safety intervention alerts, and mandatory pedagogical override rationale enforced with an immutable audit trail.
-* **Cross-Platform Verification:** Real-time competitive coding profile synchronization (LeetCode, CodeChef, Codeforces via **Codolio**) and GitHub commit signals with account anti-sharing constraints.
-* **Dual-Engine Resume & CV Analyzer:** Deep integration of the live interactive Vercel CV Analyzer with CareerTwin's MongoDB ATS keyword parser.
+### Key Innovations
+* **Dual-Source Mock Interview Grounding:** Grounded in a curated database of **985 verified interview questions across 11 top tech employers** (Google, Amazon, Microsoft, Apple, Meta, etc.), personalized dynamically using Google Gemini AI.
+* **Client-Side Vision & Speech Intelligence:** Real-time webcam analysis measuring **eye contact percentage**, gaze tracking (`Direct Contact`, `Gaze Shifted`), and vocal cadence (Words Per Minute, filler word density) computed locally via HTML5 Canvas and Web Audio APIs without recording privacy leaks.
+* **Bayesian Adaptive Learning Engine:** 12-concept bounded Knowledge Graph with 15 prerequisite edges, Bayesian Knowledge Tracing (BKT), epistemic uncertainty calibration, anti-gaming heuristic penalties, and 14-day knowledge decay modeling.
+* **Dual-Engine Resume & ATS Evaluator:** Comprehensive PDF resume analysis examining ATS keyword density, role alignment score, and quantifiable bullet point optimization via the Google X-Y-Z formula.
+* **Conversational AI Career Mentor:** Context-aware career advisor grounded in real-time learner telemetry, resume scores, and skill gap priorities.
+* **Explainable Career Readiness Index (CRI):** A transparent, weighted multi-dimensional score (25% Technical, 20% Problem Solving, 20% Projects, 15% Resume, 15% Communication, 5% Verified Signals).
 
 ---
 
-## 🚀 Live Localhost Navigation
+## 🚀 Live Access & Quick Navigation
 
-🌐 **Complete Project Localhost Link:**  
-👉 **[http://localhost:2926](http://localhost:2926)**
+The complete application is hosted live on Vercel Serverless infrastructure with global CDN acceleration and MongoDB Atlas cloud synchronization:
+
+* 🌐 **Main Landing Page:** [https://careertwin-ai-green.vercel.app/](https://careertwin-ai-green.vercel.app/)
+* 📊 **Career Dashboard:** [https://careertwin-ai-green.vercel.app/dashboard.html](https://careertwin-ai-green.vercel.app/dashboard.html)
+* 🎙️ **AI Mock Interview Room:** [https://careertwin-ai-green.vercel.app/interview.html](https://careertwin-ai-green.vercel.app/interview.html)
+* 🧩 **Java Core Diagnostic Room:** [https://careertwin-ai-green.vercel.app/diagnostic.html](https://careertwin-ai-green.vercel.app/diagnostic.html)
+* 🗺️ **Instructional Concept Graph:** [https://careertwin-ai-green.vercel.app/concept-graph.html](https://careertwin-ai-green.vercel.app/concept-graph.html)
+* 📄 **Resume ATS Intelligence:** [https://careertwin-ai-green.vercel.app/resume.html](https://careertwin-ai-green.vercel.app/resume.html)
+* 🛣️ **Personal Career Roadmap:** [https://careertwin-ai-green.vercel.app/roadmap.html](https://careertwin-ai-green.vercel.app/roadmap.html)
+* 💬 **Career Mentor AI:** [https://careertwin-ai-green.vercel.app/mentor.html](https://careertwin-ai-green.vercel.app/mentor.html)
+
+---
+
+## 🛠️ Complete Technology Stack
+
+| Domain | Technology | Exact Project Responsibility |
+|:---|:---|:---|
+| **Frontend Core** | **HTML5** | Structural semantic markup across all 20+ responsive application views. |
+| | **CSS3 (Custom Design System)** | Dark-mode glassmorphic interface, responsive CSS grid/flexbox, animations, and CSS variables. |
+| | **ES6+ JavaScript (Vanilla)** | Modular, framework-independent client logic, DOM rendering, and asynchronous API communication. |
+| **Data Visualization** | **Chart.js** | Interactive 360° Career Readiness Radar Charts and multi-axis performance scorecards. |
+| | **HTML5 Canvas API** | Real-time pixel video frame processing for gaze tracking and dynamic Bézier-curve DAG rendering. |
+| **Backend API** | **Node.js (v18+ / v24)** | High-concurrency, event-driven JavaScript server runtime. |
+| | **Express.js (v4.21.2)** | Serverless REST API routing, middleware orchestration, and authentication guards. |
+| **Database & ODM** | **MongoDB Atlas** | Managed cloud database storing users, learner states, interview transcripts, and curriculum graphs. |
+| | **Mongoose ODM (v8.9.5)** | Strongly-typed schemas, data validation, and relational population queries. |
+| | **Company Question Bank** | 985 verified interview questions curated across 11 top tech enterprises. |
+| **AI & NLP** | **Google Gemini (1.5 / 2.0)** | Resume ATS scoring, STAR mock interview evaluation, roadmap generation, and project judge. |
+| | **Custom NLP Fallback Router** | Deterministic, topic-specific conversational engine ensuring 100% uptime if external cloud LLMs stall. |
+| **Adaptive Learning** | **Bayesian Knowledge Tracing (BKT)** | Probabilistic skill mastery computation ($P(L_t)$) with guess and slip penalty calibration. |
+| | **Epistemic Uncertainty Engine** | Distinguishes between well-verified candidate competency and volatile guessing. |
+| | **Prerequisite Graph Traversal** | Directed Acyclic Graph (DAG) traversal across 12 Java concepts and 15 dependency edges. |
+| **Vision & Speech** | **Client-Side Gaze Tracker** | Real-time pupil centroid and eye contact tracking running locally in the browser. |
+| | **Web Audio API** | Real-time audio waveform visualization and vocal frequency analysis. |
+| | **Web Speech Recognition API** | Real-time speech-to-text transcript preview and Words-Per-Minute (WPM) cadence tracking. |
+| **Security & Auth** | **JSON Web Tokens (JWT)** | Stateless, signed bearer token session management for protected API endpoints. |
+| | **Bcrypt.js (v2.4.3)** | One-way cryptographic salting and hashing for secure password storage. |
+| | **CORS** | Strict cross-origin access control and security header enforcement. |
+| **DevOps & Cloud** | **Vercel Serverless** | Automated CI/CD build pipeline, edge routing, and zero-cold-start hosting. |
+| | **Git & GitHub** | Distributed version control repository (`kit29-25bad068/CareerTwin-AI`). |
 
 ---
 
@@ -51,116 +91,97 @@
 
 ```mermaid
 flowchart TD
-    subgraph "Client Layer (Next.js 15 + React 19)"
-        UI[User Interface & Dashboard]
-        HUD[MediaPipe Eye-Tracking HUD]
-        Mic[Web Audio / Speech Recognition]
-        Graph[Interactive SVG Concept Graph]
+    subgraph Client ["Client Layer (Browser)"]
+        UI["Responsive HTML5 / CSS3 / ES6+"]
+        Vision["Vision Tracker (Pupil / Gaze / Framing)"]
+        Audio["Web Audio & Speech Recognition API"]
+        Charts["Chart.js Radar & SVG Concept DAG"]
     end
 
-    subgraph "API Gateway & Middleware"
-        Proxy[Next.js Rewrites: /api/*] --> Express[Express.js Engine :5000]
-        Express --> Auth[JWT & Unique GitHub/Codolio Guard]
-        Express --> Upload[Multer File & Resume Handler]
+    subgraph Serverless ["Application & API Gateway (Vercel Serverless)"]
+        Express["Express.js Serverless Gateway"]
+        Auth["JWT & Bcrypt Security Middleware"]
+        Upload["Multer & In-Memory PDF Parser"]
     end
 
-    subgraph "Dual-Source Mock Interview Engine"
-        Express --> CompDB[(MongoDB: companyInterviewData\n985 Questions / 11 Companies)]
-        Express --> Gemini[Google Gemini AI Engine]
-        CompDB -->|1. Grounding Layer| GroundingOrchestrator{Match Found?}
-        GroundingOrchestrator -->|Yes| Source1[Source 1: Verified Company Questions]
-        GroundingOrchestrator -->|Custom/Other| Source2[Source 2: Generic Role-Based Pattern]
-        Source1 --> Personalizer[Gemini Contextual Personalization]
-        Personalizer --> Tag[Tag: database_question / pattern_derived / generic_role_based]
+    subgraph Intelligence ["AI, Cognitive & Algorithmic Engines"]
+        Gemini["Google Gemini LLM Engine (1.5 / 2.0)"]
+        Adaptive["Bayesian Knowledge Tracing & Mastery Engine"]
+        Readiness["Explainable Career Readiness Index (CRI)"]
+        MentorEngine["Context-Aware AI Mentor Router"]
     end
 
-    subgraph "Evidence-Driven Adaptive Learning System"
-        Attempt[Learner Attempt Submission] --> AG[Anti-Gaming Heuristic Engine]
-        AG --> ME[Mastery Engine: 0-100%]
-        AG --> UE[Uncertainty Engine: 5-100%]
-        ME --> Decision[6 Instructional Decision Actions]
-        UE --> Decision
-        Decay[14-Day Inactivity Decay] --> Decision
-        Prereqs[Recursive Ancestor Prerequisite Graph] --> Decision
-        Teacher[Teacher Override Authority] --> Decision
-        Decision --> Audit[(Immutable AuditLog)]
+    subgraph Data ["Data & External Integration Layer"]
+        Atlas[("MongoDB Atlas Cloud Database")]
+        CompanyDB[("985 Verified Company Questions")]
+        GitHub["GitHub REST API Integration"]
+        Codolio["Codolio Competitive Coding Platform"]
     end
 
-    UI --> Proxy
-    HUD --> UI
-    Mic --> UI
-    Graph --> UI
+    UI --> Express
+    Vision --> Express
+    Audio --> Express
+    Charts --> Express
+
+    Express --> Auth
+    Express --> Upload
+
+    Express --> Gemini
+    Express --> Adaptive
+    Express --> Readiness
+    Express --> MentorEngine
+
+    Express --> Atlas
+    Express --> CompanyDB
+    Express --> GitHub
+    Express --> Codolio
 ```
 
 ---
 
-## 🏢 Company Interview Database (985 Questions)
+## 🏢 Company Interview Dataset (985 Questions)
 
-The system is grounded in an authentic, verified repository of company-wise interview questions parsed across **11 major tech employers**:
+The mock interview engine is grounded in a verified repository of authentic interview questions categorized across **11 major tech employers**:
 
-| Company | Total Questions | Primary Categorized Domains |
-|---|---|---|
-| **Google** | 50 | Data Structures, Algorithms, System Design, Problem Solving |
-| **Amazon** | 75 | Leadership Principles, Behavioral, DSA, Scalability, Distributed Systems |
-| **Microsoft** | 80 | Algorithms, OOP, Low-Level System Design, OS, DBMS |
-| **Zoho** | 80 | C/Java Programming, Logic Puzzles, Problem Solving, OOP, Relational DBMS |
-| **Apple** | 100 | Systems Architecture, Low-Level Concurrency, Memory Management, DSA |
-| **Meta** | 100 | Distributed Systems, Scalability, High-Frequency DSA, Behavioral |
-| **Infosys** | 100 | Core Programming, OOP, SQL/DBMS, Computer Networks, HR |
-| **TCS** | 100 | Technical Fundamentals, DBMS, OOP, Software Testing, Core CS |
-| **Adobe** | 100 | Complex Algorithms, Graphics Math, Memory Optimization, DSA |
-| **Atlassian** | 100 | System Design, Clean Code, Agile Collaboration, Core Values |
-| **High-Growth Startup** | 100 | Full-Stack Architecture, Rapid Prototyping, Scalability, Debugging |
-| **Total** | **985 Questions** | **18 Normalized Categories** |
-
-### Question Source Attribution Badges
-Every question generated and reviewed is tagged with a transparent origin indicator:
-* `🏢 Database Question`: Exact or minimally adapted question from the verified company collection.
-* `🧬 Pattern-Derived`: Generated by Gemini AI adhering strictly to the verified questioning style of that company.
-* `🎯 Role-Based`: General role-based question used when selecting an uncatalogued custom organization.
+| Company | Total Questions | Primary Evaluated Focus Areas |
+|:---|:---:|:---|
+| **Google** | 50 | Data Structures, Algorithms, Distributed System Design, Algorithmic Complexity |
+| **Amazon** | 75 | Leadership Principles, Scalability, System Design, Behavioral STAR Format |
+| **Microsoft** | 80 | Core Algorithms, OOP Principles, Low-Level System Design, OS Internals, DBMS |
+| **Zoho** | 80 | Logic Puzzles, Low-Level Java/C Implementation, OOP, Relational Database Normalization |
+| **Apple** | 100 | Systems Architecture, Low-Level Concurrency, Memory Optimization, Data Structures |
+| **Meta** | 100 | Large-Scale Distributed Systems, Scalability, High-Frequency DSA, Behavioral |
+| **Adobe** | 100 | Complex Algorithms, Computational Geometry, Memory Management, DSA |
+| **Atlassian** | 100 | Clean Code, API Design, System Architecture, Agile Collaboration, Values |
+| **Infosys** | 100 | Core Programming, OOP, SQL/Relational Queries, Computer Networks |
+| **TCS** | 100 | CS Fundamentals, Database Management, OOP, Software Engineering Principles |
+| **High-Growth Startup** | 100 | Full-Stack Architecture, Rapid Prototyping, Debugging, CI/CD, Production Readiness |
+| **Total** | **985 Questions** | **18 Normalized Categories Across Top Enterprises** |
 
 ---
 
-## 🧠 Evidence-Driven Adaptive Learning Engine
+## 🧠 Adaptive Learning Concept Graph
 
-Structured around a bounded **Java Programming Fundamentals Knowledge Graph**:
-* **12 Directed Concepts:**
-  1. `Variables & Data Types`
-  2. `Operators & Expressions`
-  3. `Control Flow & Conditionals`
-  4. `Loops & Iteration`
-  5. `Methods & Scope`
-  6. `Arrays & String Manipulation`
-  7. `OOP Basics & Class Architecture`
-  8. `Inheritance & Method Overriding`
-  9. `Polymorphism & Dynamic Dispatch`
-  10. `Interfaces & Abstraction`
-  11. `Exception Handling & Robustness`
-  12. `Java Collections Framework`
-* **15 Directed Prerequisite Edges:** Traversed recursively to isolate root conceptual blockers when a candidate struggles.
+Structured around a bounded **Java Core Instructional Knowledge Graph**:
+* **12 Core Concepts:**
+  1. `Programming Basics`
+  2. `Variables & Data Types`
+  3. `Operators`
+  4. `Conditional Statements`
+  5. `Loops`
+  6. `Functions / Methods`
+  7. `OOP Basics`
+  8. `Encapsulation`
+  9. `Inheritance`
+  10. `Collections`
+  11. `Exception Handling`
+  12. `Problem Solving`
+* **15 Directed Prerequisite Edges:** Traversed recursively to isolate conceptual bottlenecks whenever a candidate struggles.
 * **Dual Epistemic Metrics:**
-  * **Mastery (0–100%):** Heuristic competency calculation with strict upward jump caps (+12% maximum per attempt) to prevent artificial score spikes.
-  * **Epistemic Uncertainty (5–100%):** Measures system confidence; lowered only through diverse question formats (Code Output, Debugging, Transfer Scenarios).
-* **Anti-Gaming Shield:** Penalizes rapid guessing (`<5s` response times), guess-until-correct cycles, and hint-reliance.
-* **6 Instructional Decisions:** `ADVANCE`, `PRACTICE`, `REVIEW`, `REMEDIATE_PREREQUISITE`, `CHALLENGE`, `TEACHER_INTERVENTION`.
-* **Teacher Governance:** Cohort monitoring with teacher override authority requiring mandatory written pedagogical rationale, logged permanently in an immutable audit trail.
-
----
-
-## 🛠️ Technology Stack
-
-| Layer | Technologies |
-|---|---|
-| **Frontend Framework** | **Next.js 15 (Turbopack)**, **React 19**, **TypeScript** |
-| **Styling & Icons** | **Tailwind CSS v4**, **Lucide React**, **canvas-confetti** |
-| **Static Suite** | HTML5, Modern CSS3, Vanilla ES6+ JavaScript, Chart.js |
-| **Backend API** | **Node.js 24**, **Express.js 4.21**, **Mongoose 8** |
-| **Database** | **MongoDB Atlas** (Sharded Cluster) |
-| **AI Engine** | **Google Gemini API** (`gemini-1.5-flash` / `gemini-1.5-pro`) |
-| **Speech Intelligence** | Whisper API, Web Audio API, MediaRecorder |
-| **Vision Intelligence** | MediaPipe FaceMesh & Eye Contact Gaze Estimator |
-| **Authentication** | JSON Web Tokens (JWT), bcryptjs password hashing |
-| **File Processing** | Multer, pdf-parse (PDF Resume parsing) |
+  * **Mastery (0–100%):** Probabilistic competency calculation with strict upward jump caps (+12% maximum per attempt) to prevent artificial score spikes.
+  * **Epistemic Uncertainty (5–100%):** Measures system confidence; lowered only through diverse question formats (Code Output, Debugging, Concept Application).
+* **Anti-Gaming Shield:** Penalizes rapid guessing (`<5s` response times), guess-until-correct cycles, and hint exploitation.
+* **6 Pedagogical Decision Actions:** `ADVANCE`, `PRACTICE`, `REVIEW`, `REMEDIATE_PREREQUISITE`, `CHALLENGE`, `TEACHER_INTERVENTION`.
 
 ---
 
@@ -168,82 +189,55 @@ Structured around a bounded **Java Programming Fundamentals Knowledge Graph**:
 
 ```
 CareerTwin-AI/
-├── client/                               # Next.js 15 + React 19 Modern Frontend
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── page.tsx                  # Home Landing page
-│   │   │   ├── login/page.tsx            # Candidate Sign-In
-│   │   │   ├── register/page.tsx         # Sign-Up with GitHub & Codolio constraints
-│   │   │   ├── dashboard/page.tsx        # Command Central Dashboard
-│   │   │   ├── interview/
-│   │   │   │   ├── page.tsx              # Dual-Source Mock Interview Room
-│   │   │   │   └── report/[id]/page.tsx  # Deep Analysis Post-Interview Report
-│   │   │   ├── resume/page.tsx           # Dual-Engine Resume & CV Analyzer
-│   │   │   ├── adaptive/
-│   │   │   │   ├── concept-graph/page.tsx # Interactive SVG Concept Graph
-│   │   │   │   ├── mastery/page.tsx       # Mastery & Uncertainty Metrics
-│   │   │   │   └── teacher-dashboard/page.tsx # Teacher Oversight & Overrides
-│   │   │   ├── career-twin/page.tsx      # Digital Career Twin 360°
-│   │   │   └── settings/page.tsx         # Privacy, JSON Export & Account Wipe
-│   │   ├── components/                   # Reusable React 19 UI Primitives
-│   │   │   ├── Navbar.tsx                # Responsive navigation header
-│   │   │   ├── ScoreDial.tsx             # Radial SVG score gauge
-│   │   │   ├── CompanyKnowledgeCard.tsx  # Company question dataset status card
-│   │   │   ├── SourceTypeBadge.tsx       # Grounding source badge with tooltip
-│   │   │   └── EyeTrackingHUD.tsx        # Camera overlay with real-time gaze HUD
-│   │   ├── context/
-│   │   │   └── AuthContext.tsx           # Client authentication state provider
-│   │   ├── lib/
-│   │   │   ├── api.ts                    # Central API client with JWT attachment
-│   │   │   └── utils.ts                  # Formatters & class merge utilities
-│   │   └── types/
-│   │       └── index.ts                  # TypeScript domain interfaces
-│   ├── next.config.ts                    # API proxy rewrites to Express backend
-│   └── package.json
-│
-├── backend/                              # Express.js API Backend
-│   ├── server.js                         # Application entrypoint & middleware
-│   ├── config/db.js                      # MongoDB connection handler
-│   ├── models/                           # Mongoose Data Schemas
-│   │   ├── User.js                       # User credentials & unique profile URLs
-│   │   ├── CompanyInterviewData.js       # Curated 985-question dataset schema
-│   │   ├── Interview.js                  # Interview session & question records
-│   │   ├── Concept.js                    # Bounded Knowledge Graph concepts
-│   │   ├── Attempt.js                    # Evidence attempt records & anti-gaming
-│   │   ├── LearnerState.js               # Mastery & Uncertainty epistemic states
-│   │   ├── TeacherOverride.js            # Mandatory pedagogical overrides
-│   │   ├── AuditLog.js                   # Immutable audit trail
-│   │   └── Resume.js                     # Parsed resume records
-│   ├── controllers/                      # Request controllers for all domains
+├── backend/                              # Express.js Serverless API Backend
+│   ├── server.js                         # Application entrypoint & middleware configuration
+│   ├── config/db.js                      # MongoDB Atlas connection pooling handler
+│   ├── models/                           # Mongoose Schemas & Object Models
+│   │   ├── User.js                       # User credentials, roles & profile links
+│   │   ├── Interview.js                  # Interview sessions, question records & scorecards
+│   │   ├── Concept.js                    # Instructional Concept Graph nodes & edges
+│   │   ├── Question.js                   # Curriculum questions with explanations & difficulty
+│   │   ├── Attempt.js                    # Immutable evidence attempt records
+│   │   ├── LearnerState.js               # Mastery & epistemic uncertainty tracking
+│   │   ├── CareerProfile.js              # Target roles, domains & profile data
+│   │   ├── Roadmap.js                    # Personalized month-by-month career roadmap
+│   │   ├── Resume.js                     # Parsed ATS resume entities & multi-axis scores
+│   │   └── MentorConversation.js         # Chat history with AI Career Mentor
+│   ├── controllers/                      # Request controllers (interview, adaptive, mentor, etc.)
 │   ├── routes/                           # API route declarations
-│   ├── services/                         # Business Logic & AI Services
-│   │   ├── geminiService.js              # Dual-source interview grounding service
-│   │   ├── adaptiveEngine.js             # Core Bayesian-inspired instructional logic
-│   │   ├── antiGamingEngine.js           # Anti-gaming heuristic rules
-│   │   └── resumeParserService.js        # PDF text & ATS skill extractor
-│   ├── seed/
-│   │   └── companyInterviewData.js       # Idempotent 985-question seed script
-│   └── data/
-│       └── company_interviews.json       # Cleaned 11-company question dataset
+│   ├── services/                         # Core algorithmic & AI services
+│   │   ├── geminiService.js              # Multi-model Gemini failover & report synthesis
+│   │   ├── careerTwinService.js          # Career Readiness Index (CRI) calculation engine
+│   │   ├── adaptiveEngine.js             # Pedagogical decision rules & BKT logic
+│   │   ├── masteryEngine.js              # Bayesian probability mastery updates
+│   │   ├── uncertaintyEngine.js          # Epistemic uncertainty estimation
+│   │   ├── conceptSeedService.js         # Concept graph & curriculum seeder
+│   │   └── githubService.js              # GitHub REST API signals extractor
+│   └── seed/
+│       └── companyInterviewData.js       # 985 verified company interview questions seeder
 │
-├── frontend/                             # Vanilla JS Static Suite & Fallback
-│   ├── index.html                        # Static landing page
-│   ├── dashboard.html                    # Static dashboard & attempt modal
-│   ├── interview.html                    # Static mock interview room
-│   ├── concept-graph.html                # Static SVG dependency graph
-│   ├── teacher-dashboard.html            # Static teacher dashboard
-│   ├── simulation.html                   # Dual-learner simulation & stress tests
-│   └── resume.html                       # Static resume & CV analyzer
+├── frontend/                             # Modern Responsive Client Interface
+│   ├── index.html                        # Platform landing & feature showcase
+│   ├── dashboard.html                    # Real-time learner telemetry & action cards
+│   ├── interview.html                    # Mock Interview Room with live gaze tracking
+│   ├── interview-report.html             # Multi-dimensional post-interview performance scorecard
+│   ├── diagnostic.html                   # 10-question Java Core baseline diagnostic room
+│   ├── concept-graph.html                # Interactive SVG Dependency Graph visualization
+│   ├── resume.html                       # PDF Resume ATS analyzer & keyword alignment
+│   ├── roadmap.html                      # Interactive month-by-month milestone roadmap
+│   ├── mentor.html                       # Conversational Career Mentor AI room
+│   ├── css/                              # Glassmorphic custom design system
+│   └── js/                               # Modular client-side engines
+│       ├── api.js                        # Authenticated HTTP client with JWT handling
+│       ├── vision.js                     # Real-time gaze tracking & eye contact engine
+│       ├── audio.js                      # Web Audio frequency analysis & microphone capture
+│       ├── charts.js                     # Chart.js radar & progress visualizers
+│       └── interview.js                  # Interview session orchestrator
 │
-├── test/                                 # Automated Verification & Stress Tests
-│   ├── test-company-interview-api.js     # Company API assertions
-│   ├── test-company-grounded-interview.js# End-to-end grounded interview test
-│   ├── test-phase5-teacher.js            # Teacher override verification
-│   └── test-phase6-simulation.js         # 6 Judge stress test runner
-│
-├── .env.example                          # Environment variable template
-├── LICENSE                               # MIT License
-└── README.md                             # Project documentation
+├── vercel.json                           # Vercel Serverless deployment & routing configuration
+├── package.json                          # Project dependencies, scripts & engine requirements
+├── LICENSE                               # MIT Open Source License
+└── README.md                             # Comprehensive technical documentation
 ```
 
 ---
@@ -253,7 +247,7 @@ CareerTwin-AI/
 ### 1. Prerequisites
 * **Node.js:** v18.0.0 or higher (v24.x recommended)
 * **npm:** v10.0.0 or higher
-* **MongoDB:** Local instance or MongoDB Atlas connection URI
+* **MongoDB:** Local instance or [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) free cluster
 
 ### 2. Clone the Repository
 ```bash
@@ -261,119 +255,59 @@ git clone https://github.com/kit29-25bad068/CareerTwin-AI.git
 cd CareerTwin-AI
 ```
 
-### 3. Backend Environment Setup
-Create a `.env` file in the root directory:
+### 3. Install Dependencies
 ```bash
-cp .env.example .env
+npm install
 ```
-Populate `.env` with your credentials:
+
+### 4. Configure Environment Variables
+Create a `.env` file in the project root:
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/careertwin
-JWT_SECRET=careertwin_super_secure_jwt_secret_key_change_in_production_2026
-JWT_EXPIRES_IN=7d
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxx.mongodb.net/careertwin?retryWrites=true&w=majority
+JWT_SECRET=your_secure_jwt_secret_key
+NODE_ENV=development
 GEMINI_API_KEY=your_google_gemini_api_key_here
 ```
 
-### 4. Install Dependencies
-```bash
-# Install backend dependencies
-npm install
-
-# Install Next.js frontend dependencies
-cd client
-npm install
-cd ..
-```
-
 ### 5. Seed the Databases
-Populate your MongoDB database with the 985 company questions and the 12-concept Knowledge Graph:
+Populate your database with the verified company questions and adaptive curriculum:
 ```bash
-# Seed 985 verified interview questions across 11 top companies
+# Seed 985 company questions across 11 top enterprises
 npm run seed:company-interviews
 
-# Seed 12 Java concepts, 15 prerequisite edges, and 42 questions
+# Seed 12 Java concepts, 15 prerequisite edges, and 42 curriculum questions
 npm run seed:adaptive
 ```
 
-### 6. Run the Application
-
-In Terminal 1 (Start the Backend Server on Port 5000):
+### 6. Run the Application Locally
 ```bash
-npm start
-# Output: Server running on port 5000 | MongoDB connected
+npm run dev
+# Server running on http://localhost:5000
 ```
-
-In Terminal 2 (Start the Next.js Frontend on Port 2926):
-```bash
-cd client
-npm run dev -- -p 2926
-# Output: Ready | http://localhost:2926
-```
-
-Open your browser to:
-🌐 **Complete Project Localhost Link:**  
-👉 **[http://localhost:2926](http://localhost:2926)**
+Open your browser to: **`http://localhost:5000`**
 
 ---
 
 ## 📡 REST API Reference
 
 | Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/auth/register` | Register account (enforces unique GitHub & Codolio URLs) |
-| `POST` | `/api/auth/login` | Authenticate candidate & issue JWT token |
-| `GET` | `/api/profile` | Retrieve candidate profile |
-| `PUT` | `/api/profile` | Update target role and domain interests |
-| `GET` | `/api/career-twin` | Fetch 360° Career Twin state & Readiness Index (0–100) |
+|:---|:---|:---|
+| `POST` | `/api/auth/register` | Register new user account with role selection |
+| `POST` | `/api/auth/login` | Authenticate user & issue signed JWT bearer token |
+| `GET` | `/api/career-twin` | Fetch 360° Career Twin state & Career Readiness Index |
 | `GET` | `/api/company-interviews` | List all 11 companies with question counts & categories |
-| `GET` | `/api/company-interviews/:company` | Retrieve questions and metadata for a specific company |
-| `GET` | `/api/company-interviews/:company/categories/:category` | Filter company questions by category |
-| `POST` | `/api/interviews` | Create dual-source grounded AI mock interview session |
-| `POST` | `/api/interviews/:id/answer` | Submit answer (text/audio) for real-time AI evaluation |
-| `POST` | `/api/interviews/:id/end` | Complete interview & generate final performance scorecard |
-| `GET` | `/api/interviews/:id` | Fetch full interview report with question source badges |
-| `GET` | `/api/adaptive/concept-graph` | Fetch 12 concepts and 15 prerequisite edges |
-| `GET` | `/api/adaptive/learner-state` | Fetch real-time mastery and uncertainty profile |
-| `POST` | `/api/adaptive/submit-attempt` | Process learner attempt, apply anti-gaming, compute next action |
-| `GET` | `/api/teacher/cohort` | Fetch cohort telemetry & active intervention alerts |
-| `POST` | `/api/teacher/override` | Commit mandatory pedagogical override with rationale |
-| `GET` | `/api/teacher/audit-log` | Fetch immutable teacher override audit records |
-| `POST` | `/api/resume/upload` | Upload PDF resume for ATS keyword and skill extraction |
-| `GET` | `/api/privacy/export` | Export candidate Career Twin as formatted JSON |
-| `DELETE` | `/api/privacy/account` | Permanently wipe account and delete all data |
-
----
-
-## 🧪 Automated Verification & Stress Tests
-
-Run the comprehensive test suites to verify end-to-end stability:
-
-```bash
-# 1. Verify Company Interview REST Endpoints
-node test/test-company-interview-api.js
-# Output: ✅ GET /api/company-interviews passed (11 companies)
-#         ✅ Amazon totalQuestions = 75
-#         🎉 ALL API ENDPOINTS VERIFIED!
-
-# 2. Verify Dual-Source Grounding & Full Interview Flow
-node test/test-company-grounded-interview.js
-# Output: ▶ [TEST 0] GET /api/company-interviews -> PASSED
-#         ▶ [TEST 1] Amazon + Java Developer Grounding -> PASSED
-#         ▶ [TEST 2] Target Role Independence -> PASSED
-#         ▶ [TEST 3] Google Grounding -> PASSED
-#         ▶ [TEST 4] Custom Company Fallback -> PASSED
-#         ▶ [TEST 5] Complete 5-round report flow -> PASSED
-#         🎉 ALL 5 TESTS PASSED SUCCESSFULLY!
-
-# 3. Verify Teacher Overrides & Audit Log
-node test/test-phase5-teacher.js
-# Output: ✅ Cohort retrieved, override enforced, audit trail logged
-
-# 4. Verify 6 Judge Stress Tests (Anti-gaming, lockout, decay, transfer)
-node test/test-phase6-simulation.js
-# Output: ✅ 6/6 Stress Tests Passed (100% success rate)
-```
+| `POST` | `/api/interviews` | Initialize dual-source grounded mock interview session |
+| `POST` | `/api/interviews/:id/answer` | Submit verbal/text answer with gaze tracking metrics |
+| `POST` | `/api/interviews/:id/end` | Finalize session & generate performance intelligence report |
+| `GET` | `/api/interviews/:id` | Fetch complete interview scorecard & timeline events |
+| `GET` | `/api/adaptive/concepts/graph` | Fetch 12 concept nodes & 15 prerequisite edges |
+| `GET` | `/api/adaptive/diagnostic-questions` | Fetch 10 baseline Java Core diagnostic questions |
+| `POST` | `/api/adaptive/attempts` | Submit practice attempt, update BKT mastery & uncertainty |
+| `POST` | `/api/resume/upload` | Upload PDF resume for automated ATS scoring & keyword extraction |
+| `GET` | `/api/roadmap` | Retrieve personalized month-by-month career roadmap |
+| `POST` | `/api/roadmap/generate` | Generate AI roadmap based on target role & skill gaps |
+| `POST` | `/api/mentor/chat` | Send message to Career Mentor AI & receive contextual advice |
 
 ---
 
@@ -383,5 +317,5 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 ```text
 MIT License
-Copyright (c) 2026 Joshika Manikandan / CareerTwin AI Team
+Copyright (c) 2026 CareerTwin AI Team
 ```
