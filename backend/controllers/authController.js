@@ -228,6 +228,116 @@ exports.login = async (req, res, next) => {
   }
 };
 
+// @desc    Authenticate or register user via Google Sign-In
+// @route   POST /api/auth/google
+// @access  Public
+exports.googleLogin = async (req, res, next) => {
+  try {
+    const { credential, email, name, googleId, avatar } = req.body;
+
+    let userEmail = email;
+    let userName = name;
+    let userGoogleId = googleId;
+    let userAvatar = avatar;
+
+    // Decode Google JWT credential if supplied via Google One-Tap / Identity Services
+    if (credential) {
+      try {
+        const payloadBase64 = credential.split('.')[1];
+        if (payloadBase64) {
+          const decoded = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf8'));
+          userEmail = decoded.email || userEmail;
+          userName = decoded.name || userName;
+          userGoogleId = decoded.sub || userGoogleId;
+          userAvatar = decoded.picture || userAvatar;
+        }
+      } catch (err) {
+        console.warn('[Google Auth Warning] Could not decode credential payload:', err.message);
+      }
+    }
+
+    if (!userEmail) {
+      return res.status(400).json({ success: false, message: 'Google account email is required.' });
+    }
+
+    userEmail = userEmail.toLowerCase().trim();
+    userName = userName ? userName.trim() : userEmail.split('@')[0];
+
+    // Find existing user by email or googleId
+    let user = await User.findOne({
+      $or: [
+        { email: userEmail },
+        ...(userGoogleId ? [{ googleId: userGoogleId }] : []),
+      ],
+    });
+
+    if (!user) {
+      // Create new user for first-time Google sign-in
+      const randomPassword = crypto.randomBytes(16).toString('hex') + 'A1!';
+      const defaultGithub = userEmail.split('@')[0].replace(/[^a-zA-Z0-9_\-]/g, '');
+
+      // Ensure githubUsername doesn't conflict
+      let uniqueGithub = defaultGithub || `user_${Date.now()}`;
+      const existingGh = await User.findOne({ githubUsername: uniqueGithub });
+      if (existingGh) {
+        uniqueGithub = `${uniqueGithub}_${Math.floor(1000 + Math.random() * 9000)}`;
+      }
+
+      user = await User.create({
+        name: userName,
+        email: userEmail,
+        password: randomPassword,
+        googleId: userGoogleId || `google_${Date.now()}`,
+        avatar: userAvatar,
+        authProvider: 'google',
+        githubUrl: `https://github.com/${uniqueGithub}`,
+        githubUsername: uniqueGithub,
+      });
+
+      // Automatically create initial CareerProfile
+      await CareerProfile.create({
+        user: user._id,
+        targetRole: 'Full Stack Developer',
+        experienceLevel: 'student',
+      });
+    } else {
+      let needsSave = false;
+      if (userGoogleId && !user.googleId) {
+        user.googleId = userGoogleId;
+        needsSave = true;
+      }
+      if (userAvatar && !user.avatar) {
+        user.avatar = userAvatar;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await user.save();
+      }
+    }
+
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Signed in successfully with Google.',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        githubUsername: user.githubUsername,
+        githubUrl: user.githubUrl,
+        codolioUsername: user.codolioUsername,
+        codolioUrl: user.codolioUrl,
+        avatar: user.avatar,
+        privacySettings: user.privacySettings,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Get current authenticated user info
 // @route   GET /api/auth/me
 // @access  Private

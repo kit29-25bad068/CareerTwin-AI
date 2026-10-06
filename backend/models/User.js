@@ -50,6 +50,19 @@ const userSchema = new mongoose.Schema(
       enum: ['student', 'teacher', 'admin'],
       default: 'student',
     },
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true,
+    },
+    avatar: {
+      type: String,
+    },
+    authProvider: {
+      type: String,
+      enum: ['local', 'google', 'github'],
+      default: 'local',
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     privacySettings: {
