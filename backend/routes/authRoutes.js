@@ -9,6 +9,7 @@ const {
   githubAuthorize,
   githubCallback,
   codolioStatus,
+  codolioLogin,
   getMe,
   updatePrivacySettings,
   forgotPassword,
@@ -35,8 +36,9 @@ router.get('/github/login', githubAuthorize);
 router.get('/github', githubAuthorize);
 router.get('/github/callback', githubCallback);
 
-// Codolio Integration Status
+// Codolio Integration & Authentication
 router.get('/codolio', codolioStatus);
+router.post('/codolio', codolioLogin);
 
 // User Session & Settings
 router.get('/me', protect, getMe);

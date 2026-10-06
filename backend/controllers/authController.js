@@ -763,8 +763,131 @@ exports.codolioStatus = (req, res) => {
     provider: 'codolio',
     supported: false,
     message: 'Codolio does not currently expose a supported third-party OAuth/OIDC authentication flow.',
-    recommendation: 'Sign in with Google, GitHub, or Email/Password, then link your public Codolio profile handle (e.g. codolio.com/profile/username) in CareerTwin Profile settings.',
+    recommendation: 'Sign in with your Codolio username/profile, or sign in with Google/GitHub and link your handle.',
   });
+};
+
+// @desc    Sign in or authenticate using Codolio profile handle / URL
+// @route   POST /api/auth/codolio
+// @access  Public
+exports.codolioLogin = async (req, res, next) => {
+  try {
+    const { username, handle, profileUrl } = req.body;
+    const rawInput = (username || handle || profileUrl || '').trim();
+
+    if (!rawInput) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter your Codolio username or profile link.',
+      });
+    }
+
+    const cleanUsername = codolioService.extractCodolioUsername
+      ? codolioService.extractCodolioUsername(rawInput)
+      : rawInput.replace(/^https?:\/\/(www\.)?codolio\.com\/(?:profile\/)?/i, '').replace(/^@/, '').toLowerCase().trim();
+
+    if (!cleanUsername || !/^[a-zA-Z0-9_\-\.]{2,50}$/.test(cleanUsername)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid Codolio username. Please provide a valid handle (e.g. your_name).',
+      });
+    }
+
+    const codolioUrl = `https://codolio.com/profile/${cleanUsername}`;
+    const syntheticEmail = `${cleanUsername.toLowerCase()}@codolio.dev`;
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanUsername)}&background=06b6d4&color=fff&bold=true`;
+    const providerId = `codolio_${cleanUsername.toLowerCase()}`;
+
+    // Search existing user by codolioUsername OR providerId OR syntheticEmail
+    let user = await User.findOne({
+      $or: [
+        { codolioUsername: cleanUsername.toLowerCase() },
+        { providerId },
+        { email: syntheticEmail },
+      ],
+    });
+
+    if (user) {
+      let needsSave = false;
+      if (!user.codolioUsername) {
+        user.codolioUsername = cleanUsername.toLowerCase();
+        needsSave = true;
+      }
+      if (!user.codolioUrl) {
+        user.codolioUrl = codolioUrl;
+        needsSave = true;
+      }
+      if (!user.providerId) {
+        user.providerId = providerId;
+        needsSave = true;
+      }
+      if (!user.profileImage && avatarUrl) {
+        user.profileImage = avatarUrl;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await user.save();
+      }
+    } else {
+      // Create new user account via Codolio identity
+      user = await User.create({
+        name: cleanUsername,
+        email: syntheticEmail,
+        authProvider: 'codolio',
+        providerId,
+        codolioUsername: cleanUsername.toLowerCase(),
+        codolioUrl,
+        profileImage: avatarUrl,
+        avatar: avatarUrl,
+      });
+
+      // Initialize CareerProfile
+      await CareerProfile.create({
+        user: user._id,
+        targetRole: 'Competitive Programmer & Full Stack Developer',
+        experienceLevel: 'student',
+      });
+    }
+
+    // Trigger non-blocking Codolio stats analysis in the background
+    try {
+      if (codolioService.fetchAndAnalyzeCodolio) {
+        codolioService.fetchAndAnalyzeCodolio(cleanUsername, user._id)
+          .then((codolioData) => {
+            return CodolioProfile.findOneAndUpdate(
+              { user: user._id },
+              { user: user._id, ...codolioData },
+              { upsert: true, new: true }
+            );
+          })
+          .catch((e) => console.warn('[Codolio Background Sync Notice]:', e.message));
+      }
+    } catch (e) {
+      // Non-blocking background sync
+    }
+
+    const token = generateToken(user._id);
+    setAuthCookie(res, token);
+
+    res.status(200).json({
+      success: true,
+      message: `Signed in successfully as ${user.name} via Codolio`,
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        authProvider: user.authProvider,
+        codolioUsername: user.codolioUsername,
+        codolioUrl: user.codolioUrl,
+        profileImage: user.profileImage,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('[Codolio Login Error]:', error);
+    next(error);
+  }
 };
 
 // @desc    Get current authenticated user info
