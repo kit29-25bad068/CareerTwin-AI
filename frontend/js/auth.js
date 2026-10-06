@@ -120,6 +120,22 @@ const Auth = {
   },
 
   init() {
+    // Capture token if returned from OAuth redirect callback (Google / GitHub)
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const oauthToken = urlParams.get('auth_token') || urlParams.get('token');
+      if (oauthToken) {
+        API.setToken(oauthToken);
+        urlParams.delete('auth_token');
+        urlParams.delete('token');
+        const cleanSearch = urlParams.toString();
+        const cleanUrl = window.location.pathname + (cleanSearch ? `?${cleanSearch}` : '') + window.location.hash;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    } catch (e) {
+      console.warn('Could not parse OAuth redirect token from URL:', e.message);
+    }
+
     this.checkAuth();
     if (API.getToken()) {
       this.fetchCurrentUser();

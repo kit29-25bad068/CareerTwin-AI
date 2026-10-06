@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const CareerProfile = require('../models/CareerProfile');
@@ -14,6 +15,28 @@ const generateToken = (id) => {
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 };
+
+// Helper: Determine canonical public application origin
+function getAppOrigin(req) {
+  if (process.env.APP_URL) {
+    return process.env.APP_URL.replace(/\/+$/, '');
+  }
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+  const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:5000';
+  return `${protocol}://${host}`;
+}
+
+// Helper: Set secure HTTP-only cookie with JWT
+function setAuthCookie(res, token) {
+  const isProd = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: '/',
+  });
+}
 
 // Helper: Extract clean GitHub username from URL, @username, or raw username
 function extractGitHubUsername(input) {
@@ -336,6 +359,412 @@ exports.googleLogin = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+// @desc    Initiate official Google OAuth 2.0 / OIDC redirect flow
+// @route   GET /api/auth/google/login
+// @access  Public
+exports.googleAuthorize = async (req, res, next) => {
+  try {
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      return res.redirect('/login.html?error=google_not_configured');
+    }
+
+    const state = crypto.randomBytes(24).toString('hex');
+    const isProd = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
+
+    res.cookie('oauth_state_google', state, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000, // 10 minutes
+      path: '/',
+    });
+
+    const redirectUri = process.env.GOOGLE_CALLBACK_URL || `${getAppOrigin(req)}/api/auth/google/callback`;
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'openid email profile',
+      state,
+      access_type: 'online',
+      prompt: 'select_account',
+    });
+
+    res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Handle Google OAuth 2.0 callback
+// @route   GET /api/auth/google/callback
+// @access  Public
+exports.googleCallback = async (req, res, next) => {
+  try {
+    const { code, state, error } = req.query;
+
+    if (error) {
+      console.warn('[Google OAuth Notice] User cancelled or Google returned error:', error);
+      return res.redirect('/login.html?error=google_cancelled');
+    }
+
+    if (!code) {
+      return res.redirect('/login.html?error=missing_code');
+    }
+
+    // Validate CSRF state
+    const storedState = req.cookies?.oauth_state_google;
+    res.clearCookie('oauth_state_google', { path: '/' });
+
+    if (storedState && state && storedState !== state) {
+      return res.redirect('/login.html?error=invalid_state');
+    }
+
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirectUri = process.env.GOOGLE_CALLBACK_URL || `${getAppOrigin(req)}/api/auth/google/callback`;
+
+    if (!clientId || !clientSecret) {
+      return res.redirect('/login.html?error=google_not_configured');
+    }
+
+    // Exchange authorization code for tokens
+    const tokenRes = await axios.post(
+      'https://oauth2.googleapis.com/token',
+      new URLSearchParams({
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }).toString(),
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        timeout: 10000,
+      }
+    );
+
+    const { access_token } = tokenRes.data;
+
+    // Fetch verified profile from Google UserInfo
+    const userinfoRes = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${access_token}` },
+      timeout: 8000,
+    });
+
+    const googleUser = userinfoRes.data;
+    const userEmail = (googleUser.email || '').toLowerCase().trim();
+    const userName = googleUser.name || userEmail.split('@')[0];
+    const userGoogleId = googleUser.sub;
+    const userPicture = googleUser.picture;
+
+    if (!userEmail) {
+      return res.redirect('/login.html?error=google_no_email');
+    }
+
+    // Safe account linking: search by googleId OR by existing verified email
+    let user = await User.findOne({
+      $or: [
+        { googleId: userGoogleId },
+        { email: userEmail },
+      ],
+    });
+
+    if (user) {
+      // Safely link Google identity while preserving existing data (interviews, resume, password)
+      let needsSave = false;
+      if (!user.googleId) {
+        user.googleId = userGoogleId;
+        needsSave = true;
+      }
+      if (!user.providerId) {
+        user.providerId = userGoogleId;
+        needsSave = true;
+      }
+      if (!user.profileImage && userPicture) {
+        user.profileImage = userPicture;
+        needsSave = true;
+      }
+      if (!user.avatar && userPicture) {
+        user.avatar = userPicture;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await user.save();
+      }
+    } else {
+      // Create new user for first-time Google sign-in
+      const defaultGithub = userEmail.split('@')[0].replace(/[^a-zA-Z0-9_\-]/g, '');
+      let uniqueGithub = defaultGithub || `user_${Date.now()}`;
+      const existingGh = await User.findOne({ githubUsername: uniqueGithub });
+      if (existingGh) {
+        uniqueGithub = `${uniqueGithub}_${Math.floor(1000 + Math.random() * 9000)}`;
+      }
+
+      user = await User.create({
+        name: userName,
+        email: userEmail,
+        authProvider: 'google',
+        providerId: userGoogleId,
+        googleId: userGoogleId,
+        profileImage: userPicture,
+        avatar: userPicture,
+        githubUrl: `https://github.com/${uniqueGithub}`,
+        githubUsername: uniqueGithub,
+      });
+
+      // Automatically initialize CareerProfile
+      await CareerProfile.create({
+        user: user._id,
+        targetRole: 'Full Stack Developer',
+        experienceLevel: 'student',
+      });
+    }
+
+    const token = generateToken(user._id);
+    setAuthCookie(res, token);
+
+    // Redirect to dashboard with token
+    res.redirect(`/dashboard.html?auth_token=${encodeURIComponent(token)}`);
+  } catch (error) {
+    console.error('[Google OAuth Error]:', error.response?.data || error.message);
+    res.redirect('/login.html?error=google_auth_failed');
+  }
+};
+
+// @desc    Initiate official GitHub OAuth redirect flow
+// @route   GET /api/auth/github/login
+// @access  Public
+exports.githubAuthorize = async (req, res, next) => {
+  try {
+    const clientId = process.env.GITHUB_CLIENT_ID;
+    if (!clientId) {
+      return res.redirect('/login.html?error=github_not_configured');
+    }
+
+    const state = crypto.randomBytes(24).toString('hex');
+    const isProd = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
+
+    res.cookie('oauth_state_github', state, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      maxAge: 10 * 60 * 1000, // 10 minutes
+      path: '/',
+    });
+
+    const redirectUri = process.env.GITHUB_CALLBACK_URL || `${getAppOrigin(req)}/api/auth/github/callback`;
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      scope: 'read:user user:email',
+      state,
+    });
+
+    res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Handle GitHub OAuth callback
+// @route   GET /api/auth/github/callback
+// @access  Public
+exports.githubCallback = async (req, res, next) => {
+  try {
+    const { code, state, error } = req.query;
+
+    if (error) {
+      console.warn('[GitHub OAuth Notice] User cancelled or GitHub error:', error);
+      return res.redirect('/login.html?error=github_cancelled');
+    }
+
+    if (!code) {
+      return res.redirect('/login.html?error=missing_code');
+    }
+
+    // Validate CSRF state
+    const storedState = req.cookies?.oauth_state_github;
+    res.clearCookie('oauth_state_github', { path: '/' });
+
+    if (storedState && state && storedState !== state) {
+      return res.redirect('/login.html?error=invalid_state');
+    }
+
+    const clientId = process.env.GITHUB_CLIENT_ID;
+    const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+    const redirectUri = process.env.GITHUB_CALLBACK_URL || `${getAppOrigin(req)}/api/auth/github/callback`;
+
+    if (!clientId || !clientSecret) {
+      return res.redirect('/login.html?error=github_not_configured');
+    }
+
+    // Exchange authorization code for access token
+    const tokenRes = await axios.post(
+      'https://github.com/login/oauth/access_token',
+      {
+        client_id: clientId,
+        client_secret: clientSecret,
+        code,
+        redirect_uri: redirectUri,
+      },
+      {
+        headers: { Accept: 'application/json' },
+        timeout: 10000,
+      }
+    );
+
+    const accessToken = tokenRes.data?.access_token;
+    if (!accessToken) {
+      console.error('[GitHub OAuth Error] No access token returned:', tokenRes.data);
+      return res.redirect('/login.html?error=github_token_exchange_failed');
+    }
+
+    // Fetch GitHub User profile
+    const userRes = await axios.get('https://api.github.com/user', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'User-Agent': 'CareerTwin-AI-Platform/2.0',
+      },
+      timeout: 8000,
+    });
+
+    const ghUser = userRes.data;
+    let userEmail = ghUser.email;
+
+    // Handle private emails: fetch user emails endpoint if public email is not set
+    if (!userEmail) {
+      try {
+        const emailsRes = await axios.get('https://api.github.com/user/emails', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'User-Agent': 'CareerTwin-AI-Platform/2.0',
+          },
+          timeout: 8000,
+        });
+
+        if (Array.isArray(emailsRes.data) && emailsRes.data.length > 0) {
+          const primaryVerified = emailsRes.data.find((e) => e.primary && e.verified);
+          const anyVerified = emailsRes.data.find((e) => e.verified);
+          userEmail = primaryVerified?.email || anyVerified?.email || emailsRes.data[0].email;
+        }
+      } catch (emailErr) {
+        console.warn('[GitHub Emails Warning] Could not fetch private emails:', emailErr.message);
+      }
+    }
+
+    if (!userEmail) {
+      userEmail = `${ghUser.login.toLowerCase()}@users.noreply.github.com`;
+    }
+
+    userEmail = userEmail.toLowerCase().trim();
+    const githubId = String(ghUser.id);
+    const githubUsername = ghUser.login.toLowerCase();
+    const githubUrl = ghUser.html_url || `https://github.com/${githubUsername}`;
+    const userName = ghUser.name || ghUser.login;
+    const avatarUrl = ghUser.avatar_url;
+
+    // Safe account linking: search by githubId OR email OR githubUsername
+    let user = await User.findOne({
+      $or: [
+        { githubId: githubId },
+        { email: userEmail },
+        { githubUsername: githubUsername },
+      ],
+    });
+
+    if (user) {
+      // Safely link GitHub credentials while preserving existing user data
+      let needsSave = false;
+      if (!user.githubId) {
+        user.githubId = githubId;
+        needsSave = true;
+      }
+      if (!user.providerId) {
+        user.providerId = githubId;
+        needsSave = true;
+      }
+      if (!user.githubUsername) {
+        user.githubUsername = githubUsername;
+        needsSave = true;
+      }
+      if (!user.githubUrl) {
+        user.githubUrl = githubUrl;
+        needsSave = true;
+      }
+      if (!user.profileImage && avatarUrl) {
+        user.profileImage = avatarUrl;
+        needsSave = true;
+      }
+      if (!user.avatar && avatarUrl) {
+        user.avatar = avatarUrl;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await user.save();
+      }
+    } else {
+      // Create new user
+      user = await User.create({
+        name: userName,
+        email: userEmail,
+        authProvider: 'github',
+        providerId: githubId,
+        githubId: githubId,
+        githubUsername: githubUsername,
+        githubUrl: githubUrl,
+        profileImage: avatarUrl,
+        avatar: avatarUrl,
+      });
+
+      // Automatically initialize CareerProfile
+      await CareerProfile.create({
+        user: user._id,
+        targetRole: 'Full Stack Developer',
+        experienceLevel: 'student',
+      });
+    }
+
+    // Trigger automatic background GitHub signal sync
+    try {
+      githubService.fetchAndAnalyzeGitHub(githubUsername, 'Full Stack Developer')
+        .then((githubData) => {
+          return GitHubProfile.findOneAndUpdate(
+            { user: user._id },
+            { user: user._id, ...githubData },
+            { upsert: true, new: true }
+          );
+        })
+        .catch((e) => console.warn('[GitHub Auto-Sync Notice]:', e.message));
+    } catch (e) {
+      // Non-blocking background sync
+    }
+
+    const token = generateToken(user._id);
+    setAuthCookie(res, token);
+
+    // Redirect to dashboard with token
+    res.redirect(`/dashboard.html?auth_token=${encodeURIComponent(token)}`);
+  } catch (error) {
+    console.error('[GitHub OAuth Error]:', error.response?.data || error.message);
+    res.redirect('/login.html?error=github_auth_failed');
+  }
+};
+
+// @desc    Codolio authentication verification and status report
+// @route   GET /api/auth/codolio
+// @access  Public
+exports.codolioStatus = (req, res) => {
+  res.status(200).json({
+    success: false,
+    provider: 'codolio',
+    supported: false,
+    message: 'Codolio does not currently expose a supported third-party OAuth/OIDC authentication flow.',
+    recommendation: 'Sign in with Google, GitHub, or Email/Password, then link your public Codolio profile handle (e.g. codolio.com/profile/username) in CareerTwin Profile settings.',
+  });
 };
 
 // @desc    Get current authenticated user info

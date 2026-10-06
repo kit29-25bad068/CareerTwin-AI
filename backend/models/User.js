@@ -19,7 +19,12 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [
+        function () {
+          return !this.authProvider || this.authProvider === 'local';
+        },
+        'Password is required for email/password accounts',
+      ],
       minlength: [6, 'Password must be at least 6 characters'],
       select: false,
     },
@@ -50,17 +55,29 @@ const userSchema = new mongoose.Schema(
       enum: ['student', 'teacher', 'admin'],
       default: 'student',
     },
+    providerId: {
+      type: String,
+      sparse: true,
+    },
     googleId: {
       type: String,
       sparse: true,
       unique: true,
+    },
+    githubId: {
+      type: String,
+      sparse: true,
+      unique: true,
+    },
+    profileImage: {
+      type: String,
     },
     avatar: {
       type: String,
     },
     authProvider: {
       type: String,
-      enum: ['local', 'google', 'github'],
+      enum: ['local', 'google', 'github', 'codolio'],
       default: 'local',
     },
     resetPasswordToken: String,
@@ -86,9 +103,9 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving
+// Hash password before saving (only if password exists and is modified)
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.password || !this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -96,6 +113,7 @@ userSchema.pre('save', async function (next) {
 
 // Compare password method
 userSchema.methods.matchPassword = async function (enteredPassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

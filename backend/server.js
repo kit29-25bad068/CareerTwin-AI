@@ -17,6 +17,27 @@ app.use(cors());
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
+// Lightweight cookie parser middleware
+app.use((req, res, next) => {
+  const cookieHeader = req.headers.cookie;
+  req.cookies = {};
+  if (cookieHeader) {
+    cookieHeader.split(';').forEach((cookie) => {
+      const parts = cookie.split('=');
+      const name = parts[0]?.trim();
+      const val = parts.slice(1).join('=').trim();
+      if (name) {
+        try {
+          req.cookies[name] = decodeURIComponent(val);
+        } catch (e) {
+          req.cookies[name] = val;
+        }
+      }
+    });
+  }
+  next();
+});
+
 // Static frontend assets
 app.use(express.static(path.join(__dirname, '../frontend')));
 
