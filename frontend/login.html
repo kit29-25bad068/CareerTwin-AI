@@ -102,60 +102,6 @@
     </div>
   </div>
 
-  <!-- Google Sign-In Account Selector Modal -->
-  <div id="google-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 10000; align-items: center; justify-content: center; padding: 1.5rem;">
-    <div class="card card-glow" style="width: 100%; max-width: 420px; padding: 2rem; position: relative;">
-      <button type="button" id="close-google-modal" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer;">✕</button>
-      <div style="text-align: center; margin-bottom: 1.25rem;">
-        <svg width="36" height="36" viewBox="0 0 24 24" style="margin-bottom: 0.5rem;">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
-        <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">Continue with Google</h3>
-        <p style="font-size: 0.85rem; color: var(--text-secondary);">Authenticate with your Google identity to access CareerTwin AI</p>
-      </div>
-
-      <!-- Option 1: Official Google OAuth Redirect -->
-      <a href="/api/auth/google/login" class="btn btn-secondary btn-md" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; border: 1px solid var(--accent-primary); text-decoration: none;">
-        <span>🔐 Launch Official Google OAuth 2.0</span>
-      </a>
-
-      <div style="display: flex; align-items: center; margin: 0.75rem 0; color: var(--text-muted); font-size: 0.75rem;">
-        <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
-        <span style="padding: 0 0.5rem;">OR QUICK SIGN IN</span>
-        <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
-      </div>
-
-      <!-- Quick Verified Demo / Student Accounts -->
-      <div style="display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem;">
-        <button type="button" class="btn btn-secondary google-account-option" data-email="alex.chen@gmail.com" data-name="Alex Chen" style="display: flex; align-items: center; justify-content: flex-start; gap: 0.75rem; padding: 0.55rem 0.85rem; text-align: left; width: 100%;">
-          <div style="width: 30px; height: 30px; border-radius: 50%; background: #4285F4; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">A</div>
-          <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 600; font-size: 0.85rem; color: #fff;">Alex Chen</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); text-overflow: ellipsis; overflow: hidden;">alex.chen@gmail.com</div>
-          </div>
-        </button>
-
-        <button type="button" class="btn btn-secondary google-account-option" data-email="developer.candidate@gmail.com" data-name="Developer Candidate" style="display: flex; align-items: center; justify-content: flex-start; gap: 0.75rem; padding: 0.55rem 0.85rem; text-align: left; width: 100%;">
-          <div style="width: 30px; height: 30px; border-radius: 50%; background: #34A853; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">D</div>
-          <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 600; font-size: 0.85rem; color: #fff;">Developer Candidate</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); text-overflow: ellipsis; overflow: hidden;">developer.candidate@gmail.com</div>
-          </div>
-        </button>
-      </div>
-
-      <!-- Custom Google Email Input -->
-      <form id="google-custom-form" style="display: flex; flex-direction: column; gap: 0.65rem;">
-        <input type="email" id="google-custom-email" class="form-input" placeholder="your.name@gmail.com" required style="font-size: 0.88rem;">
-        <button type="submit" id="btn-submit-google-custom" class="btn btn-cyan btn-sm" style="width: 100%;">
-          Continue with this Google Email
-        </button>
-      </form>
-    </div>
-  </div>
 
   <!-- Codolio Integration Architecture Modal -->
   <div id="codolio-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 10000; align-items: center; justify-content: center; padding: 1.5rem;">
@@ -242,23 +188,12 @@
       });
     }
 
-    // Google Sign-In Handlers
+    // Google Sign-In Handler (Direct official OAuth 2.0 redirect)
     const googleBtn = document.getElementById('google-signin-btn');
-    const googleModal = document.getElementById('google-modal');
-    const closeGoogleModal = document.getElementById('close-google-modal');
-
-    if (googleBtn && googleModal) {
+    if (googleBtn) {
       googleBtn.addEventListener('click', () => {
-        googleModal.style.display = 'flex';
-      });
-    }
-
-    if (closeGoogleModal && googleModal) {
-      closeGoogleModal.addEventListener('click', () => {
-        googleModal.style.display = 'none';
-      });
-      googleModal.addEventListener('click', (e) => {
-        if (e.target === googleModal) googleModal.style.display = 'none';
+        Utils.showLoading('Redirecting to Google Sign-In...');
+        window.location.href = '/api/auth/google/login';
       });
     }
 
@@ -292,10 +227,11 @@
     }
 
     const codolioModalGoogleBtn = document.getElementById('codolio-modal-google-btn');
-    if (codolioModalGoogleBtn && googleModal && codolioModal) {
+    if (codolioModalGoogleBtn && codolioModal) {
       codolioModalGoogleBtn.addEventListener('click', () => {
         codolioModal.style.display = 'none';
-        googleModal.style.display = 'flex';
+        Utils.showLoading('Redirecting to Google Sign-In...');
+        window.location.href = '/api/auth/google/login';
       });
     }
 
@@ -305,53 +241,6 @@
         codolioModal.style.display = 'none';
         Utils.showLoading('Redirecting to GitHub OAuth...');
         window.location.href = '/api/auth/github/login';
-      });
-    }
-
-    async function handleGoogleLogin(email, name) {
-      try {
-        Utils.showLoading('Signing in with Google...');
-        const res = await API.post('/auth/google', {
-          email,
-          name: name || email.split('@')[0],
-          googleId: 'g_' + btoa(email).replace(/=/g, '').slice(0, 16),
-        });
-
-        Utils.hideLoading();
-        if (res.success && res.token) {
-          API.setToken(res.token);
-          API.setUser(res.user);
-          Utils.showToast(`Welcome back, ${res.user.name || 'User'}! Signed in with Google.`, 'success');
-
-          const redirect = urlParams.get('redirect') || '/dashboard.html';
-          setTimeout(() => {
-            window.location.href = redirect;
-          }, 600);
-        }
-      } catch (err) {
-        Utils.hideLoading();
-        Utils.showToast(err.message || 'Google sign-in failed. Please try again.', 'error');
-      }
-    }
-
-    // Quick Google Account Click
-    document.querySelectorAll('.google-account-option').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const email = btn.getAttribute('data-email');
-        const name = btn.getAttribute('data-name');
-        if (email) handleGoogleLogin(email, name);
-      });
-    });
-
-    // Custom Google Email Submission
-    const googleCustomForm = document.getElementById('google-custom-form');
-    if (googleCustomForm) {
-      googleCustomForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const customEmail = document.getElementById('google-custom-email').value.trim();
-        if (customEmail) {
-          handleGoogleLogin(customEmail, customEmail.split('@')[0]);
-        }
       });
     }
 
