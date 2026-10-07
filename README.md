@@ -15,6 +15,7 @@
 [![Express.js](https://img.shields.io/badge/Express-4.21.2-000000?style=flat-square&logo=express)](https://expressjs.com/)
 [![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas%20Cloud-47a248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
 [![Google Gemini API](https://img.shields.io/badge/Google%20Gemini-1.5%20%2F%202.0-4285f4?style=flat-square&logo=google)](https://aistudio.google.com/)
+[![OAuth 2.0](https://img.shields.io/badge/Auth-Google%20%2B%20GitHub%20%2B%20Codolio-blue?style=flat-square&logo=openid)](https://oauth.net/2/)
 [![Chart.js](https://img.shields.io/badge/Chart.js-Data%20Visualization-ff6384?style=flat-square&logo=chartdotjs)](https://www.chartjs.org/)
 [![Vercel Serverless](https://img.shields.io/badge/Deployment-Vercel%20Serverless-black?style=flat-square&logo=vercel)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=flat-square)](LICENSE)
@@ -33,6 +34,7 @@
 **CareerTwin AI** is a privacy-first, evidence-driven career intelligence platform engineered for aspiring software engineers, students, and tech professionals. Unlike generic conversational chatbots that offer superficial practice, CareerTwin constructs an evolving, verifiable **Digital Career Twin** that aggregates verified coding proficiency, authentic company interview datasets, real-time eye-contact and speech telemetry, Bayesian adaptive knowledge tracing, and explainable career readiness indices.
 
 ### Key Innovations
+* **Unified Enterprise Authentication:** Production-ready multi-provider identity supporting **Email/Password**, official **Google OAuth 2.0 / OIDC**, official **GitHub OAuth 2.0** (with private email resolution), and **Codolio Developer Handle** authentication with automatic background stats sync and duplicate-proof account linking.
 * **Dual-Source Mock Interview Grounding:** Grounded in a curated database of **985 verified interview questions across 11 top tech employers** (Google, Amazon, Microsoft, Apple, Meta, etc.), personalized dynamically using Google Gemini AI.
 * **Client-Side Vision & Speech Intelligence:** Real-time webcam analysis measuring **eye contact percentage**, gaze tracking (`Direct Contact`, `Gaze Shifted`), and vocal cadence (Words Per Minute, filler word density) computed locally via HTML5 Canvas and Web Audio APIs without recording privacy leaks.
 * **Bayesian Adaptive Learning Engine:** 12-concept bounded Knowledge Graph with 15 prerequisite edges, Bayesian Knowledge Tracing (BKT), epistemic uncertainty calibration, anti-gaming heuristic penalties, and 14-day knowledge decay modeling.
@@ -47,6 +49,8 @@
 The complete application is hosted live on Vercel Serverless infrastructure with global CDN acceleration and MongoDB Atlas cloud synchronization:
 
 * 🌐 **Main Landing Page:** [https://careertwin-ai-green.vercel.app/](https://careertwin-ai-green.vercel.app/)
+* 🔑 **Sign In Portal:** [https://careertwin-ai-green.vercel.app/login.html](https://careertwin-ai-green.vercel.app/login.html)
+* 📝 **Registration:** [https://careertwin-ai-green.vercel.app/register.html](https://careertwin-ai-green.vercel.app/register.html)
 * 📊 **Career Dashboard:** [https://careertwin-ai-green.vercel.app/dashboard.html](https://careertwin-ai-green.vercel.app/dashboard.html)
 * 🎙️ **AI Mock Interview Room:** [https://careertwin-ai-green.vercel.app/interview.html](https://careertwin-ai-green.vercel.app/interview.html)
 * 🧩 **Java Core Diagnostic Room:** [https://careertwin-ai-green.vercel.app/diagnostic.html](https://careertwin-ai-green.vercel.app/diagnostic.html)
@@ -54,6 +58,65 @@ The complete application is hosted live on Vercel Serverless infrastructure with
 * 📄 **Resume ATS Intelligence:** [https://careertwin-ai-green.vercel.app/resume.html](https://careertwin-ai-green.vercel.app/resume.html)
 * 🛣️ **Personal Career Roadmap:** [https://careertwin-ai-green.vercel.app/roadmap.html](https://careertwin-ai-green.vercel.app/roadmap.html)
 * 💬 **Career Mentor AI:** [https://careertwin-ai-green.vercel.app/mentor.html](https://careertwin-ai-green.vercel.app/mentor.html)
+
+---
+
+## 🔐 Multi-Provider Authentication Architecture
+
+CareerTwin AI features a unified, secure authentication engine built without introducing bulky third-party identity frameworks, preserving the lightweight Node.js + Express + JWT + Mongoose stack.
+
+```
+                              ┌───────────────────────────────────┐
+                              │     CareerTwin Sign-In Page       │
+                              │       (/login.html)               │
+                              └─────────────────┬─────────────────┘
+                                                │
+         ┌──────────────────────────────┼──────────────────────────────┐
+         ▼                              ▼                              ▼
+┌──────────────────┐          ┌───────────────────┐          ┌──────────────────┐
+│  Email/Password  │          │   OAuth Providers │          │ Codolio Identity │
+│   (Local Auth)   │          │ (Google & GitHub) │          │  (Dev Username)  │
+└────────┬─────────┘          └─────────┬─────────┘          └─────────┬────────┘
+         │                              │                              │
+         │ POST /api/auth/login         │ GET /api/auth/:prov/callback │ POST /api/auth/codolio
+         ▼                              ▼                              ▼
+  Bcrypt Verification           CSRF State Check &             Profile Handle Validation
+                                Identity Exchange              & Background Stats Sync
+         │                              │                              │
+         └──────────────────────────────┼──────────────────────────────┘
+                                        ▼
+                       ┌─────────────────────────────────┐
+                       │     Safe Account Linking        │
+                       │  - Match by Provider ID/Email   │
+                       │  - Zero duplicate accounts      │
+                       │  - Preserve all learner data    │
+                       └────────────────┬────────────────┘
+                                        ▼
+                       ┌─────────────────────────────────┐
+                       │      Signed CareerTwin JWT      │
+                       │   (HttpOnly Cookie + Bearer)    │
+                       └────────────────┬────────────────┘
+                                        ▼
+                       ┌─────────────────────────────────┐
+                       │  Authenticated Learner Session  │
+                       │       (/dashboard.html)         │
+                       └─────────────────────────────────┘
+```
+
+### Supported Authentication Methods
+
+| Provider | Mechanism | Security Features | Data Captured & Synced |
+|:---|:---|:---|:---|
+| **Email / Password** | Local salt + bcrypt hash | Complexity validation, `minlength: 6`, select: false | Name, Email, Role, Timestamp |
+| **Google** | Official OAuth 2.0 / OIDC | CSRF `state` cookie, verified email check, token cookie | Full Name, Verified Email, Google Profile Avatar |
+| **GitHub** | Official OAuth 2.0 | CSRF `state` cookie, private email fallback API query | GitHub Username, Avatar, Profile URL, Auto-sync Repos |
+| **Codolio** | Profile Handle / URL Auth | Sanitized username validation, public profile lookup | Codolio Handle, Profile URL, Auto-sync Coding Ratings |
+
+### Security Guarantees
+* **CSRF Mitigation:** Cryptographically randomized, single-use `oauth_state` tokens generated via `crypto.randomBytes(24)` and validated on OAuth callbacks.
+* **Zero Credential Exposure:** Provider client secrets (`GOOGLE_CLIENT_SECRET`, `GITHUB_CLIENT_SECRET`) and JWT secret keys are strictly maintained in server-side environment variables.
+* **Safe Account Linking:** When a user logs in via Google or GitHub using an email address previously registered via password, the external identity is securely linked without wiping user interview history, resume analyses, or roadmap milestones.
+* **Private GitHub Email Resolution:** Gracefully queries the authenticated `/user/emails` endpoint when candidates keep their GitHub primary email private.
 
 ---
 
@@ -71,6 +134,10 @@ The complete application is hosted live on Vercel Serverless infrastructure with
 | **Database & ODM** | **MongoDB Atlas** | Managed cloud database storing users, learner states, interview transcripts, and curriculum graphs. |
 | | **Mongoose ODM (v8.9.5)** | Strongly-typed schemas, data validation, and relational population queries. |
 | | **Company Question Bank** | 985 verified interview questions curated across 11 top tech enterprises. |
+| **Authentication & Identity** | **OAuth 2.0 & OpenID Connect** | Direct integration with Google Cloud Identity and GitHub OAuth. |
+| | **Codolio Platform Engine** | Direct Codolio developer profile handle resolution and competitive rating sync. |
+| | **JSON Web Tokens (JWT)** | Stateless, signed bearer token session management with HttpOnly cookie support. |
+| | **Bcrypt.js (v2.4.3)** | One-way cryptographic salting and hashing for secure local password storage. |
 | **AI & NLP** | **Google Gemini (1.5 / 2.0)** | Resume ATS scoring, STAR mock interview evaluation, roadmap generation, and project judge. |
 | | **Custom NLP Fallback Router** | Deterministic, topic-specific conversational engine ensuring 100% uptime if external cloud LLMs stall. |
 | **Adaptive Learning** | **Bayesian Knowledge Tracing (BKT)** | Probabilistic skill mastery computation ($P(L_t)$) with guess and slip penalty calibration. |
@@ -79,9 +146,6 @@ The complete application is hosted live on Vercel Serverless infrastructure with
 | **Vision & Speech** | **Client-Side Gaze Tracker** | Real-time pupil centroid and eye contact tracking running locally in the browser. |
 | | **Web Audio API** | Real-time audio waveform visualization and vocal frequency analysis. |
 | | **Web Speech Recognition API** | Real-time speech-to-text transcript preview and Words-Per-Minute (WPM) cadence tracking. |
-| **Security & Auth** | **JSON Web Tokens (JWT)** | Stateless, signed bearer token session management for protected API endpoints. |
-| | **Bcrypt.js (v2.4.3)** | One-way cryptographic salting and hashing for secure password storage. |
-| | **CORS** | Strict cross-origin access control and security header enforcement. |
 | **DevOps & Cloud** | **Vercel Serverless** | Automated CI/CD build pipeline, edge routing, and zero-cold-start hosting. |
 | | **Git & GitHub** | Distributed version control repository (`kit29-25bad068/CareerTwin-AI`). |
 
@@ -96,11 +160,12 @@ flowchart TD
         Vision["Vision Tracker (Pupil / Gaze / Framing)"]
         Audio["Web Audio & Speech Recognition API"]
         Charts["Chart.js Radar & SVG Concept DAG"]
+        AuthUI["Multi-Provider Sign-In (Google / GitHub / Codolio / Email)"]
     end
 
     subgraph Serverless ["Application & API Gateway (Vercel Serverless)"]
         Express["Express.js Serverless Gateway"]
-        Auth["JWT & Bcrypt Security Middleware"]
+        Auth["JWT, Bcrypt & OAuth Security Handlers"]
         Upload["Multer & In-Memory PDF Parser"]
     end
 
@@ -114,17 +179,24 @@ flowchart TD
     subgraph Data ["Data & External Integration Layer"]
         Atlas[("MongoDB Atlas Cloud Database")]
         CompanyDB[("985 Verified Company Questions")]
-        GitHub["GitHub REST API Integration"]
-        Codolio["Codolio Competitive Coding Platform"]
+        GoogleOAuth["Google Cloud OAuth 2.0 API"]
+        GitHubOAuth["GitHub OAuth 2.0 API"]
+        GitHubSync["GitHub Repositories REST API"]
+        CodolioSync["Codolio Competitive Coding Platform"]
     end
 
     UI --> Express
     Vision --> Express
     Audio --> Express
     Charts --> Express
+    AuthUI --> Express
 
     Express --> Auth
     Express --> Upload
+
+    Auth --> GoogleOAuth
+    Auth --> GitHubOAuth
+    Auth --> CodolioSync
 
     Express --> Gemini
     Express --> Adaptive
@@ -133,8 +205,8 @@ flowchart TD
 
     Express --> Atlas
     Express --> CompanyDB
-    Express --> GitHub
-    Express --> Codolio
+    Express --> GitHubSync
+    Express --> CodolioSync
 ```
 
 ---
@@ -193,18 +265,20 @@ CareerTwin-AI/
 │   ├── server.js                         # Application entrypoint & middleware configuration
 │   ├── config/db.js                      # MongoDB Atlas connection pooling handler
 │   ├── models/                           # Mongoose Schemas & Object Models
-│   │   ├── User.js                       # User credentials, roles & profile links
+│   │   ├── User.js                       # User credentials, authProvider, providerId & handles
 │   │   ├── Interview.js                  # Interview sessions, question records & scorecards
 │   │   ├── Concept.js                    # Instructional Concept Graph nodes & edges
 │   │   ├── Question.js                   # Curriculum questions with explanations & difficulty
 │   │   ├── Attempt.js                    # Immutable evidence attempt records
 │   │   ├── LearnerState.js               # Mastery & epistemic uncertainty tracking
 │   │   ├── CareerProfile.js              # Target roles, domains & profile data
+│   │   ├── GitHubProfile.js              # Cached GitHub repository signals & metrics
+│   │   ├── CodolioProfile.js             # Cached Codolio competitive rating scores
 │   │   ├── Roadmap.js                    # Personalized month-by-month career roadmap
 │   │   ├── Resume.js                     # Parsed ATS resume entities & multi-axis scores
 │   │   └── MentorConversation.js         # Chat history with AI Career Mentor
-│   ├── controllers/                      # Request controllers (interview, adaptive, mentor, etc.)
-│   ├── routes/                           # API route declarations
+│   ├── controllers/                      # Request controllers (auth, interview, adaptive, mentor, etc.)
+│   ├── routes/                           # API route declarations (authRoutes, interviewRoutes, etc.)
 │   ├── services/                         # Core algorithmic & AI services
 │   │   ├── geminiService.js              # Multi-model Gemini failover & report synthesis
 │   │   ├── careerTwinService.js          # Career Readiness Index (CRI) calculation engine
@@ -212,12 +286,15 @@ CareerTwin-AI/
 │   │   ├── masteryEngine.js              # Bayesian probability mastery updates
 │   │   ├── uncertaintyEngine.js          # Epistemic uncertainty estimation
 │   │   ├── conceptSeedService.js         # Concept graph & curriculum seeder
-│   │   └── githubService.js              # GitHub REST API signals extractor
+│   │   ├── githubService.js              # GitHub REST API signals extractor
+│   │   └── codolioService.js             # Codolio profile analyzer & rating extractor
 │   └── seed/
 │       └── companyInterviewData.js       # 985 verified company interview questions seeder
 │
 ├── frontend/                             # Modern Responsive Client Interface
 │   ├── index.html                        # Platform landing & feature showcase
+│   ├── login.html                        # Multi-provider authentication portal
+│   ├── register.html                     # Account registration portal
 │   ├── dashboard.html                    # Real-time learner telemetry & action cards
 │   ├── interview.html                    # Mock Interview Room with live gaze tracking
 │   ├── interview-report.html             # Multi-dimensional post-interview performance scorecard
@@ -229,6 +306,7 @@ CareerTwin-AI/
 │   ├── css/                              # Glassmorphic custom design system
 │   └── js/                               # Modular client-side engines
 │       ├── api.js                        # Authenticated HTTP client with JWT handling
+│       ├── auth.js                       # Session management, token parsing & guards
 │       ├── vision.js                     # Real-time gaze tracking & eye contact engine
 │       ├── audio.js                      # Web Audio frequency analysis & microphone capture
 │       ├── charts.js                     # Chart.js radar & progress visualizers
@@ -264,10 +342,24 @@ npm install
 Create a `.env` file in the project root:
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxx.mongodb.net/careertwin?retryWrites=true&w=majority
-JWT_SECRET=your_secure_jwt_secret_key
 NODE_ENV=development
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxx.mongodb.net/careertwin?retryWrites=true&w=majority
+JWT_SECRET=your_super_secure_jwt_secret_key_change_in_production
+JWT_EXPIRES_IN=7d
 GEMINI_API_KEY=your_google_gemini_api_key_here
+
+# Google OAuth 2.0
+GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
+
+# GitHub OAuth 2.0
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+GITHUB_CALLBACK_URL=http://localhost:5000/api/auth/github/callback
+
+# Production Canonical Application URL
+APP_URL=https://careertwin-ai-green.vercel.app
 ```
 
 ### 5. Seed the Databases
@@ -291,10 +383,26 @@ Open your browser to: **`http://localhost:5000`**
 
 ## 📡 REST API Reference
 
+### Authentication & Identity Endpoints
+
 | Method | Endpoint | Description |
 |:---|:---|:---|
 | `POST` | `/api/auth/register` | Register new user account with role selection |
-| `POST` | `/api/auth/login` | Authenticate user & issue signed JWT bearer token |
+| `POST` | `/api/auth/login` | Authenticate with email/password & issue signed JWT |
+| `GET` | `/api/auth/google/login` | Initiate official Google OAuth 2.0 authorization redirect |
+| `GET` | `/api/auth/google/callback` | Exchange Google authorization code, link user & issue JWT |
+| `GET` | `/api/auth/github/login` | Initiate official GitHub OAuth authorization redirect |
+| `GET` | `/api/auth/github/callback` | Exchange GitHub code, resolve private emails, link user & issue JWT |
+| `POST` | `/api/auth/codolio` | Authenticate directly with Codolio handle/profile & trigger sync |
+| `GET` | `/api/auth/codolio` | Check Codolio identity integration status |
+| `GET` | `/api/auth/me` | Fetch authenticated user session profile (Protected) |
+| `POST` | `/api/auth/forgot-password` | Request password reset token |
+| `POST` | `/api/auth/reset-password` | Reset password using verified cryptographic token |
+
+### Career Intelligence & Assessment Endpoints
+
+| Method | Endpoint | Description |
+|:---|:---|:---|
 | `GET` | `/api/career-twin` | Fetch 360° Career Twin state & Career Readiness Index |
 | `GET` | `/api/company-interviews` | List all 11 companies with question counts & categories |
 | `POST` | `/api/interviews` | Initialize dual-source grounded mock interview session |
