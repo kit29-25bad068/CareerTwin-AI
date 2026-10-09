@@ -1,4 +1,4 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const learningPathSchema = new mongoose.Schema(
   {
@@ -42,11 +42,6 @@ const learningPathSchema = new mongoose.Schema(
     createdFromDecisionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Decision',
-      default: null,
-    },
-    teacherOverrideId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'TeacherOverride',
       default: null,
     },
     position: {
