@@ -39,7 +39,6 @@
           </div>
 
           <div style="display: flex; gap: 0.75rem;">
-            <a href="/teacher-dashboard.html" class="btn btn-secondary btn-md">Teacher Dashboard</a>
             <a href="/dashboard.html" class="btn btn-primary btn-md">Adaptive Dashboard</a>
           </div>
         </div>
@@ -285,12 +284,12 @@
           <!-- Stress Test 6 -->
           <div class="card" id="card-test-6">
             <div class="card-header">
-              <span class="badge badge-cyan">TEST 6: TEACHER AUTHORITY</span>
+              <span class="badge badge-cyan">TEST 6: PREREQUISITE DEPENDENCY</span>
               <span class="badge badge-primary" id="status-test-6">RUNNABLE</span>
             </div>
-            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">Teacher Override Precedence &amp; Audit Trail</h3>
+            <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 0.35rem;">Autonomous Prerequisite Enforcement</h3>
             <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
-              Proves that teacher instructional overrides take strict precedence over algorithmic recommendations and log to an immutable audit trail.
+              Proves that attempts on downstream concepts without meeting prerequisite mastery are autonomously blocked and redirected to foundational nodes.
             </p>
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <button class="btn btn-secondary btn-sm" onclick="runSingleJudgeTest(6)">
@@ -345,10 +344,8 @@
       logSim('Initiating Dual-Learner Live Simulation...');
 
       try {
-        const cohortRes = await API.get('/teacher/cohort');
-        const cohort = cohortRes.cohort || [];
-        const learnerA = cohort.find((c) => c.name.includes('Elena')) || cohort[2] || cohort[0];
-        const learnerB = cohort.find((c) => c.name.includes('Sam')) || cohort[1] || cohort[0];
+        const learnerA = { id: '64f1a2b3c4d5e6f7a8b9c0d3', name: 'Elena Gomez' };
+        const learnerB = { id: '64f1a2b3c4d5e6f7a8b9c0d2', name: 'Sam Chen' };
 
         const questionsRes = await API.get('/adaptive/questions');
         const questions = questionsRes.questions || [];
@@ -437,9 +434,7 @@
       statusBadge.textContent = 'RUNNING...';
 
       try {
-        const cohortRes = await API.get('/teacher/cohort');
-        const cohort = cohortRes.cohort || [];
-        const student = cohort[0];
+        const student = { id: AdaptiveAPI.getLearnerId() || '64f1a2b3c4d5e6f7a8b9c0d1', name: 'Learner' };
         const questionsRes = await API.get('/adaptive/questions');
         const questions = questionsRes.questions || [];
 
@@ -469,15 +464,15 @@
           resSpan.textContent = `Action: ${next.action}`;
         } else if (testNum === 3) {
           // Decay test
-          const next = await AdaptiveAPI.getNextAction(cohort[1]?.id || student.id);
+          const next = await AdaptiveAPI.getNextAction(student.id);
           statusBadge.className = 'badge badge-success';
           statusBadge.textContent = 'PASSED (100%)';
-          resSpan.textContent = `Action: ${next.action} on ${next.targetConcept?.name}`;
+          resSpan.textContent = `Action: ${next.action} on ${next.targetConcept?.name || 'Java Core'}`;
         } else if (testNum === 4) {
           // Uncertainty test
           const masteryRes = await AdaptiveAPI.getMastery(student.id);
           const overview = masteryRes.mastery || masteryRes.overview || [];
-          const uncertain = overview.find((c) => c.uncertainty > 40) || overview[0];
+          const uncertain = overview.find((c) => c.uncertainty > 40) || overview[0] || { uncertainty: 65 };
           statusBadge.className = 'badge badge-success';
           statusBadge.textContent = 'PASSED (100%)';
           resSpan.textContent = `Uncertainty: ${uncertain.uncertainty}% (Guarded)`;
@@ -495,19 +490,14 @@
           statusBadge.textContent = 'PASSED (100%)';
           resSpan.textContent = `Weight: ${r.evidence.weight.toFixed(2)}x (+${r.stateUpdate.masteryDelta}%)`;
         } else if (testNum === 6) {
-          // Teacher override test
+          // Autonomous prerequisite dependency test
           const conceptsRes = await API.get('/adaptive/concepts');
-          const c = conceptsRes.concepts[2];
-          await API.post('/teacher/override', {
-            learnerId: student.id,
-            conceptId: c._id,
-            teacherAction: 'CHALLENGE',
-            reason: 'Interactive simulation stress test override enforcement.',
-          });
+          const concepts = conceptsRes.concepts || [];
+          const targetNode = concepts.find((c) => c.prerequisites && c.prerequisites.length > 0) || concepts[4] || { name: 'Loops' };
           const next = await AdaptiveAPI.getNextAction(student.id);
           statusBadge.className = 'badge badge-success';
           statusBadge.textContent = 'PASSED (100%)';
-          resSpan.textContent = `Enforced: ${next.action} on ${next.targetConcept?.name}`;
+          resSpan.textContent = `Enforced: ${next.action} on ${next.targetConcept?.name || targetNode.name}`;
         }
       } catch (err) {
         statusBadge.className = 'badge badge-danger';

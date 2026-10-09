@@ -11,7 +11,6 @@ const LearnerState = require('../models/LearnerState');
 const Decision = require('../models/Decision');
 const LearningPath = require('../models/LearningPath');
 const AdaptiveConfig = require('../models/AdaptiveConfig');
-const TeacherOverride = require('../models/TeacherOverride');
 const Attempt = require('../models/Attempt');
 
 const { evaluatePrerequisites } = require('./prerequisiteEngine');
@@ -52,26 +51,21 @@ async function getNextLearningAction(learnerId, targetConceptId = null) {
     else break;
   }
 
-  // 5. Check for Teacher Override
-  const latestOverride = await TeacherOverride.findOne({ learnerId })
-    .sort({ timestamp: -1 })
-    .populate('conceptId');
-
   let activeConcept = null;
   let action = 'PRACTICE';
   let prerequisiteAnalysis = { isBlocked: false, rootBlockingConcept: null, blockingPrerequisites: [] };
   let interventionTrigger = null;
 
-  // 6. Check Global Rule: Teacher Intervention (3+ consecutive failures)
+  // 5. Check Global Rule: Autonomous Remediation on consecutive failures (3+ failures)
   if (consecutiveFailures.length >= 3) {
-    action = 'TEACHER_INTERVENTION';
+    action = 'REMEDIATE_PREREQUISITE';
     interventionTrigger = 'CONSECUTIVE_FAILURES';
     const failedConceptId = consecutiveFailures[0].conceptId;
     activeConcept = conceptMap.get(failedConceptId.toString()) || concepts[0];
   }
 
-  // 7. Check Global Rule: Spaced Review for Stale Concepts (Knowledge Decay)
-  if (action !== 'TEACHER_INTERVENTION') {
+  // 6. Check Global Rule: Spaced Review for Stale Concepts (Knowledge Decay)
+  if (action !== 'REMEDIATE_PREREQUISITE') {
     for (const c of concepts) {
       const state = stateMap.get(c._id.toString());
       if (state) {
@@ -139,19 +133,6 @@ async function getNextLearningAction(learnerId, targetConceptId = null) {
     }
   }
 
-  // Apply Teacher Override if present and not yet superseded by subsequent learner attempts
-  if (latestOverride) {
-    const newerAttempts = await Attempt.countDocuments({
-      learnerId,
-      timestamp: { $gt: latestOverride.timestamp },
-    });
-    if (newerAttempts === 0) {
-      if (latestOverride.conceptId) {
-        activeConcept = latestOverride.conceptId;
-      }
-      action = latestOverride.teacherAction;
-    }
-  }
 
   // 10. Generate Machine + Human Explanation
   const activeState = stateMap.get(activeConcept._id.toString()) || { mastery: 0, uncertainty: 100 };

@@ -9,7 +9,6 @@ const Navbar = {
     { label: 'Concept Graph', url: '/concept-graph.html', icon: '🕸️' },
     { label: 'Mastery & Uncertainty', url: '/mastery.html', icon: '📊' },
     { label: 'Learning History', url: '/learning-history.html', icon: '📜' },
-    { label: 'Teacher Dashboard', url: '/teacher-dashboard.html', icon: '🎓' },
     { label: 'Simulation & Tests', url: '/simulation.html', icon: '🔬' },
   ],
 
