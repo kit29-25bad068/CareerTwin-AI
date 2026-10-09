@@ -29,10 +29,10 @@
               Traceability &amp; Epistemic Audit
             </div>
             <h1 style="font-size: 1.85rem; color: #fff; margin-top: 0.25rem;">
-              Learning &amp; Decision History
+              Learning History
             </h1>
             <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
-              Complete immutable event audit trail of evidence attempts, response timings, anti-gaming flags, and adaptive recommendations.
+              Complete event audit trail of evidence attempts, response timings, question types, and evidence quality.
             </p>
           </div>
 
@@ -46,21 +46,11 @@
           </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div style="display: flex; gap: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem;">
-          <button class="btn btn-sm active-tab-btn" id="tab-attempts-btn" style="background: transparent; border: none; border-bottom: 2px solid var(--accent-primary); color: #fff; padding: 0.65rem 1rem; font-weight: 600; cursor: pointer;">
-            📝 Attempt Evidence Log (<span id="attempts-count-badge">0</span>)
-          </button>
-          <button class="btn btn-sm" id="tab-decisions-btn" style="background: transparent; border: none; color: var(--text-muted); padding: 0.65rem 1rem; font-weight: 600; cursor: pointer;">
-            🧠 Adaptive Decision Audit Log (<span id="decisions-count-badge">0</span>)
-          </button>
-        </div>
-
-        <!-- View 1: Attempt Evidence Table -->
+        <!-- Attempt Evidence Table -->
         <div class="card" id="attempts-view-card">
           <div class="card-header">
             <div class="card-title">
-              <span>Attempt Evidence Submissions</span>
+              <span>Attempt Evidence Submissions (<span id="attempts-count-badge">0</span>)</span>
             </div>
             <span class="badge badge-cyan">Verified Evidence Records</span>
           </div>
@@ -88,19 +78,6 @@
           </div>
         </div>
 
-        <!-- View 2: Decision Log -->
-        <div class="card" id="decisions-view-card" style="display: none;">
-          <div class="card-header">
-            <div class="card-title">
-              <span>Adaptive Decision Explanations &amp; Factors</span>
-            </div>
-            <span class="badge badge-primary">Machine-Readable &amp; Human Explainable</span>
-          </div>
-          <div id="decisions-list-container" style="display: flex; flex-direction: column; gap: 1rem;">
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Loading decision records...</p>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
@@ -112,7 +89,6 @@
   <script src="/js/adaptive-api.js"></script>
   <script>
     let attemptsList = [];
-    let decisionsList = [];
 
     document.addEventListener('DOMContentLoaded', async () => {
       Navbar.init('Learning History');
@@ -127,50 +103,18 @@
         await loadAllHistory();
       });
 
-      // Tabs Setup
-      const attemptsTab = document.getElementById('tab-attempts-btn');
-      const decisionsTab = document.getElementById('tab-decisions-btn');
-      const attemptsCard = document.getElementById('attempts-view-card');
-      const decisionsCard = document.getElementById('decisions-view-card');
-
-      attemptsTab.addEventListener('click', () => {
-        attemptsTab.style.borderBottom = '2px solid var(--accent-primary)';
-        attemptsTab.style.color = '#fff';
-        decisionsTab.style.borderBottom = 'none';
-        decisionsTab.style.color = 'var(--text-muted)';
-        attemptsCard.style.display = 'block';
-        decisionsCard.style.display = 'none';
-      });
-
-      decisionsTab.addEventListener('click', () => {
-        decisionsTab.style.borderBottom = '2px solid var(--accent-primary)';
-        decisionsTab.style.color = '#fff';
-        attemptsTab.style.borderBottom = 'none';
-        attemptsTab.style.color = 'var(--text-muted)';
-        decisionsCard.style.display = 'block';
-        attemptsCard.style.display = 'none';
-      });
-
       await loadAllHistory();
     });
 
     async function loadAllHistory() {
       try {
-        const [attemptsRes, decisionsRes] = await Promise.all([
-          AdaptiveAPI.getAttempts(),
-          AdaptiveAPI.getDecisions(),
-        ]);
+        const attemptsRes = await AdaptiveAPI.getAttempts();
 
         if (attemptsRes.success) {
           attemptsList = attemptsRes.attempts || [];
-          document.getElementById('attempts-count-badge').textContent = attemptsList.length;
+          const countBadge = document.getElementById('attempts-count-badge');
+          if (countBadge) countBadge.textContent = attemptsList.length;
           renderAttemptsTable(attemptsList);
-        }
-
-        if (decisionsRes.success) {
-          decisionsList = decisionsRes.decisions || [];
-          document.getElementById('decisions-count-badge').textContent = decisionsList.length;
-          renderDecisionsList(decisionsList);
         }
       } catch (err) {
         console.error('Error fetching history:', err);
@@ -227,64 +171,7 @@
       });
     }
 
-    function renderDecisionsList(decisions) {
-      const container = document.getElementById('decisions-list-container');
-      container.innerHTML = '';
 
-      if (decisions.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
-            No decisions logged yet. Decisions are created each time the adaptive engine evaluates the next action.
-          </div>
-        `;
-        return;
-      }
-
-      decisions.forEach((d) => {
-        const dateStr = new Date(d.timestamp || d.createdAt).toLocaleString();
-        const action = d.action || 'PRACTICE';
-        const concept = d.conceptId?.name || 'Java Core';
-
-        const actionClasses = {
-          ADVANCE: 'action-advance',
-          PRACTICE: 'action-practice',
-          REVIEW: 'action-review',
-          REMEDIATE_PREREQUISITE: 'action-remediate_prerequisite',
-          CHALLENGE: 'action-challenge',
-          TEACHER_INTERVENTION: 'action-teacher_intervention',
-        };
-
-        const item = document.createElement('div');
-        item.style.background = 'rgba(255, 255, 255, 0.02)';
-        item.style.border = '1px solid var(--border-color)';
-        item.style.borderRadius = 'var(--radius-md)';
-        item.style.padding = '1.25rem';
-
-        item.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <span class="action-badge-pill ${actionClasses[action] || 'action-practice'}">
-                ${action.replace('_', ' ')}
-              </span>
-              <span style="font-weight: 700; color: #fff; font-size: 1.05rem;">Target: ${concept}</span>
-            </div>
-            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">${dateStr}</span>
-          </div>
-
-          <div style="font-size: 0.92rem; color: var(--text-primary); margin: 0.65rem 0; line-height: 1.5;">
-            <strong>Reason:</strong> ${escapeHtml(d.reason)}
-          </div>
-
-          <details style="margin-top: 0.5rem;">
-            <summary style="font-size: 0.78rem; color: var(--accent-secondary); cursor: pointer; font-family: var(--font-mono);">
-              Inspect Machine Decision Factors (JSON)
-            </summary>
-            <pre style="background: #080c16; padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.75rem; color: #38bdf8; margin-top: 0.5rem; overflow-x: auto;">${JSON.stringify(d.decisionFactors, null, 2)}</pre>
-          </details>
-        `;
-        container.appendChild(item);
-      });
-    }
 
     function escapeHtml(str) {
       if (!str) return '';
