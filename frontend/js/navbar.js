@@ -15,6 +15,7 @@ const Navbar = {
     { label: 'Career Twin', url: '/career-twin.html', icon: '🧬' },
     { label: 'Mock Interviews', url: '/interview.html', icon: '🎙️' },
     { label: 'Resume & CV Analyzer', url: '/resume.html', icon: '📄' },
+    { label: 'AI Project Evaluator', url: '/projects.html', icon: '🚀' },
     { label: 'GitHub Signals', url: '/github.html', icon: '🐙' },
     { label: 'Skill Matrix', url: '/skills.html', icon: '⚡' },
     { label: 'Career Roadmap', url: '/roadmap.html', icon: '🗺️' },

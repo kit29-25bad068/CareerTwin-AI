@@ -3,12 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Evaluator - CareerTwin AI</title>
+  <title>AI Project Evaluator - CareerTwin AI</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/pages.css">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    .rubric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+    .rubric-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.75rem;
+    }
+    .rubric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      margin-bottom: 0.35rem;
+    }
+    .rubric-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .rubric-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .stats-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+  </style>
 </head>
 <body>
   <div class="app-layout">
@@ -19,25 +57,63 @@
 
       <div class="page-container">
         <!-- Header -->
-        <div class="card card-glow" style="margin-bottom: 2rem;">
-          <div class="badge badge-purple" style="margin-bottom:0.4rem;">Engineering Rubric Evaluator</div>
-          <h1 style="font-size: 1.85rem; margin-bottom: 0.25rem;">AI Project Evaluator</h1>
-          <p style="font-size: 0.95rem; color: var(--text-secondary);">
-            Submit your showcase projects for a comprehensive 10-dimension evaluation and hackathon readiness assessment.
-          </p>
-        </div>
-
-        <!-- Project Submission Form -->
-        <div class="card" style="margin-bottom: 2rem;">
-          <div class="card-header">
-            <div class="card-title">🚀 Submit Project for AI Evaluation</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+              <span class="badge badge-purple">🚀 Connected Twin Data Stream</span>
+              <span class="badge badge-cyan">10-Dimension Rubric</span>
+            </div>
+            <h1 style="font-size: 1.85rem; color: #fff; margin: 0;">AI Project Evaluator</h1>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-top: 0.35rem;">
+              Submit your portfolio and hackathon repositories for comprehensive architectural, complexity, and code quality evaluation.
+            </p>
           </div>
 
-          <form id="project-eval-form">
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <a href="/career-twin.html" class="btn btn-secondary btn-sm">🧬 Back to Digital Twin</a>
+            <a href="/skills.html" class="btn btn-outline btn-sm">⚡ Skill Matrix</a>
+          </div>
+        </div>
+
+        <!-- Metrics Overview Summary Bar -->
+        <div class="stats-card-grid">
+          <div class="card" style="padding: 1.1rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Projects Evaluated</div>
+            <div id="stat-project-count" style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: 0.25rem;">0</div>
+            <div style="font-size: 0.72rem; color: var(--accent-secondary); margin-top: 0.2rem;">Live portfolio signals</div>
+          </div>
+
+          <div class="card" style="padding: 1.1rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Avg Engineering Score</div>
+            <div id="stat-avg-score" style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin-top: 0.25rem;">--</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Normalized /100 across rubric</div>
+          </div>
+
+          <div class="card" style="padding: 1.1rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Synced Skills</div>
+            <div id="stat-synced-skills" style="font-size: 1.8rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">0</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Fed into Career Twin Matrix</div>
+          </div>
+
+          <div class="card" style="padding: 1.1rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Hackathon Readiness</div>
+            <div id="stat-hackathon-status" style="font-size: 1.8rem; font-weight: 800; color: #fbbf24; margin-top: 0.25rem;">--</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Architecture viability index</div>
+          </div>
+        </div>
+
+        <!-- Project Submission Form Card -->
+        <div class="card card-glow" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div class="card-title">🚀 Submit New Project for AI Rubric Evaluation</div>
+            <span class="badge badge-primary">Gemini 2.5 AI Powered</span>
+          </div>
+
+          <form id="project-eval-form" style="margin-top: 0.75rem;">
             <div class="grid grid-cols-2">
               <div class="form-group">
-                <label class="form-label" for="proj-title">Project Title</label>
-                <input type="text" id="proj-title" class="form-input" placeholder="e.g. Distributed Task Queue" required>
+                <label class="form-label" for="proj-title">Project Title *</label>
+                <input type="text" id="proj-title" class="form-input" placeholder="e.g. Distributed Task Queue & Real-time Telemetry" required>
               </div>
 
               <div class="form-group">
@@ -47,40 +123,47 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="proj-description">Technical Description & Architecture</label>
-              <textarea id="proj-description" class="form-textarea" style="min-height: 110px;" placeholder="Explain the problem solved, architectural components, database schema choices, and technical trade-offs..." required></textarea>
+              <label class="form-label" for="proj-description">Technical Description & Architecture *</label>
+              <textarea id="proj-description" class="form-textarea" style="min-height: 120px;" placeholder="Describe the problem solved, architectural layers (frontend, API, database, cache, workers), concurrency handling, database schema choices, and technical trade-offs..." required></textarea>
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="proj-techstack">Tech Stack (comma separated)</label>
-              <input type="text" id="proj-techstack" class="form-input" placeholder="e.g. Node.js, Express, MongoDB, Redis, Docker, TailwindCSS">
+              <label class="form-label" for="proj-techstack">Tech Stack (comma separated) *</label>
+              <input type="text" id="proj-techstack" class="form-input" placeholder="e.g. Node.js, Express, Redis, MongoDB, Docker, React, TypeScript">
+              <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
+                ✨ Technologies listed here will automatically sync into your Career Twin Skill Matrix!
+              </small>
             </div>
 
             <div class="grid grid-cols-3">
               <div class="form-group">
                 <label class="form-label" for="proj-github">GitHub Repository URL</label>
-                <input type="url" id="proj-github" class="form-input" placeholder="https://github.com/...">
+                <input type="url" id="proj-github" class="form-input" placeholder="https://github.com/username/repo">
               </div>
 
               <div class="form-group">
                 <label class="form-label" for="proj-demo">Live Demo URL</label>
-                <input type="url" id="proj-demo" class="form-input" placeholder="https://my-app.vercel.app">
+                <input type="url" id="proj-demo" class="form-input" placeholder="https://project-demo.vercel.app">
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="proj-figma">Figma / Docs URL</label>
-                <input type="url" id="proj-figma" class="form-input" placeholder="https://figma.com/file/...">
+                <label class="form-label" for="proj-figma">Documentation / Figma URL</label>
+                <input type="url" id="proj-figma" class="form-input" placeholder="https://docs.myproject.io">
               </div>
             </div>
 
-            <button type="submit" id="submit-proj-btn" class="btn btn-primary btn-lg" style="width: 100%;">
-              ⚡ Evaluate Project with AI
+            <button type="submit" id="submit-proj-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+              ⚡ Evaluate Project Architecture with AI
             </button>
           </form>
         </div>
 
-        <!-- Evaluated Projects List -->
-        <h2 style="margin-bottom: 1.25rem;">Evaluated Showcase Projects</h2>
+        <!-- Evaluated Projects Section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h2 style="font-size: 1.35rem; color: #fff; margin: 0;">Evaluated Showcase Projects</h2>
+          <span id="projects-total-pill" class="badge badge-purple">0 Projects</span>
+        </div>
+
         <div id="projects-list-container" style="display:flex; flex-direction:column; gap:1.5rem;">
           <p style="color:var(--text-muted); font-size:0.9rem;">Loading projects...</p>
         </div>
@@ -94,7 +177,7 @@
   <script src="/js/navbar.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      Navbar.init('Project Evaluator');
+      Navbar.init('AI Project Evaluator');
       await loadProjects();
 
       document.getElementById('project-eval-form').addEventListener('submit', async (e) => {
@@ -120,7 +203,7 @@
           });
           Utils.hideLoading();
           if (res.success && res.project) {
-            Utils.showToast('Project evaluated successfully and skills synced!', 'success');
+            Utils.showToast('Project evaluated successfully and skills synced to Career Twin!', 'success');
             document.getElementById('project-eval-form').reset();
             await loadProjects();
           }
@@ -135,21 +218,61 @@
       try {
         const res = await API.get('/projects');
         if (res.success) {
-          renderProjects(res.projects || []);
+          const projects = res.projects || [];
+          updateSummaryMetrics(projects);
+          renderProjects(projects);
         }
       } catch (err) {
         console.error('Error loading projects:', err);
       }
     }
 
+    function updateSummaryMetrics(projects) {
+      const countEl = document.getElementById('stat-project-count');
+      const avgEl = document.getElementById('stat-avg-score');
+      const skillsEl = document.getElementById('stat-synced-skills');
+      const hackEl = document.getElementById('stat-hackathon-status');
+      const totalPill = document.getElementById('projects-total-pill');
+
+      if (!projects || projects.length === 0) {
+        countEl.textContent = '0';
+        avgEl.textContent = '--';
+        skillsEl.textContent = '0';
+        hackEl.textContent = '--';
+        totalPill.textContent = '0 Projects';
+        return;
+      }
+
+      countEl.textContent = projects.length;
+      totalPill.textContent = `${projects.length} Project${projects.length > 1 ? 's' : ''}`;
+
+      const totalScore = projects.reduce((sum, p) => sum + (p.evaluation?.overallScore || 0), 0);
+      const avg = Math.round(totalScore / projects.length);
+      avgEl.textContent = `${avg}/100`;
+
+      // Unique tech stack skills synced
+      const uniqueSkills = new Set();
+      projects.forEach((p) => {
+        (p.techStack || []).forEach((t) => uniqueSkills.add(t.toLowerCase()));
+      });
+      skillsEl.textContent = uniqueSkills.size;
+
+      // Hackathon readiness average
+      const totalHack = projects.reduce((sum, p) => sum + (p.evaluation?.hackathonReadinessScore || p.evaluation?.overallScore || 0), 0);
+      const avgHack = Math.round(totalHack / projects.length);
+      hackEl.textContent = `${avgHack}%`;
+    }
+
     function renderProjects(projects) {
       const container = document.getElementById('projects-list-container');
       if (!projects || projects.length === 0) {
         container.innerHTML = `
-          <div class="card" style="text-align:center; padding:3rem 2rem; color:var(--text-muted);">
-            <div style="font-size:2.5rem; margin-bottom:0.5rem;">🚀</div>
-            <h3>No projects evaluated yet</h3>
-            <p style="font-size:0.85rem; margin-top:0.25rem;">Submit your first showcase project above to assess engineering depth.</p>
+          <div class="card" style="text-align:center; padding:3.5rem 2rem; color:var(--text-muted);">
+            <div style="font-size:3rem; margin-bottom:0.75rem;">🚀</div>
+            <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 0.35rem;">No evaluated projects yet</h3>
+            <p style="font-size:0.9rem; max-width: 480px; margin: 0 auto; color: var(--text-secondary);">
+              Submit your flagship portfolio repository above. Our AI evaluates technical complexity, architecture quality, and automatically syncs verified skills to your Digital Career Twin.
+            </p>
           </div>
         `;
         return;
@@ -158,57 +281,100 @@
       container.innerHTML = projects.map((p) => {
         const ev = p.evaluation || {};
         return `
-          <div class="card card-interactive">
-            <div class="card-header">
+          <div class="card card-interactive" style="border: 1px solid rgba(255, 255, 255, 0.08);">
+            <div class="card-header" style="align-items: flex-start;">
               <div>
-                <h3 style="font-size:1.25rem; color:var(--text-primary); margin-bottom:0.2rem;">${Utils.escapeHTML(p.title)}</h3>
-                <p style="font-size:0.85rem; color:var(--text-secondary);">${Utils.escapeHTML(p.tagline || '')}</p>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                  <h3 style="font-size:1.35rem; color: #fff; margin: 0;">${Utils.escapeHTML(p.title)}</h3>
+                  <span class="badge badge-purple" style="font-size: 0.72rem;">Evaluated</span>
+                </div>
+                <p style="font-size:0.88rem; color:var(--text-secondary); margin: 0;">${Utils.escapeHTML(p.tagline || 'Engineering showcase project')}</p>
               </div>
-              <div style="text-align:right;">
-                <span style="font-size:1.75rem; font-weight:800; color:var(--accent-primary);">${ev.overallScore || 0}</span>
+              <div style="text-align:right; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 0.4rem 0.85rem;">
+                <div style="font-size: 0.7rem; text-transform: uppercase; color: var(--accent-secondary); font-weight: 700;">Overall Score</div>
+                <span style="font-size:1.85rem; font-weight:800; color:var(--accent-primary);">${ev.overallScore || 0}</span>
                 <span style="font-size:0.8rem; color:var(--text-muted);">/100</span>
               </div>
             </div>
 
-            <!-- Tech Stack & Links -->
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1rem;">
-              <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+            <!-- Tech Stack & Action Links -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin: 1rem 0;">
+              <div style="display:flex; flex-wrap:wrap; gap:0.4rem; align-items: center;">
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">STACK:</span>
                 ${(p.techStack || []).map((t) => `<span class="badge badge-primary">${Utils.escapeHTML(t)}</span>`).join('')}
               </div>
-              <div style="display:flex; gap:0.5rem;">
+              <div style="display:flex; gap:0.5rem; align-items: center;">
                 ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" class="btn btn-outline btn-sm">GitHub ↗</a>` : ''}
                 ${p.liveDemoUrl ? `<a href="${p.liveDemoUrl}" target="_blank" class="btn btn-cyan btn-sm">Live Demo ↗</a>` : ''}
-                <button class="btn btn-danger btn-sm" onclick="deleteProject('${p._id}')">🗑️</button>
+                ${p.figmaUrl ? `<a href="${p.figmaUrl}" target="_blank" class="btn btn-secondary btn-sm">Docs ↗</a>` : ''}
+                <button class="btn btn-danger btn-sm" onclick="deleteProject('${p._id}')" title="Delete Project">🗑️</button>
               </div>
             </div>
 
-            <!-- Description -->
-            <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:1.25rem; line-height:1.6;">
+            <!-- Technical Description -->
+            <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.25rem; line-height:1.6; background: rgba(15, 23, 42, 0.4); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid rgba(255, 255, 255, 0.04);">
               ${Utils.escapeHTML(p.description)}
             </p>
 
-            <!-- 10-Dimension Score Breakdown Pills -->
-            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1rem; margin-bottom:1rem;">
-              <div style="font-size:0.8rem; font-weight:700; color:var(--accent-secondary); text-transform:uppercase; margin-bottom:0.6rem;">
-                10-Dimension Rubric Scores
+            <!-- 10-Dimension Rubric Visual Cards -->
+            <div style="margin-bottom: 1.25rem;">
+              <div style="font-size:0.78rem; font-weight:700; color:var(--accent-secondary); text-transform:uppercase; margin-bottom:0.6rem; letter-spacing: 0.05em;">
+                10-Dimension Rubric Breakdown
               </div>
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:0.5rem; font-size:0.78rem;">
-                <div>Complexity: <strong>${ev.technicalComplexityScore || 0}%</strong></div>
-                <div>Innovation: <strong>${ev.innovationScore || 0}%</strong></div>
-                <div>Quality: <strong>${ev.engineeringQualityScore || 0}%</strong></div>
-                <div>Scalability: <strong>${ev.scalabilityScore || 0}%</strong></div>
-                <div>User Value: <strong>${ev.userValueScore || 0}%</strong></div>
-                <div>Market: <strong>${ev.marketPotentialScore || 0}%</strong></div>
-                <div>Docs: <strong>${ev.documentationScore || 0}%</strong></div>
-                <div>Hackathon: <strong>${ev.hackathonReadinessScore || 0}%</strong></div>
+              <div class="rubric-grid">
+                <div class="rubric-item">
+                  <div class="rubric-header"><span>Technical Complexity</span><strong>${ev.technicalComplexityScore || 0}%</strong></div>
+                  <div class="rubric-bar"><div class="rubric-fill" style="width: ${ev.technicalComplexityScore || 0}%;"></div></div>
+                </div>
+                <div class="rubric-item">
+                  <div class="rubric-header"><span>Engineering Quality</span><strong>${ev.engineeringQualityScore || 0}%</strong></div>
+                  <div class="rubric-bar"><div class="rubric-fill" style="width: ${ev.engineeringQualityScore || 0}%;"></div></div>
+                </div>
+                <div class="rubric-item">
+                  <div class="rubric-header"><span>Scalability & Architecture</span><strong>${ev.scalabilityScore || 0}%</strong></div>
+                  <div class="rubric-bar"><div class="rubric-fill" style="width: ${ev.scalabilityScore || 0}%;"></div></div>
+                </div>
+                <div class="rubric-item">
+                  <div class="rubric-header"><span>Innovation & Novelty</span><strong>${ev.innovationScore || 0}%</strong></div>
+                  <div class="rubric-bar"><div class="rubric-fill" style="width: ${ev.innovationScore || 0}%;"></div></div>
+                </div>
+                <div class="rubric-item">
+                  <div class="rubric-header"><span>User Value & Utility</span><strong>${ev.userValueScore || 0}%</strong></div>
+                  <div class="rubric-bar"><div class="rubric-fill" style="width: ${ev.userValueScore || 0}%;"></div></div>
+                </div>
+                <div class="rubric-item">
+                  <div class="rubric-header"><span>Market Potential</span><strong>${ev.marketPotentialScore || 0}%</strong></div>
+                  <div class="rubric-bar"><div class="rubric-fill" style="width: ${ev.marketPotentialScore || 0}%;"></div></div>
+                </div>
+                <div class="rubric-item">
+                  <div class="rubric-header"><span>Documentation</span><strong>${ev.documentationScore || 0}%</strong></div>
+                  <div class="rubric-bar"><div class="rubric-fill" style="width: ${ev.documentationScore || 0}%;"></div></div>
+                </div>
+                <div class="rubric-item">
+                  <div class="rubric-header"><span>Hackathon Readiness</span><strong>${ev.hackathonReadinessScore || 0}%</strong></div>
+                  <div class="rubric-bar"><div class="rubric-fill" style="width: ${ev.hackathonReadinessScore || 0}%;"></div></div>
+                </div>
               </div>
             </div>
 
             <!-- Feedback Summary -->
-            <div style="font-size:0.85rem; color:var(--text-secondary);">
-              <div style="color:#34d399; margin-bottom:0.25rem;"><strong>Strengths:</strong> ${(ev.strengths || []).join('; ')}</div>
-              <div style="color:#fb7185; margin-bottom:0.25rem;"><strong>Areas to Improve:</strong> ${(ev.weaknesses || []).join('; ')}</div>
-              <div style="color:#fbbf24;"><strong>Recommended Next Steps:</strong> ${(ev.recommendedNextSteps || []).join('; ')}</div>
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; font-size: 0.86rem; line-height: 1.5;">
+              ${ev.summary ? `<div style="margin-bottom: 0.6rem; color: #fff; font-weight: 500;">💡 ${Utils.escapeHTML(ev.summary)}</div>` : ''}
+              ${(ev.strengths && ev.strengths.length > 0) ? `
+                <div style="color: #34d399; margin-bottom: 0.4rem;">
+                  <strong>✓ Key Strengths:</strong> ${ev.strengths.map(s => Utils.escapeHTML(s)).join(' • ')}
+                </div>
+              ` : ''}
+              ${(ev.weaknesses && ev.weaknesses.length > 0) ? `
+                <div style="color: #fb7185; margin-bottom: 0.4rem;">
+                  <strong>✗ Areas for Improvement:</strong> ${ev.weaknesses.map(w => Utils.escapeHTML(w)).join(' • ')}
+                </div>
+              ` : ''}
+              ${(ev.recommendedNextSteps && ev.recommendedNextSteps.length > 0) ? `
+                <div style="color: #fbbf24;">
+                  <strong>➔ Recommended Next Steps:</strong> ${ev.recommendedNextSteps.map(r => Utils.escapeHTML(r)).join(' • ')}
+                </div>
+              ` : ''}
             </div>
           </div>
         `;
