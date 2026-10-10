@@ -76,21 +76,73 @@
     .graph-node-rect {
       rx: 10;
       ry: 10;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
+    }
+    .graph-node-group {
+      cursor: pointer;
+      transition: opacity 0.25s ease;
     }
     .graph-node-group:hover .graph-node-rect {
-      filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+      filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.6));
     }
     .edge-path {
       fill: none;
       stroke: rgba(99, 102, 241, 0.35);
       stroke-width: 2.2;
-      transition: stroke 0.25s ease, stroke-width 0.25s ease;
+      transition: stroke 0.25s ease, stroke-width 0.25s ease, opacity 0.25s ease;
     }
     .edge-path.highlighted {
       stroke: #06b6d4;
       stroke-width: 3.5;
       filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.7));
+    }
+    .graph-node-group.dimmed, .edge-path.dimmed {
+      opacity: 0.2;
+    }
+
+    /* Pathway Quest Mode Styles */
+    .pathway-level-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .level-block {
+      background: rgba(17, 24, 39, 0.65);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem;
+      position: relative;
+    }
+    .level-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.6rem;
+    }
+    .level-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .quest-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    .quest-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-2px);
+    }
+    .quest-card.locked {
+      opacity: 0.65;
+      background: rgba(15, 23, 42, 0.4);
     }
   </style>
 </head>
@@ -108,17 +160,17 @@
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
           <div>
             <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.06em; font-weight: 700;">
-              Instructional Dependency Graph
+              Instructional Dependency Graph &bull; Easy Learning Pathway
             </div>
             <h1 style="font-size: 1.85rem; color: #fff; margin-top: 0.25rem;">
               Java Programming Concept Graph
             </h1>
             <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.2rem;">
-              Interactive prerequisite map: 12 nodes, 15 directed prerequisite edges, recursive dependency resolution.
+              Step-by-step prerequisite roadmap: 12 concepts, recursive dependency resolution, and automated unlock tracking.
             </p>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
             <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-tertiary); padding: 0.35rem 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
               <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">LEARNER:</span>
               <select id="graph-learner-selector" class="form-control" style="background: transparent; border: none; color: #fff; font-size: 0.85rem; padding: 0.2rem; cursor: pointer;">
@@ -128,6 +180,49 @@
               </select>
             </div>
             <a href="/dashboard.html" class="btn btn-secondary btn-sm">⬅ Back to Dashboard</a>
+          </div>
+        </div>
+
+        <!-- 📢 AI Plain-English Navigator Bar (Instant 1-Sentence Clarity) -->
+        <div class="card" id="ai-navigator-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(15, 23, 42, 0.85) 100%); border: 1px solid rgba(99, 102, 241, 0.35); padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.85rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-size: 1.6rem;">🧭</span>
+              <div>
+                <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--accent-secondary); font-weight: 700; letter-spacing: 0.06em;">
+                  AI Plain-English Curriculum Navigator
+                </div>
+                <div id="ai-navigator-text" style="font-size: 0.95rem; color: #fff; font-weight: 500; margin-top: 0.2rem;">
+                  Analyzing your prerequisite unlock state across the curriculum...
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <button id="btn-quick-next" class="btn btn-primary btn-sm" onclick="practiceNextRecommended()">
+                🚀 Start Next Unlocked Topic
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Switcher Tabs & Quick Inspection Tool -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+          <!-- Left: View Mode Toggle -->
+          <div style="display: inline-flex; background: var(--bg-tertiary); padding: 4px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <button id="btn-mode-map" class="btn btn-primary btn-sm" onclick="switchViewMode('map')" style="border-radius: 6px; font-weight: 600;">
+              🗺️ Dependency Map View
+            </button>
+            <button id="btn-mode-pathway" class="btn btn-secondary btn-sm" onclick="switchViewMode('pathway')" style="border-radius: 6px; font-weight: 600;">
+              🪜 Step-by-Step Level Quest (Easy View)
+            </button>
+          </div>
+
+          <!-- Right: Instant "Why Am I Blocked?" Lookup -->
+          <div style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.03); padding: 0.35rem 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">🔍 Inspect Topic:</span>
+            <select id="quick-topic-selector" class="form-control" style="background: transparent; border: none; color: #fff; font-size: 0.85rem; padding: 0.2rem; cursor: pointer;" onchange="inspectConcept(this.value)">
+              <option value="">Select a concept...</option>
+            </select>
           </div>
         </div>
 
@@ -156,8 +251,8 @@
           </div>
         </div>
 
-        <!-- Main Graph Canvas & Inspector Side-Panel Grid -->
-        <div style="display: grid; grid-template-columns: 1fr 370px; gap: 1.5rem; align-items: start;">
+        <!-- VIEW 1: Visual SVG Map & Inspector Grid -->
+        <div id="view-visual-map" style="display: grid; grid-template-columns: 1fr 370px; gap: 1.5rem; align-items: start;">
           <!-- Left: SVG Graph Canvas -->
           <div class="concept-graph-canvas" id="canvas-container">
             <!-- HUD Controls -->
@@ -168,7 +263,7 @@
             </div>
 
             <div class="canvas-hud-hint">
-              💡 Drag to pan canvas • Mouse wheel to zoom • Click node to inspect details
+              💡 Click any node for Focus Mode • Drag to pan • Scroll to zoom
             </div>
 
             <svg class="graph-svg" id="graph-svg" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMid meet">
@@ -205,6 +300,13 @@
           </div>
         </div>
 
+        <!-- VIEW 2: Step-by-Step Level Quest (Easy View) -->
+        <div id="view-step-pathway" style="display: none;">
+          <div class="pathway-level-container" id="pathway-container">
+            <!-- Dynamically populated Levels 1 to 6 -->
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -218,31 +320,60 @@
     let graphData = null;
     let learnerMasteryMap = new Map();
     let selectedConceptId = null;
+    let nextRecommendedConcept = null;
+    let activeViewMode = 'map';
 
-    // Structured, collision-free multi-stage layout for all 12 Concepts
-    // Card Dimensions: width = 180px, height = 76px
+    // 6-Stage Curriculum Levels
+    const CURRICULUM_LEVELS = [
+      {
+        level: 1,
+        title: 'Level 1: Foundations',
+        description: 'Core JVM environment, execution cycle, and foundational structure.',
+        slugs: ['programming-basics'],
+      },
+      {
+        level: 2,
+        title: 'Level 2: Syntax & Types',
+        description: 'Memory variables, primitive types, and relational/logical operators.',
+        slugs: ['variables-datatypes', 'operators'],
+      },
+      {
+        level: 3,
+        title: 'Level 3: Control Flow',
+        description: 'Conditional decision branches and repetitive loop algorithms.',
+        slugs: ['conditionals', 'loops'],
+      },
+      {
+        level: 4,
+        title: 'Level 4: OOP & Modularity',
+        description: 'Methods, parameter passing, and object-oriented class architecture.',
+        slugs: ['functions', 'oop-basics'],
+      },
+      {
+        level: 5,
+        title: 'Level 5: Specializations',
+        description: 'Data encapsulation, class inheritance, and robust exception handling.',
+        slugs: ['encapsulation', 'inheritance', 'exception-handling'],
+      },
+      {
+        level: 6,
+        title: 'Level 6: Capstone Mastery',
+        description: 'Data structure collections and algorithmic synthesis problem solving.',
+        slugs: ['collections', 'problem-solving'],
+      },
+    ];
+
     const NODE_COORDINATES = {
-      // Column 1: Foundational Entry
       'programming-basics':      { x: 40,   y: 260, stage: 1 },
-
-      // Column 2: Types & Operators
       'variables-datatypes':     { x: 270,  y: 160, stage: 2 },
       'operators':               { x: 270,  y: 370, stage: 2 },
-
-      // Column 3: Control Flow
       'conditionals':            { x: 500,  y: 260, stage: 3 },
       'loops':                   { x: 500,  y: 470, stage: 3 },
-
-      // Column 4: Functions & OOP Basics
       'functions':               { x: 730,  y: 470, stage: 4 },
       'oop-basics':              { x: 730,  y: 260, stage: 4 },
-
-      // Column 5: Specializations & Exceptions
       'exception-handling':      { x: 960,  y: 70,  stage: 5 },
       'encapsulation':           { x: 960,  y: 210, stage: 5 },
       'inheritance':             { x: 960,  y: 360, stage: 5 },
-
-      // Column 6: Mastery & Capstone
       'collections':             { x: 1190, y: 280, stage: 6 },
       'problem-solving':         { x: 1190, y: 480, stage: 6 },
     };
@@ -273,7 +404,6 @@
 
     function initPanZoom() {
       const container = document.getElementById('canvas-container');
-      const svg = document.getElementById('graph-svg');
 
       document.getElementById('btn-zoom-in').addEventListener('click', () => {
         zoomLevel = Math.min(zoomLevel + 0.15, 2.2);
@@ -300,7 +430,6 @@
       }, { passive: false });
 
       container.addEventListener('mousedown', (e) => {
-        // Only drag if left click and not on a node button
         if (e.button !== 0) return;
         isDragging = true;
         dragStartX = e.clientX - panX;
@@ -359,13 +488,101 @@
           });
         }
 
+        populateTopicSelector();
+        updateAiNavigator();
         renderGraph();
+        renderPathwayQuest();
 
         if (graphData && graphData.nodes.length > 0) {
-          inspectConcept(graphData.nodes[0].id);
+          inspectConcept(selectedConceptId || graphData.nodes[0].id);
         }
       } catch (err) {
         console.error('Error loading concept graph:', err);
+      }
+    }
+
+    function switchViewMode(mode) {
+      activeViewMode = mode;
+      const mapBtn = document.getElementById('btn-mode-map');
+      const pathBtn = document.getElementById('btn-mode-pathway');
+      const mapView = document.getElementById('view-visual-map');
+      const pathView = document.getElementById('view-step-pathway');
+
+      if (mode === 'pathway') {
+        mapBtn.className = 'btn btn-secondary btn-sm';
+        pathBtn.className = 'btn btn-primary btn-sm';
+        mapView.style.display = 'none';
+        pathView.style.display = 'block';
+        renderPathwayQuest();
+      } else {
+        mapBtn.className = 'btn btn-primary btn-sm';
+        pathBtn.className = 'btn btn-secondary btn-sm';
+        mapView.style.display = 'grid';
+        pathView.style.display = 'none';
+      }
+    }
+
+    function populateTopicSelector() {
+      const select = document.getElementById('quick-topic-selector');
+      if (!select || !graphData) return;
+
+      select.innerHTML = '<option value="">Select a concept...</option>';
+      graphData.nodes.forEach((n) => {
+        const opt = document.createElement('option');
+        opt.value = n.id;
+        opt.textContent = `#${n.order} ${n.name}`;
+        select.appendChild(opt);
+      });
+    }
+
+    // AI Plain-English Navigator (1-Sentence Clarity)
+    function updateAiNavigator() {
+      if (!graphData || !graphData.nodes) return;
+
+      let masteredCount = 0;
+      let nextUnlocked = null;
+      let firstBlocked = null;
+
+      for (const node of graphData.nodes) {
+        const state = learnerMasteryMap.get(node.id) || { mastery: 0, uncertainty: 100 };
+        const isMastered = state.mastery >= node.requiredMastery && state.uncertainty <= 30;
+
+        if (isMastered) {
+          masteredCount++;
+        } else {
+          // Check prerequisites
+          const prereqSatisfied = (node.prerequisites || []).every((pId) => {
+            const pState = learnerMasteryMap.get(pId) || { mastery: 0 };
+            const pNode = graphData.nodes.find((n) => n.id === pId);
+            return pState.mastery >= (pNode?.requiredMastery || 70);
+          });
+
+          if (prereqSatisfied && !nextUnlocked) {
+            nextUnlocked = node;
+          } else if (!prereqSatisfied && !firstBlocked) {
+            firstBlocked = node;
+          }
+        }
+      }
+
+      nextRecommendedConcept = nextUnlocked || graphData.nodes[0];
+      const navEl = document.getElementById('ai-navigator-text');
+
+      if (masteredCount === graphData.nodes.length) {
+        navEl.innerHTML = `🎉 <strong>Curriculum Complete!</strong> You have verified mastery across all 12 concepts. You are ready for software engineering interviews!`;
+      } else if (nextUnlocked) {
+        const blockerText = firstBlocked 
+          ? ` Meanwhile, <strong>#${firstBlocked.order} ${firstBlocked.name}</strong> is currently 🔒 locked until foundational prerequisites are cleared.`
+          : '';
+        navEl.innerHTML = `You have completed <strong>${masteredCount} of 12 concepts</strong>. Your next recommended unlocked topic is <strong>#${nextUnlocked.order} ${nextUnlocked.name}</strong>.${blockerText}`;
+      } else {
+        navEl.innerHTML = `Start your journey on <strong>#1 Programming Basics</strong> to unlock subsequent Java syntax and control flow.`;
+      }
+    }
+
+    function practiceNextRecommended() {
+      if (nextRecommendedConcept) {
+        practiceSelectedConcept(nextRecommendedConcept.id);
       }
     }
 
@@ -392,7 +609,6 @@
                 font-size="9" font-family="var(--font-mono)" font-weight="700" letter-spacing="0.05em">
             ${st.name}
           </text>
-          <!-- Subtle stage separator line -->
           <line x1="${st.x + st.width + 25}" y1="50" x2="${st.x + st.width + 25}" y2="600" 
                 stroke="rgba(255,255,255,0.03)" stroke-dasharray="3,4" stroke-width="1" />
         `;
@@ -495,14 +711,12 @@
       });
     }
 
-    // Precise Collision-Free Edge Path Calculator
     function calculateEdgePath(sourceNode, targetNode) {
       const p1 = NODE_COORDINATES[sourceNode.slug] || { x: 100, y: 100 };
       const p2 = NODE_COORDINATES[targetNode.slug] || { x: 200, y: 200 };
       const W = 180;
       const H = 76;
 
-      // Special high arch from programming-basics to exception-handling (skips intervening stages)
       if (sourceNode.slug === 'programming-basics' && targetNode.slug === 'exception-handling') {
         const startX = p1.x + W * 0.5;
         const startY = p1.y;
@@ -511,7 +725,6 @@
         return `M ${startX} ${startY} C ${startX + 100} 45, ${endX - 100} 45, ${endX} ${endY}`;
       }
 
-      // Special low curve from functions to problem-solving
       if (sourceNode.slug === 'functions' && targetNode.slug === 'problem-solving') {
         const startX = p1.x + W * 0.5;
         const startY = p1.y + H;
@@ -520,7 +733,6 @@
         return `M ${startX} ${startY} C ${startX + 80} 595, ${endX - 80} 595, ${endX} ${endY}`;
       }
 
-      // Vertical downward flow in same column
       if (Math.abs(p2.x - p1.x) < 40 && p2.y > p1.y) {
         const startX = p1.x + W * 0.5;
         const startY = p1.y + H;
@@ -529,7 +741,6 @@
         return `M ${startX} ${startY} L ${endX} ${endY}`;
       }
 
-      // Vertical upward flow in same column
       if (Math.abs(p2.x - p1.x) < 40 && p2.y < p1.y) {
         const startX = p1.x + W * 0.5;
         const startY = p1.y;
@@ -538,7 +749,6 @@
         return `M ${startX} ${startY} L ${endX} ${endY}`;
       }
 
-      // General left-to-right flow with smooth Bezier curve
       const startX = p1.x + W;
       const startY = p1.y + H * 0.5;
       const endX = p2.x;
@@ -553,31 +763,50 @@
       return `M ${startX} ${startY} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${endX} ${endY}`;
     }
 
+    // Interactive Focus Mode: Highlights active path and dims visual noise
     function inspectConcept(conceptId) {
+      if (!conceptId) return;
       selectedConceptId = conceptId;
       if (!graphData) return;
 
       const node = graphData.nodes.find((n) => n.id === conceptId);
       if (!node) return;
 
-      const state = learnerMasteryMap.get(node.id) || { mastery: 0, uncertainty: 100, evidenceCount: 0 };
-      const badge = document.getElementById('inspector-status-badge');
-      const container = document.getElementById('inspector-content');
+      const picker = document.getElementById('quick-topic-selector');
+      if (picker && picker.value !== conceptId) picker.value = conceptId;
 
-      // Highlight active edges connected to this node
+      const connectedNodeIds = new Set([conceptId]);
+      (node.prerequisites || []).forEach((pId) => connectedNodeIds.add(pId));
+
+      graphData.edges.forEach((edge) => {
+        if (edge.source === conceptId) connectedNodeIds.add(edge.target);
+      });
+
+      // Highlight active edges & dim non-connected elements
       document.querySelectorAll('.edge-path').forEach((edge) => {
         const isIncoming = edge.getAttribute('data-target') === conceptId;
         const isOutgoing = edge.getAttribute('data-source') === conceptId;
         if (isIncoming || isOutgoing) {
           edge.classList.add('highlighted');
+          edge.classList.remove('dimmed');
           edge.setAttribute('marker-end', 'url(#arrowhead-highlight)');
         } else {
           edge.classList.remove('highlighted');
+          edge.classList.add('dimmed');
           edge.setAttribute('marker-end', 'url(#arrowhead)');
         }
       });
 
-      // Highlight active node outline
+      document.querySelectorAll('.graph-node-group').forEach((g) => {
+        const nId = g.getAttribute('data-id');
+        if (connectedNodeIds.has(nId)) {
+          g.classList.remove('dimmed');
+        } else {
+          g.classList.add('dimmed');
+        }
+      });
+
+      // Highlight active node stroke
       document.querySelectorAll('.graph-node-rect').forEach((rect) => {
         rect.setAttribute('stroke-width', '2');
       });
@@ -586,11 +815,17 @@
         activeGroup.querySelector('.graph-node-rect').setAttribute('stroke-width', '3.5');
       }
 
+      // Populate Concept Inspector Details
+      const state = learnerMasteryMap.get(node.id) || { mastery: 0, uncertainty: 100, evidenceCount: 0 };
+      const badge = document.getElementById('inspector-status-badge');
+      const container = document.getElementById('inspector-content');
+
       badge.textContent = `Concept #${node.order}`;
 
-      // Build Recursive Prerequisite List
-      const prereqNodes = node.prerequisites.map((pId) => graphData.nodes.find((n) => n.id === pId)).filter(Boolean);
+      const prereqNodes = (node.prerequisites || []).map((pId) => graphData.nodes.find((n) => n.id === pId)).filter(Boolean);
+      let isAllPrereqSatisfied = true;
       let prereqHtml = '';
+
       if (prereqNodes.length === 0) {
         prereqHtml = '<div style="color: #34d399; font-size: 0.85rem; padding: 0.4rem 0;">✅ Root concept (No prerequisites required)</div>';
       } else {
@@ -598,6 +833,7 @@
           .map((p) => {
             const pState = learnerMasteryMap.get(p.id) || { mastery: 0 };
             const satisfied = pState.mastery >= p.requiredMastery;
+            if (!satisfied) isAllPrereqSatisfied = false;
             return `
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.65rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 0.4rem;">
                 <span style="color: ${satisfied ? '#34d399' : '#fb7185'}; font-weight: 500;">
@@ -612,18 +848,25 @@
           .join('');
       }
 
+      const statusBadgeHtml = isAllPrereqSatisfied
+        ? '<span class="badge badge-success">🟢 UNLOCKED & READY</span>'
+        : '<span class="badge badge-danger">🔒 BLOCKED BY PREREQUISITE</span>';
+
       container.innerHTML = `
         <div>
-          <h2 style="font-size: 1.35rem; color: #fff; margin-bottom: 0.35rem;">${node.name}</h2>
-          <div style="font-size: 0.78rem; color: var(--accent-secondary); font-family: var(--font-mono); margin-bottom: 0.75rem;">
-            slug: ${node.slug} | Difficulty: ${node.difficultyRange?.min || 1} - ${node.difficultyRange?.max || 5}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <h2 style="font-size: 1.35rem; color: #fff; margin: 0;">${node.name}</h2>
+            ${statusBadgeHtml}
           </div>
-          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+          <div style="font-size: 0.78rem; color: var(--accent-secondary); font-family: var(--font-mono); margin-bottom: 0.75rem;">
+            Difficulty: Level ${node.difficultyRange?.min || 1} - ${node.difficultyRange?.max || 5} &bull; Order: #${node.order}
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.15rem;">
             ${node.description}
           </p>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.15rem;">
           <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; text-align: center;">
             <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Mastery</div>
             <div style="font-size: 1.6rem; font-weight: 800; color: #fff; margin: 0.25rem 0;">${state.mastery}%</div>
@@ -638,25 +881,122 @@
         </div>
 
         <div>
-          <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.05em;">
+          <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.05em;">
             Prerequisite Dependency Status:
           </div>
           ${prereqHtml}
         </div>
 
-        <div style="margin-top: 1.5rem;">
-          <button class="btn btn-primary btn-md" style="width: 100%;" onclick="practiceSelectedConcept()">
-            🚀 Practice ${node.name}
-          </button>
+        <div style="margin-top: 1.25rem;">
+          ${isAllPrereqSatisfied ? `
+            <button class="btn btn-primary btn-md" style="width: 100%;" onclick="practiceSelectedConcept('${node.id}')">
+              🚀 Practice ${node.name}
+            </button>
+          ` : `
+            <button class="btn btn-danger btn-md" style="width: 100%;" onclick="unlockFirstBlocker('${node.id}')">
+              🔒 Fix Missing Prerequisite First
+            </button>
+          `}
         </div>
       `;
     }
 
-    async function practiceSelectedConcept() {
-      if (!selectedConceptId) return;
-      const node = graphData.nodes.find((n) => n.id === selectedConceptId);
+    // Step-by-Step Level Quest Rendering (The Simple View)
+    function renderPathwayQuest() {
+      const container = document.getElementById('pathway-container');
+      if (!container || !graphData) return;
+
+      container.innerHTML = CURRICULUM_LEVELS.map((lvl) => {
+        const levelNodes = lvl.slugs.map((s) => graphData.nodes.find((n) => n.slug === s)).filter(Boolean);
+
+        const cardsHtml = levelNodes.map((node) => {
+          const state = learnerMasteryMap.get(node.id) || { mastery: 0, uncertainty: 100 };
+          const isMastered = state.mastery >= node.requiredMastery && state.uncertainty <= 30;
+
+          // Check prerequisites
+          const prereqNodes = (node.prerequisites || []).map((pId) => graphData.nodes.find((n) => n.id === pId)).filter(Boolean);
+          const isUnlocked = prereqNodes.every((p) => {
+            const pState = learnerMasteryMap.get(p.id) || { mastery: 0 };
+            return pState.mastery >= p.requiredMastery;
+          });
+
+          return `
+            <div class="quest-card ${!isUnlocked ? 'locked' : ''}">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span class="badge ${isMastered ? 'badge-success' : isUnlocked ? 'badge-cyan' : 'badge-danger'}">
+                    ${isMastered ? '✓ MASTERED' : isUnlocked ? '🔓 UNLOCKED' : '🔒 LOCKED'}
+                  </span>
+                  <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">
+                    req: ${node.requiredMastery}%
+                  </span>
+                </div>
+                <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">#${node.order} ${node.name}</h3>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 0.75rem;">
+                  ${node.description}
+                </p>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                  Mastery: <strong>${state.mastery}%</strong> &bull; Uncertainty: <strong>${state.uncertainty}%</strong>
+                </div>
+              </div>
+
+              <div>
+                ${isMastered ? `
+                  <button class="btn btn-outline btn-sm" style="width: 100%;" onclick="practiceSelectedConcept('${node.id}')">
+                    ✓ Review Practice
+                  </button>
+                ` : isUnlocked ? `
+                  <button class="btn btn-primary btn-sm" style="width: 100%;" onclick="practiceSelectedConcept('${node.id}')">
+                    🚀 Practice Now
+                  </button>
+                ` : `
+                  <button class="btn btn-secondary btn-sm" style="width: 100%; opacity: 0.8;" onclick="inspectConcept('${node.id}'); switchViewMode('map');">
+                    🔒 View Blocker
+                  </button>
+                `}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="level-block">
+            <div class="level-header">
+              <div>
+                <h2 style="font-size: 1.25rem; color: #fff; margin: 0;">${lvl.title}</h2>
+                <p style="font-size: 0.82rem; color: var(--accent-secondary); margin: 0.2rem 0 0 0;">${lvl.description}</p>
+              </div>
+              <span class="badge badge-purple">${levelNodes.length} Concept(s)</span>
+            </div>
+            <div class="level-cards-grid">
+              ${cardsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function unlockFirstBlocker(conceptId) {
+      const node = graphData.nodes.find((n) => n.id === conceptId);
+      if (!node) return;
+
+      const firstUnsatisfiedPrereqId = (node.prerequisites || []).find((pId) => {
+        const pState = learnerMasteryMap.get(pId) || { mastery: 0 };
+        const pNode = graphData.nodes.find((n) => n.id === pId);
+        return pState.mastery < (pNode?.requiredMastery || 70);
+      });
+
+      if (firstUnsatisfiedPrereqId) {
+        inspectConcept(firstUnsatisfiedPrereqId);
+        practiceSelectedConcept(firstUnsatisfiedPrereqId);
+      }
+    }
+
+    async function practiceSelectedConcept(conceptId = selectedConceptId) {
+      if (!conceptId) return;
+      const node = graphData.nodes.find((n) => n.id === conceptId);
       try {
-        const res = await window.API.get(`/adaptive/questions?conceptId=${selectedConceptId}`);
+        const res = await window.API.get(`/adaptive/questions?conceptId=${conceptId}`);
         if (res.success && res.questions && res.questions.length > 0) {
           const question = res.questions[0];
           AdaptiveUI.openAttemptModal(question, async () => {
