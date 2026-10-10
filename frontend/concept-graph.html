@@ -11,6 +11,88 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    .concept-graph-canvas {
+      width: 100%;
+      height: 680px;
+      background: radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.4) 0%, rgba(10, 15, 29, 0.98) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+    }
+    .concept-graph-canvas.grabbing {
+      cursor: grabbing;
+    }
+    .canvas-hud-toolbar {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.88);
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      border-radius: 6px;
+      padding: 0.25rem 0.55rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hud-btn:hover {
+      background: rgba(99, 102, 241, 0.25);
+      border-color: #6366f1;
+      color: #fff;
+    }
+    .canvas-hud-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      z-index: 10;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.75);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      pointer-events: none;
+    }
+    .graph-node-rect {
+      rx: 10;
+      ry: 10;
+      transition: all 0.2s ease;
+    }
+    .graph-node-group:hover .graph-node-rect {
+      filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+    }
+    .edge-path {
+      fill: none;
+      stroke: rgba(99, 102, 241, 0.35);
+      stroke-width: 2.2;
+      transition: stroke 0.25s ease, stroke-width 0.25s ease;
+    }
+    .edge-path.highlighted {
+      stroke: #06b6d4;
+      stroke-width: 3.5;
+      filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.7));
+    }
+  </style>
 </head>
 <body>
   <div class="app-layout">
@@ -23,7 +105,7 @@
 
       <div class="page-container">
         <!-- Header & Controls -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
           <div>
             <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.06em; font-weight: 700;">
               Instructional Dependency Graph
@@ -31,7 +113,7 @@
             <h1 style="font-size: 1.85rem; color: #fff; margin-top: 0.25rem;">
               Java Programming Concept Graph
             </h1>
-            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.2rem;">
               Interactive prerequisite map: 12 nodes, 15 directed prerequisite edges, recursive dependency resolution.
             </p>
           </div>
@@ -50,45 +132,59 @@
         </div>
 
         <!-- Legend Bar -->
-        <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; background: rgba(17, 24, 39, 0.6); padding: 0.75rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; background: rgba(17, 24, 39, 0.65); padding: 0.65rem 1.15rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.25rem;">
           <span style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Status Legend:</span>
           <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
-            <span style="width: 12px; height: 12px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
             <span>Mastered (≥70%, Low Uncertainty)</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
-            <span style="width: 12px; height: 12px; border-radius: 50%; background: #06b6d4; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #06b6d4; display: inline-block;"></span>
             <span>Learning (In Progress)</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
-            <span style="width: 12px; height: 12px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
             <span>High Uncertainty (&gt;60%)</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
-            <span style="width: 12px; height: 12px; border-radius: 50%; background: #8b5cf6; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; display: inline-block;"></span>
             <span>Needs Review (Decay Risk)</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem;">
-            <span style="width: 12px; height: 12px; border-radius: 50%; background: #f43f5e; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: #f43f5e; display: inline-block;"></span>
             <span>Blocked by Prerequisite</span>
           </div>
         </div>
 
         <!-- Main Graph Canvas & Inspector Side-Panel Grid -->
-        <div style="display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem;">
+        <div style="display: grid; grid-template-columns: 1fr 370px; gap: 1.5rem; align-items: start;">
           <!-- Left: SVG Graph Canvas -->
           <div class="concept-graph-canvas" id="canvas-container">
-            <svg class="graph-svg" id="graph-svg" viewBox="0 0 1150 720">
+            <!-- HUD Controls -->
+            <div class="canvas-hud-toolbar">
+              <button id="btn-zoom-in" class="hud-btn" title="Zoom In">🔍 +</button>
+              <button id="btn-zoom-out" class="hud-btn" title="Zoom Out">🔍 −</button>
+              <button id="btn-zoom-reset" class="hud-btn" title="Reset View">⟲ Reset</button>
+            </div>
+
+            <div class="canvas-hud-hint">
+              💡 Drag to pan canvas • Mouse wheel to zoom • Click node to inspect details
+            </div>
+
+            <svg class="graph-svg" id="graph-svg" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMid meet">
               <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                  <polygon points="0 0, 10 3.5, 0 7" fill="rgba(99, 102, 241, 0.6)" />
+                <marker id="arrowhead" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+                  <polygon points="0 0, 9 3.5, 0 7" fill="rgba(99, 102, 241, 0.75)" />
                 </marker>
-                <marker id="arrowhead-highlight" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <marker id="arrowhead-highlight" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
                   <polygon points="0 0, 10 3.5, 0 7" fill="#06b6d4" />
                 </marker>
               </defs>
-              <g id="edges-layer"></g>
-              <g id="nodes-layer"></g>
+              <g id="viewport-group">
+                <g id="stages-layer"></g>
+                <g id="edges-layer"></g>
+                <g id="nodes-layer"></g>
+              </g>
             </svg>
           </div>
 
@@ -123,24 +219,113 @@
     let learnerMasteryMap = new Map();
     let selectedConceptId = null;
 
-    // Structured 2D layout for the 12 Java Concepts
+    // Structured, collision-free multi-stage layout for all 12 Concepts
+    // Card Dimensions: width = 180px, height = 76px
     const NODE_COORDINATES = {
-      'programming-basics':      { x: 100,  y: 340, col: 1 },
-      'variables-datatypes':     { x: 230,  y: 340, col: 2 },
-      'operators':               { x: 360,  y: 340, col: 3 },
-      'conditionals':            { x: 490,  y: 340, col: 4 },
-      'loops':                   { x: 620,  y: 340, col: 5 },
-      'functions':               { x: 750,  y: 340, col: 6 },
-      'oop-basics':              { x: 880,  y: 340, col: 7 },
-      'encapsulation':           { x: 1010, y: 230, col: 8 },
-      'inheritance':             { x: 1010, y: 450, col: 8 },
-      'collections':             { x: 1020, y: 100, col: 9 },
-      'exception-handling':      { x: 500,  y: 110, col: 4 },
-      'problem-solving':         { x: 1020, y: 600, col: 9 },
+      // Column 1: Foundational Entry
+      'programming-basics':      { x: 40,   y: 260, stage: 1 },
+
+      // Column 2: Types & Operators
+      'variables-datatypes':     { x: 270,  y: 160, stage: 2 },
+      'operators':               { x: 270,  y: 370, stage: 2 },
+
+      // Column 3: Control Flow
+      'conditionals':            { x: 500,  y: 260, stage: 3 },
+      'loops':                   { x: 500,  y: 470, stage: 3 },
+
+      // Column 4: Functions & OOP Basics
+      'functions':               { x: 730,  y: 470, stage: 4 },
+      'oop-basics':              { x: 730,  y: 260, stage: 4 },
+
+      // Column 5: Specializations & Exceptions
+      'exception-handling':      { x: 960,  y: 70,  stage: 5 },
+      'encapsulation':           { x: 960,  y: 210, stage: 5 },
+      'inheritance':             { x: 960,  y: 360, stage: 5 },
+
+      // Column 6: Mastery & Capstone
+      'collections':             { x: 1190, y: 280, stage: 6 },
+      'problem-solving':         { x: 1190, y: 480, stage: 6 },
     };
+
+    const STAGE_HEADERS = [
+      { name: 'STAGE 1: FOUNDATION', x: 40, width: 180 },
+      { name: 'STAGE 2: SYNTAX & TYPES', x: 270, width: 180 },
+      { name: 'STAGE 3: CONTROL FLOW', x: 500, width: 180 },
+      { name: 'STAGE 4: OOP & METHODS', x: 730, width: 180 },
+      { name: 'STAGE 5: SPECIALIZATIONS', x: 960, width: 180 },
+      { name: 'STAGE 6: DATA & CAPSTONE', x: 1190, width: 180 },
+    ];
+
+    // Pan & Zoom Engine
+    let zoomLevel = 1;
+    let panX = 0;
+    let panY = 0;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    function applyTransform() {
+      const vp = document.getElementById('viewport-group');
+      if (vp) {
+        vp.setAttribute('transform', `translate(${panX}, ${panY}) scale(${zoomLevel})`);
+      }
+    }
+
+    function initPanZoom() {
+      const container = document.getElementById('canvas-container');
+      const svg = document.getElementById('graph-svg');
+
+      document.getElementById('btn-zoom-in').addEventListener('click', () => {
+        zoomLevel = Math.min(zoomLevel + 0.15, 2.2);
+        applyTransform();
+      });
+
+      document.getElementById('btn-zoom-out').addEventListener('click', () => {
+        zoomLevel = Math.max(zoomLevel - 0.15, 0.6);
+        applyTransform();
+      });
+
+      document.getElementById('btn-zoom-reset').addEventListener('click', () => {
+        zoomLevel = 1;
+        panX = 0;
+        panY = 0;
+        applyTransform();
+      });
+
+      container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.08 : -0.08;
+        zoomLevel = Math.min(Math.max(zoomLevel + delta, 0.6), 2.2);
+        applyTransform();
+      }, { passive: false });
+
+      container.addEventListener('mousedown', (e) => {
+        // Only drag if left click and not on a node button
+        if (e.button !== 0) return;
+        isDragging = true;
+        dragStartX = e.clientX - panX;
+        dragStartY = e.clientY - panY;
+        container.classList.add('grabbing');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        panX = e.clientX - dragStartX;
+        panY = e.clientY - dragStartY;
+        applyTransform();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          container.classList.remove('grabbing');
+        }
+      });
+    }
 
     document.addEventListener('DOMContentLoaded', async () => {
       Navbar.init('Concept Graph');
+      initPanZoom();
 
       const selector = document.getElementById('graph-learner-selector');
       const activeId = AdaptiveAPI.getLearnerId();
@@ -176,7 +361,6 @@
 
         renderGraph();
 
-        // Default inspect first node or first learning node
         if (graphData && graphData.nodes.length > 0) {
           inspectConcept(graphData.nodes[0].id);
         }
@@ -188,39 +372,43 @@
     function renderGraph() {
       if (!graphData) return;
 
+      const stagesLayer = document.getElementById('stages-layer');
       const edgesLayer = document.getElementById('edges-layer');
       const nodesLayer = document.getElementById('nodes-layer');
+      stagesLayer.innerHTML = '';
       edgesLayer.innerHTML = '';
       nodesLayer.innerHTML = '';
 
       const nodeMap = new Map();
       graphData.nodes.forEach((n) => nodeMap.set(n.id, n));
 
-      // 1. Draw Edges
+      // 0. Render Stage Header Banners
+      STAGE_HEADERS.forEach((st) => {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.innerHTML = `
+          <rect x="${st.x}" y="18" width="${st.width}" height="24" rx="6" 
+                fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+          <text x="${st.x + st.width / 2}" y="34" text-anchor="middle" fill="#94a3b8" 
+                font-size="9" font-family="var(--font-mono)" font-weight="700" letter-spacing="0.05em">
+            ${st.name}
+          </text>
+          <!-- Subtle stage separator line -->
+          <line x1="${st.x + st.width + 25}" y1="50" x2="${st.x + st.width + 25}" y2="600" 
+                stroke="rgba(255,255,255,0.03)" stroke-dasharray="3,4" stroke-width="1" />
+        `;
+        stagesLayer.appendChild(g);
+      });
+
+      // 1. Draw Collision-Free Connected Edges
       graphData.edges.forEach((edge) => {
         const sourceNode = nodeMap.get(edge.source);
         const targetNode = nodeMap.get(edge.target);
         if (!sourceNode || !targetNode) return;
 
-        const p1 = NODE_COORDINATES[sourceNode.slug] || { x: 100, y: 100 };
-        const p2 = NODE_COORDINATES[targetNode.slug] || { x: 200, y: 200 };
-
-        // Card dimensions: width 150, height 70
-        const startX = p1.x + 75;
-        const startY = p1.y + 35;
-        const endX = p2.x + 75;
-        const endY = p2.y + 35;
-
-        // Curved control points for smooth bezier lines
-        const dx = endX - startX;
-        const dy = endY - startY;
-        const cx1 = startX + dx * 0.5;
-        const cy1 = startY;
-        const cx2 = startX + dx * 0.5;
-        const cy2 = endY;
+        const pathD = calculateEdgePath(sourceNode, targetNode);
 
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', `M ${startX} ${startY} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${endX} ${endY}`);
+        path.setAttribute('d', pathD);
         path.setAttribute('class', 'edge-path');
         path.setAttribute('marker-end', 'url(#arrowhead)');
         path.setAttribute('data-source', edge.source);
@@ -229,31 +417,30 @@
         edgesLayer.appendChild(path);
       });
 
-      // 2. Draw Nodes
+      // 2. Draw Distinct, Non-Overlapping Nodes
       graphData.nodes.forEach((node) => {
         const pos = NODE_COORDINATES[node.slug] || { x: 100, y: 100 };
         const state = learnerMasteryMap.get(node.id) || { mastery: 0, uncertainty: 100, evidenceCount: 0 };
 
-        // Determine node status color
         let strokeColor = '#3b82f6';
         let fillColor = '#111827';
         let statusText = 'NOT STARTED';
 
         if (state.mastery >= node.requiredMastery && state.uncertainty <= 30) {
           strokeColor = '#10b981';
-          fillColor = 'rgba(16, 185, 129, 0.12)';
+          fillColor = 'rgba(16, 185, 129, 0.15)';
           statusText = 'MASTERED';
         } else if (state.uncertainty > 60 && state.evidenceCount > 0) {
           strokeColor = '#f59e0b';
-          fillColor = 'rgba(245, 158, 11, 0.12)';
+          fillColor = 'rgba(245, 158, 11, 0.15)';
           statusText = 'UNCERTAIN';
         } else if (state.isStale) {
           strokeColor = '#8b5cf6';
-          fillColor = 'rgba(139, 92, 246, 0.12)';
+          fillColor = 'rgba(139, 92, 246, 0.15)';
           statusText = 'REVIEW';
         } else if (state.evidenceCount > 0) {
           strokeColor = '#06b6d4';
-          fillColor = 'rgba(6, 182, 212, 0.12)';
+          fillColor = 'rgba(6, 182, 212, 0.15)';
           statusText = 'LEARNING';
         }
 
@@ -263,29 +450,107 @@
         g.setAttribute('data-id', node.id);
         g.onclick = () => inspectConcept(node.id);
 
+        const cardWidth = 180;
+        const cardHeight = 76;
+        const progressBarWidth = 160;
+        const progressFill = Math.max(4, (Math.min(100, state.mastery) / 100) * progressBarWidth);
+
         g.innerHTML = `
-          <rect class="graph-node-rect" width="150" height="70" rx="10" ry="10" 
+          <!-- Card Container -->
+          <rect class="graph-node-rect" width="${cardWidth}" height="${cardHeight}" rx="10" ry="10" 
                 fill="${fillColor}" stroke="${strokeColor}" stroke-width="2" />
           
-          <text x="12" y="22" fill="#9ca3af" font-size="10" font-family="var(--font-mono)" font-weight="700">
+          <!-- Concept Order Badge -->
+          <rect x="10" y="8" width="28" height="17" rx="4" fill="rgba(255,255,255,0.08)" />
+          <text x="24" y="20" text-anchor="middle" fill="#e2e8f0" font-size="9.5" font-family="var(--font-mono)" font-weight="700">
             #${node.order}
           </text>
           
-          <text x="138" y="22" text-anchor="end" fill="${strokeColor}" font-size="9" font-family="var(--font-mono)" font-weight="700">
+          <!-- Status Pill Badge -->
+          <rect x="88" y="8" width="82" height="17" rx="4" fill="${fillColor}" stroke="${strokeColor}" stroke-width="1" />
+          <text x="129" y="20" text-anchor="middle" fill="${strokeColor}" font-size="8.5" font-family="var(--font-mono)" font-weight="700">
             ${statusText}
           </text>
           
-          <text x="12" y="42" fill="#ffffff" font-size="12" font-weight="600" font-family="var(--font-main)">
-            ${this.truncate(node.name, 17)}
+          <!-- Concept Full Title -->
+          <text x="10" y="42" fill="#ffffff" font-size="11.5" font-weight="600" font-family="var(--font-main)">
+            ${escapeXml(node.name)}
           </text>
           
-          <!-- Mini Progress Bar inside node -->
-          <rect x="12" y="52" width="126" height="4" rx="2" ry="2" fill="rgba(255,255,255,0.1)" />
-          <rect x="12" y="52" width="${(state.mastery / 100) * 126}" height="4" rx="2" ry="2" fill="${strokeColor}" />
+          <!-- Progress Bar Track -->
+          <rect x="10" y="52" width="${progressBarWidth}" height="4" rx="2" fill="rgba(255,255,255,0.12)" />
+          <!-- Progress Bar Fill -->
+          <rect x="10" y="52" width="${progressFill}" height="4" rx="2" fill="${strokeColor}" />
+
+          <!-- Mastery & Uncertainty Values -->
+          <text x="10" y="67" fill="#94a3b8" font-size="8.5" font-family="var(--font-mono)">
+            Mastery: ${state.mastery}%
+          </text>
+          <text x="170" y="67" text-anchor="end" fill="#94a3b8" font-size="8.5" font-family="var(--font-mono)">
+            Uncertainty: ${state.uncertainty}%
+          </text>
         `;
 
         nodesLayer.appendChild(g);
       });
+    }
+
+    // Precise Collision-Free Edge Path Calculator
+    function calculateEdgePath(sourceNode, targetNode) {
+      const p1 = NODE_COORDINATES[sourceNode.slug] || { x: 100, y: 100 };
+      const p2 = NODE_COORDINATES[targetNode.slug] || { x: 200, y: 200 };
+      const W = 180;
+      const H = 76;
+
+      // Special high arch from programming-basics to exception-handling (skips intervening stages)
+      if (sourceNode.slug === 'programming-basics' && targetNode.slug === 'exception-handling') {
+        const startX = p1.x + W * 0.5;
+        const startY = p1.y;
+        const endX = p2.x;
+        const endY = p2.y + H * 0.5;
+        return `M ${startX} ${startY} C ${startX + 100} 45, ${endX - 100} 45, ${endX} ${endY}`;
+      }
+
+      // Special low curve from functions to problem-solving
+      if (sourceNode.slug === 'functions' && targetNode.slug === 'problem-solving') {
+        const startX = p1.x + W * 0.5;
+        const startY = p1.y + H;
+        const endX = p2.x;
+        const endY = p2.y + H * 0.6;
+        return `M ${startX} ${startY} C ${startX + 80} 595, ${endX - 80} 595, ${endX} ${endY}`;
+      }
+
+      // Vertical downward flow in same column
+      if (Math.abs(p2.x - p1.x) < 40 && p2.y > p1.y) {
+        const startX = p1.x + W * 0.5;
+        const startY = p1.y + H;
+        const endX = p2.x + W * 0.5;
+        const endY = p2.y;
+        return `M ${startX} ${startY} L ${endX} ${endY}`;
+      }
+
+      // Vertical upward flow in same column
+      if (Math.abs(p2.x - p1.x) < 40 && p2.y < p1.y) {
+        const startX = p1.x + W * 0.5;
+        const startY = p1.y;
+        const endX = p2.x + W * 0.5;
+        const endY = p2.y + H;
+        return `M ${startX} ${startY} L ${endX} ${endY}`;
+      }
+
+      // General left-to-right flow with smooth Bezier curve
+      const startX = p1.x + W;
+      const startY = p1.y + H * 0.5;
+      const endX = p2.x;
+      const endY = p2.y + H * 0.5;
+      const dx = endX - startX;
+
+      const cx1 = startX + dx * 0.45;
+      const cy1 = startY;
+      const cx2 = startX + dx * 0.55;
+      const cy2 = endY;
+
+      return `M ${startX} ${startY} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${endX} ${endY}`;
     }
 
     function inspectConcept(conceptId) {
@@ -312,13 +577,13 @@
         }
       });
 
-      // Highlight active node
+      // Highlight active node outline
       document.querySelectorAll('.graph-node-rect').forEach((rect) => {
         rect.setAttribute('stroke-width', '2');
       });
       const activeGroup = document.querySelector(`.graph-node-group[data-id="${conceptId}"]`);
       if (activeGroup) {
-        activeGroup.querySelector('.graph-node-rect').setAttribute('stroke-width', '4');
+        activeGroup.querySelector('.graph-node-rect').setAttribute('stroke-width', '3.5');
       }
 
       badge.textContent = `Concept #${node.order}`;
@@ -327,14 +592,14 @@
       const prereqNodes = node.prerequisites.map((pId) => graphData.nodes.find((n) => n.id === pId)).filter(Boolean);
       let prereqHtml = '';
       if (prereqNodes.length === 0) {
-        prereqHtml = '<div style="color: #34d399; font-size: 0.82rem;">✅ Root concept (No prerequisites required)</div>';
+        prereqHtml = '<div style="color: #34d399; font-size: 0.85rem; padding: 0.4rem 0;">✅ Root concept (No prerequisites required)</div>';
       } else {
         prereqHtml = prereqNodes
           .map((p) => {
             const pState = learnerMasteryMap.get(p.id) || { mastery: 0 };
             const satisfied = pState.mastery >= p.requiredMastery;
             return `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0.6rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 0.35rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.65rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 0.4rem;">
                 <span style="color: ${satisfied ? '#34d399' : '#fb7185'}; font-weight: 500;">
                   ${satisfied ? '✓' : '✗'} #${p.order} ${p.name}
                 </span>
@@ -406,9 +671,17 @@
       }
     }
 
-    function truncate(str, max) {
-      if (!str) return '';
-      return str.length > max ? str.substring(0, max - 1) + '…' : str;
+    function escapeXml(unsafe) {
+      if (!unsafe) return '';
+      return unsafe.replace(/[<>&'"]/g, function (c) {
+        switch (c) {
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '&': return '&amp;';
+          case '\'': return '&apos;';
+          case '"': return '&quot;';
+        }
+      });
     }
   </script>
 </body>
