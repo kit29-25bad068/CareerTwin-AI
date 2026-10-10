@@ -322,13 +322,13 @@
         <div style="text-align: center; margin-bottom: 2rem;">
           <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
             <span class="badge badge-cyan">AI UNIFIED SKILL EXTRACTION</span>
-            <span class="badge badge-indigo">EVIDENCE DISCOVERY ENGINE</span>
+            <span class="badge badge-indigo">CAREERTWIN ARTIFACT DISCOVERY</span>
           </div>
           <h1 style="font-size: 2.3rem; color: #fff; margin-bottom: 0.5rem; font-weight: 800;">
             Diagnostic Room — Skill Extraction
           </h1>
-          <p style="color: var(--text-secondary); font-size: 1.05rem; max-width: 680px; margin: 0 auto;">
-            Automatically discover, normalize, and consolidate competencies from your uploaded resume and GitHub project repositories with inspectable evidence.
+          <p style="color: var(--text-secondary); font-size: 1.05rem; max-width: 720px; margin: 0 auto;">
+            Extracts and consolidates technical skills directly from your connected <strong>Resume &amp; CV Analyzer</strong> and <strong>GitHub Signals</strong> data.
           </p>
         </div>
 
@@ -337,16 +337,16 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
               <div style="font-size: 1.15rem; font-weight: 700; color: #fff;">
-                Extraction Sources &amp; Artifacts
+                Connected Career Artifacts
               </div>
               <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
-                Connect both your Resume and GitHub repositories to corroborate technical skills across practical artifacts.
+                This module extracts skills exclusively from your <strong>Resume &amp; CV Analyzer</strong> and <strong>GitHub Signals</strong> modules.
               </div>
             </div>
             <div style="display: flex; gap: 0.75rem; align-items: center;">
               <button id="btn-run-extraction" class="btn btn-primary btn-md" style="display: flex; align-items: center; gap: 0.5rem;">
                 <span>⚡</span>
-                <span id="btn-extract-text">Run Unified Skill Extraction</span>
+                <span id="btn-extract-text">Extract Skills from Resume &amp; GitHub Signals</span>
               </button>
               <button id="btn-reset-inventory" class="btn btn-outline btn-md" title="Reset Skill Inventory" style="padding: 0.5rem 0.85rem; font-size: 0.85rem;">
                 🔄 Reset
@@ -356,50 +356,58 @@
 
           <!-- Dual Source Panels -->
           <div class="sources-grid">
-            <!-- Source 1: Resume -->
+            <!-- Source 1: Resume & CV Analyzer -->
             <div class="source-panel" id="panel-resume">
               <div>
                 <div class="source-header">
                   <div class="source-title">
                     <span>📄</span>
-                    <span>Learner Resume (PDF)</span>
+                    <span>Resume &amp; CV Analyzer</span>
                   </div>
                   <span id="badge-resume-status" class="badge badge-secondary">Checking...</span>
                 </div>
                 <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.6rem;" id="resume-info-text">
-                  Checking for existing uploaded resume...
+                  Checking for existing Resume &amp; CV Analyzer data...
                 </div>
               </div>
 
-              <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+              <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap;">
+                <a href="/resume.html" class="btn btn-outline btn-sm" style="font-size: 0.8rem; text-decoration: none;">
+                  ↗️ Open Resume &amp; CV Analyzer
+                </a>
                 <input type="file" id="resume-file-input" accept=".pdf" style="display: none;">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('resume-file-input').click()">
-                  📤 Upload / Replace Resume (PDF)
+                  📤 Upload / Replace PDF
                 </button>
-                <span id="resume-upload-spinner" style="display: none; font-size: 0.8rem; color: var(--accent-secondary);">Uploading &amp; Parsing...</span>
+                <span id="resume-upload-spinner" style="display: none; font-size: 0.8rem; color: var(--accent-secondary);">Uploading...</span>
               </div>
             </div>
 
-            <!-- Source 2: GitHub -->
+            <!-- Source 2: GitHub Signals -->
             <div class="source-panel" id="panel-github">
               <div>
                 <div class="source-header">
                   <div class="source-title">
                     <span>🐙</span>
-                    <span>GitHub Repositories</span>
+                    <span>GitHub Signals</span>
                   </div>
                   <span id="badge-github-status" class="badge badge-secondary">Checking...</span>
                 </div>
                 <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.6rem;" id="github-info-text">
-                  Provide your GitHub username or repository URLs to inspect languages, packages, and code.
+                  Checking for connected GitHub Signals profile...
                 </div>
               </div>
 
-              <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
-                <input type="text" id="github-username-input" class="form-control" placeholder="GitHub username (e.g. octocat)" style="font-size: 0.85rem; padding: 0.4rem 0.75rem; background: rgba(0,0,0,0.3); color: #fff; border-color: rgba(255,255,255,0.15); border-radius: 6px; flex: 1;">
-                <button type="button" id="btn-save-github" class="btn btn-secondary btn-sm" style="white-space: nowrap;">
-                  Save Handle
-                </button>
+              <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap;">
+                <a href="/github.html" class="btn btn-outline btn-sm" style="font-size: 0.8rem; text-decoration: none;">
+                  ↗️ Open GitHub Signals
+                </a>
+                <div style="display: flex; gap: 0.4rem; flex: 1; min-width: 180px;">
+                  <input type="text" id="github-username-input" class="form-control" placeholder="e.g. octocat" style="font-size: 0.85rem; padding: 0.4rem 0.65rem; background: rgba(0,0,0,0.3); color: #fff; border-color: rgba(255,255,255,0.15); border-radius: 6px; flex: 1;">
+                  <button type="button" id="btn-save-github" class="btn btn-secondary btn-sm" style="white-space: nowrap;">
+                    Save
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -479,8 +487,8 @@
               <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-right: 0.25rem;">Source:</span>
               <button class="filter-pill active" data-filter-type="source" data-val="all">All Sources</button>
               <button class="filter-pill" data-filter-type="source" data-val="both">⭐ Both Sources</button>
-              <button class="filter-pill" data-filter-type="source" data-val="resume">📄 Resume Only</button>
-              <button class="filter-pill" data-filter-type="source" data-val="github">🐙 GitHub Only</button>
+              <button class="filter-pill" data-filter-type="source" data-val="resume">📄 Resume &amp; CV Analyzer</button>
+              <button class="filter-pill" data-filter-type="source" data-val="github">🐙 GitHub Signals</button>
             </div>
 
             <!-- Category Filters -->
@@ -574,7 +582,7 @@
       <!-- Tab: Resume Evidence -->
       <div id="modal-resume-section" style="margin-bottom: 1.5rem;">
         <h4 style="font-size: 1rem; color: #fff; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
-          <span>📄</span> Resume Evidence
+          <span>📄</span> Resume &amp; CV Analyzer Evidence
         </h4>
         <div id="modal-resume-body">
           <!-- Populated dynamically -->
@@ -584,7 +592,7 @@
       <!-- Tab: GitHub Evidence -->
       <div id="modal-github-section" style="margin-bottom: 1.5rem;">
         <h4 style="font-size: 1rem; color: #fff; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
-          <span>🐙</span> GitHub Repository &amp; Code Evidence
+          <span>🐙</span> GitHub Signals Codebase &amp; Artifact Evidence
         </h4>
         <div id="modal-github-body">
           <!-- Populated dynamically -->
@@ -691,13 +699,14 @@
 
       if (sources.hasResume) {
         resumeBadge.className = 'badge badge-success';
-        resumeBadge.textContent = 'Uploaded';
-        resumeText.innerHTML = `<strong>${escapeHtml(sources.resumeFileName || 'Resume.pdf')}</strong> ready for extraction.`;
+        resumeBadge.textContent = 'Connected & Synced';
+        const skillsCountText = sources.resumeSkillsCount > 0 ? ` (${sources.resumeSkillsCount} competencies parsed in CV Analyzer)` : '';
+        resumeText.innerHTML = `<strong>${escapeHtml(sources.resumeFileName || 'Resume.pdf')}</strong> loaded from Resume &amp; CV Analyzer${skillsCountText}.`;
         resumePanel.classList.add('active-source');
       } else {
         resumeBadge.className = 'badge badge-secondary';
-        resumeBadge.textContent = 'Missing';
-        resumeText.textContent = 'No resume uploaded yet. Upload a PDF resume to extract candidate competencies.';
+        resumeBadge.textContent = 'Not Connected';
+        resumeText.textContent = 'No resume uploaded in Resume & CV Analyzer yet. Upload a PDF or click Open Resume & CV Analyzer.';
         resumePanel.classList.remove('active-source');
       }
 
@@ -709,14 +718,18 @@
 
       if (sources.hasGithub && sources.githubUsername) {
         ghBadge.className = 'badge badge-success';
-        ghBadge.textContent = 'Connected';
+        ghBadge.textContent = 'Connected & Synced';
         ghInput.value = sources.githubUsername;
-        ghText.innerHTML = `Connected as <strong>@${escapeHtml(sources.githubUsername)}</strong>. Public repositories will be scanned.`;
+        const reposText = sources.githubReposCount > 0 ? ` • ${sources.githubReposCount} repos` : '';
+        const langs = Array.isArray(sources.githubTopLanguages) && sources.githubTopLanguages.length > 0
+          ? ` • Languages: ${sources.githubTopLanguages.slice(0, 3).map(l => l.language).join(', ')}`
+          : '';
+        ghText.innerHTML = `Connected as <strong>@${escapeHtml(sources.githubUsername)}</strong> from GitHub Signals${reposText}${langs}.`;
         ghPanel.classList.add('active-source');
       } else {
         ghBadge.className = 'badge badge-secondary';
         ghBadge.textContent = 'Not Connected';
-        ghText.textContent = 'Provide your GitHub username to inspect repositories, dependencies, and source languages.';
+        ghText.textContent = 'No profile synced in GitHub Signals yet. Enter your handle or click Open GitHub Signals.';
         ghPanel.classList.remove('active-source');
       }
     }
@@ -924,8 +937,8 @@
         const sourceBadgeHtml = skill.primarySource === 'both'
           ? '<span class="badge-source-both">⭐ Both Sources</span>'
           : skill.primarySource === 'resume'
-          ? '<span class="badge-source-resume">📄 Resume</span>'
-          : '<span class="badge-source-github">🐙 GitHub</span>';
+          ? '<span class="badge-source-resume">📄 Resume &amp; CV Analyzer</span>'
+          : '<span class="badge-source-github">🐙 GitHub Signals</span>';
 
         const statusBadgeHtml = skill.verificationStatus === 'verified'
           ? `<span class="badge-status-verified">✅ Verified (${skill.mastery || 75}% Mastery)</span>`
@@ -939,9 +952,9 @@
         if (skill.primarySource === 'both') {
           evidencePill = `1 Resume Section • ${ghEvidenceCount} Codebase Artifact${ghEvidenceCount > 1 ? 's' : ''}`;
         } else if (skill.primarySource === 'resume') {
-          evidencePill = `Found in ${skill.evidence?.resume?.section || 'Resume'}`;
+          evidencePill = `Found in ${skill.evidence?.resume?.section || 'Resume & CV Analyzer'}`;
         } else {
-          evidencePill = `${ghEvidenceCount} Repository Reference${ghEvidenceCount > 1 ? 's' : ''}`;
+          evidencePill = `${ghEvidenceCount} Codebase Artifact${ghEvidenceCount > 1 ? 's' : ''}`;
         }
 
         card.innerHTML = `
@@ -986,10 +999,10 @@
         sourceBadge.textContent = '⭐ Both Sources (Corroborated)';
       } else if (skill.primarySource === 'resume') {
         sourceBadge.className = 'badge-source-resume';
-        sourceBadge.textContent = '📄 Resume Only';
+        sourceBadge.textContent = '📄 Resume & CV Analyzer Only';
       } else {
         sourceBadge.className = 'badge-source-github';
-        sourceBadge.textContent = '🐙 GitHub Only';
+        sourceBadge.textContent = '🐙 GitHub Signals Only';
       }
 
       const statusBadge = document.getElementById('modal-skill-status');

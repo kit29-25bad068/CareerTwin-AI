@@ -388,14 +388,78 @@ function findSupportingExcerpt(rawText, skillName) {
 }
 
 /**
- * Extract skills dynamically from resume text.
+ * Extract skills dynamically from resume text or Resume & CV Analyzer document.
  */
-async function extractSkillsFromResume(rawText, targetRole = 'Software Engineer') {
-  if (!rawText || typeof rawText !== 'string' || rawText.trim().length < 20) {
+async function extractSkillsFromResume(input, targetRole = 'Software Engineer') {
+  let rawText = '';
+  let preExtractedSkills = [];
+  let projectTechs = [];
+
+  if (typeof input === 'string') {
+    rawText = input;
+  } else if (input && typeof input === 'object') {
+    rawText = input.rawText || '';
+    if (Array.isArray(input.parsedData?.skills)) {
+      preExtractedSkills = input.parsedData.skills;
+    }
+    if (Array.isArray(input.parsedData?.projects)) {
+      input.parsedData.projects.forEach((p) => {
+        if (Array.isArray(p.techStack)) {
+          p.techStack.forEach((t) => projectTechs.push({ tech: t, projectTitle: p.title || 'Project' }));
+        }
+      });
+    }
+  }
+
+  if (!rawText && preExtractedSkills.length === 0) {
     return [];
   }
 
   const resumeSkillsMap = new Map();
+
+  // 1. Ingest skills directly identified by Resume & CV Analyzer
+  for (const s of preExtractedSkills) {
+    if (s && typeof s === 'string') {
+      const canonical = normalizeSkillName(s);
+      if (canonical) {
+        resumeSkillsMap.set(canonical, {
+          skillName: s.trim(),
+          normalizedName: canonical,
+          category: assignCategory(canonical),
+          source: 'resume',
+          evidence: {
+            found: true,
+            section: 'Resume & CV Analyzer (Parsed Skills)',
+            excerpt: `Directly detected in candidate resume by Resume & CV Analyzer engine.`,
+            confidence: 95,
+          },
+          extractionConfidence: 95,
+        });
+      }
+    }
+  }
+
+  // 2. Ingest tech stacks from Resume & CV Analyzer project records
+  for (const item of projectTechs) {
+    if (item.tech && typeof item.tech === 'string') {
+      const canonical = normalizeSkillName(item.tech);
+      if (canonical && !resumeSkillsMap.has(canonical)) {
+        resumeSkillsMap.set(canonical, {
+          skillName: item.tech.trim(),
+          normalizedName: canonical,
+          category: assignCategory(canonical),
+          source: 'resume',
+          evidence: {
+            found: true,
+            section: `Resume & CV Analyzer (Project: ${item.projectTitle})`,
+            excerpt: `Tech stack requirement in project "${item.projectTitle}" on candidate resume.`,
+            confidence: 90,
+          },
+          extractionConfidence: 90,
+        });
+      }
+    }
+  }
 
   // 1. Deterministic NLP / Pattern scanner across known canonical dictionary
   const knownKeywords = Object.keys(CANONICAL_SKILL_MAP);
@@ -511,12 +575,80 @@ Return ONLY a JSON array of objects with schema:
 
 /**
  * Inspect GitHub repositories and extract verifiable skills with direct code & dependency evidence.
+ * Accepts either username string or GitHubProfile document from GitHub Signals.
  */
-async function extractSkillsFromGitHub(username, repoUrls = []) {
-  const cleanUsername = username ? username.trim().replace(/^@/, '') : '';
+async function extractSkillsFromGitHub(input, repoUrls = []) {
+  let cleanUsername = '';
+  let preExtractedLanguages = [];
+  let profileRepos = [];
+
+  if (typeof input === 'string') {
+    cleanUsername = input.trim().replace(/^@/, '');
+  } else if (input && typeof input === 'object') {
+    cleanUsername = (input.username || '').trim().replace(/^@/, '');
+    if (Array.isArray(input.topLanguages)) {
+      preExtractedLanguages = input.topLanguages;
+    }
+    if (Array.isArray(input.repositories)) {
+      profileRepos = input.repositories;
+    }
+  }
+
   const githubSkillsMap = new Map();
   const notes = [];
   let analyzedReposCount = 0;
+
+  // 1. Ingest languages and engineering signals directly identified by GitHub Signals
+  for (const l of preExtractedLanguages) {
+    if (l && l.language && l.language !== 'Unspecified') {
+      const canonical = normalizeSkillName(l.language);
+      if (canonical) {
+        const evidenceItem = {
+          repo: 'GitHub Signals Profile',
+          repoUrl: cleanUsername ? `https://github.com/${cleanUsername}` : 'https://github.com',
+          file: `Codebase Language Analysis (${l.language})`,
+          evidenceType: 'implementation',
+          snippet: `Identified by GitHub Signals: ${l.percentage || 0}% of analyzed codebase across ${l.repoCount || 1} repositories.`,
+          confidence: 95,
+        };
+
+        githubSkillsMap.set(canonical, {
+          skillName: l.language,
+          normalizedName: canonical,
+          category: assignCategory(canonical, 'Programming Languages'),
+          source: 'github',
+          evidence: [evidenceItem],
+          extractionConfidence: 95,
+        });
+      }
+    }
+  }
+
+  // Ingest repository languages from GitHub Signals profile records
+  for (const r of profileRepos) {
+    if (r && r.language && r.language !== 'Unspecified') {
+      const canonical = normalizeSkillName(r.language);
+      if (canonical && !githubSkillsMap.has(canonical)) {
+        const evidenceItem = {
+          repo: r.name || 'Repository',
+          repoUrl: r.htmlUrl || (cleanUsername ? `https://github.com/${cleanUsername}/${r.name}` : ''),
+          file: `Primary Repository Language (${r.language})`,
+          evidenceType: 'implementation',
+          snippet: `Primary repository language detected by GitHub Signals for "${r.name}".`,
+          confidence: 90,
+        };
+
+        githubSkillsMap.set(canonical, {
+          skillName: r.language,
+          normalizedName: canonical,
+          category: assignCategory(canonical, 'Programming Languages'),
+          source: 'github',
+          evidence: [evidenceItem],
+          extractionConfidence: 90,
+        });
+      }
+    }
+  }
 
   const headers = {
     Accept: 'application/vnd.github.v3+json',
@@ -528,8 +660,19 @@ async function extractSkillsFromGitHub(username, repoUrls = []) {
     headers.Authorization = `token ${token}`;
   }
 
-  // 1. Gather repositories to inspect
+  // 2. Gather repositories to inspect deeper
   let targetRepos = [];
+
+  // Use repos from GitHub Signals document if present
+  for (const r of profileRepos.slice(0, 8)) {
+    targetRepos.push({
+      owner: cleanUsername,
+      name: r.name,
+      html_url: r.htmlUrl || `https://github.com/${cleanUsername}/${r.name}`,
+      language: r.language,
+      description: r.description,
+    });
+  }
 
   // Parse any explicit repository URLs passed
   if (Array.isArray(repoUrls) && repoUrls.length > 0) {
@@ -539,7 +682,9 @@ async function extractSkillsFromGitHub(username, repoUrls = []) {
         if (parts && parts.length >= 2) {
           const owner = parts[0].trim();
           const repo = parts[1].replace(/\.git$/, '').trim();
-          targetRepos.push({ owner, name: repo, html_url: `https://github.com/${owner}/${repo}` });
+          if (!targetRepos.some((t) => t.name.toLowerCase() === repo.toLowerCase())) {
+            targetRepos.push({ owner, name: repo, html_url: `https://github.com/${owner}/${repo}` });
+          }
         }
       }
     }

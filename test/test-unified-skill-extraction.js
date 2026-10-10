@@ -143,6 +143,41 @@ async function runTests() {
 
   console.log('✅ GitHub project evidence format validated.');
 
+  // Test 3B: Direct Document Object Ingestion from Resume & CV Analyzer and GitHub Signals
+  console.log('\n--- Test 3B: Ingestion from Resume & CV Analyzer and GitHub Signals Documents ---');
+  const mockResumeDoc = {
+    originalFileName: 'Maya_Resume_2026.pdf',
+    rawText: 'Experienced developer in Java and React.',
+    parsedData: {
+      skills: ['Java', 'Spring Boot', 'React', 'MongoDB'],
+      projects: [{ title: 'E-Commerce Core', techStack: ['Express.js', 'Docker', 'Redis'] }],
+    },
+  };
+
+  const mockGithubDoc = {
+    username: 'maya-dev',
+    topLanguages: [
+      { language: 'JavaScript', percentage: 60, repoCount: 4 },
+      { language: 'TypeScript', percentage: 30, repoCount: 2 },
+    ],
+    repositories: [
+      { name: 'careertwin-ai', language: 'JavaScript' },
+      { name: 'cloud-infra', language: 'HCL', description: 'Terraform cloud scripts' },
+    ],
+  };
+
+  const docResumeSkills = await unifiedSkillExtractorService.extractSkillsFromResume(mockResumeDoc);
+  const docGithubResult = await unifiedSkillExtractorService.extractSkillsFromGitHub(mockGithubDoc);
+
+  assert(docResumeSkills.some((s) => s.normalizedName === 'Spring Boot'), 'Spring Boot from Resume doc should be extracted');
+  assert(docResumeSkills.some((s) => s.normalizedName === 'Docker'), 'Docker from project techStack should be extracted');
+  assert(docGithubResult.skills.some((s) => s.normalizedName === 'JavaScript'), 'JavaScript from GitHub Signals topLanguages should be extracted');
+  assert(docGithubResult.skills.some((s) => s.normalizedName === 'TypeScript'), 'TypeScript from GitHub Signals topLanguages should be extracted');
+
+  console.log(`✅ Direct document ingestion passed:`);
+  console.log(`   - Ingested ${docResumeSkills.length} competencies from Resume & CV Analyzer doc`);
+  console.log(`   - Ingested ${docGithubResult.skills.length} competencies from GitHub Signals doc`);
+
   // Test 4: Unified Aggregation & Deduplication
   console.log('\n--- Test 4: Unified Aggregation, Corroboration & Deduplication ---');
   const simulatedLearnerStates = [

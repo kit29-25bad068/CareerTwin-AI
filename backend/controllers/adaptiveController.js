@@ -748,11 +748,14 @@ exports.getDiagnosticSkillInventory = async (req, res, next) => {
     }
 
     const candidateSources = {
-      hasResume: Boolean(resume && resume.rawText),
+      hasResume: Boolean(resume && (resume.rawText || (resume.parsedData?.skills && resume.parsedData.skills.length > 0))),
       resumeFileName: resume?.originalFileName || '',
+      resumeSkillsCount: resume?.parsedData?.skills?.length || 0,
       resumeUploadedAt: resume?.updatedAt || null,
-      hasGithub: Boolean(githubUsername),
+      hasGithub: Boolean(githubUsername || (github?.topLanguages && github.topLanguages.length > 0)),
       githubUsername: githubUsername || '',
+      githubTopLanguages: github?.topLanguages || [],
+      githubReposCount: github?.publicReposCount || (github?.repositories?.length || 0),
       githubSyncedAt: github?.lastSyncedAt || null,
     };
 
@@ -775,11 +778,11 @@ exports.extractDiagnosticSkills = async (req, res, next) => {
     const learnerId = req.user?._id || req.user?.id || req.body.learnerId || '64f1a2b3c4d5e6f7a8b9c0d1';
     const { githubUsername: inputGithub, repoUrls, resumeText: inputResumeText } = req.body;
 
-    // 1. Locate Resume Source
+    // 1. Locate Resume & CV Analyzer Source
     let resumeDoc = await Resume.findOne({ user: learnerId });
     let rawResumeText = inputResumeText || resumeDoc?.rawText || '';
 
-    // 2. Locate GitHub Source
+    // 2. Locate GitHub Signals Source
     let githubDoc = await GitHubProfile.findOne({ user: learnerId });
     let githubUsername = inputGithub || githubDoc?.username || req.user?.githubUsername || '';
 
@@ -789,22 +792,22 @@ exports.extractDiagnosticSkills = async (req, res, next) => {
 
     const notes = [];
 
-    // 3. Execute Resume Extraction
+    // 3. Execute Resume Extraction (ingests directly from Resume & CV Analyzer data)
     let resumeSkills = [];
-    if (rawResumeText && rawResumeText.trim().length > 30) {
-      resumeSkills = await unifiedSkillExtractorService.extractSkillsFromResume(rawResumeText);
-      notes.push(`Extracted ${resumeSkills.length} competencies from uploaded resume.`);
+    if (resumeDoc || (rawResumeText && rawResumeText.trim().length > 30)) {
+      resumeSkills = await unifiedSkillExtractorService.extractSkillsFromResume(resumeDoc || rawResumeText);
+      notes.push(`Extracted ${resumeSkills.length} competencies from Resume & CV Analyzer.`);
     } else {
-      notes.push('No resume text available for extraction.');
+      notes.push('No resume data found in Resume & CV Analyzer.');
     }
 
-    // 4. Execute GitHub Project Extraction
+    // 4. Execute GitHub Project Extraction (ingests directly from GitHub Signals data)
     let githubExtraction = { skills: [], notes: [], analyzedReposCount: 0 };
-    if (githubUsername || (Array.isArray(repoUrls) && repoUrls.length > 0)) {
-      githubExtraction = await unifiedSkillExtractorService.extractSkillsFromGitHub(githubUsername, repoUrls);
+    if (githubDoc || githubUsername || (Array.isArray(repoUrls) && repoUrls.length > 0)) {
+      githubExtraction = await unifiedSkillExtractorService.extractSkillsFromGitHub(githubDoc || githubUsername, repoUrls);
       notes.push(...githubExtraction.notes);
     } else {
-      notes.push('No GitHub profile or repositories provided.');
+      notes.push('No GitHub profile or repository data found in GitHub Signals.');
     }
 
     // 5. Cross-reference existing LearnerState for validated assessment mastery
