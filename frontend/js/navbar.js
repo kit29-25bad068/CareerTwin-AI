@@ -13,7 +13,6 @@ const Navbar = {
     { label: 'Skill Matrix', url: '/skills.html', icon: '⚡' },
     { label: 'Career Roadmap', url: '/roadmap.html', icon: '🗺️' },
     { label: 'Mentor AI', url: '/mentor.html', icon: '🤖' },
-    { label: 'Privacy & Settings', url: '/settings.html', icon: '⚙️' },
   ],
 
   adaptiveLinks: [
@@ -22,6 +21,10 @@ const Navbar = {
     { label: 'Concept Graph', url: '/concept-graph.html', icon: '🕸️' },
     { label: 'Mastery & Uncertainty', url: '/mastery.html', icon: '📊' },
     { label: 'Learning History', url: '/learning-history.html', icon: '📜' },
+  ],
+
+  bottomLinks: [
+    { label: 'Privacy & Settings', url: '/settings.html', icon: '⚙️' },
   ],
 
   renderLink(link, currentPath) {
@@ -46,8 +49,9 @@ const Navbar = {
     const sidebarEl = document.getElementById('sidebar-container');
     if (!sidebarEl) return;
 
-    const adaptiveHtml = this.adaptiveLinks.map((l) => this.renderLink(l, currentPath)).join('');
     const careerHtml = this.careerLinks.map((l) => this.renderLink(l, currentPath)).join('');
+    const adaptiveHtml = this.adaptiveLinks.map((l) => this.renderLink(l, currentPath)).join('');
+    const bottomHtml = this.bottomLinks.map((l) => this.renderLink(l, currentPath)).join('');
 
     sidebarEl.innerHTML = `
       <aside class="sidebar">
@@ -69,6 +73,10 @@ const Navbar = {
             Adaptive Engine
           </div>
           ${adaptiveHtml}
+
+          <div style="margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 0.5rem;">
+            ${bottomHtml}
+          </div>
         </nav>
 
 
