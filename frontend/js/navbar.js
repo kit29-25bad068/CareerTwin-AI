@@ -3,14 +3,6 @@
  */
 
 const Navbar = {
-  adaptiveLinks: [
-    { label: 'Adaptive Dashboard', url: '/dashboard.html', icon: '🎯' },
-    { label: 'Diagnostic Room', url: '/diagnostic.html', icon: '🩺' },
-    { label: 'Concept Graph', url: '/concept-graph.html', icon: '🕸️' },
-    { label: 'Mastery & Uncertainty', url: '/mastery.html', icon: '📊' },
-    { label: 'Learning History', url: '/learning-history.html', icon: '📜' },
-  ],
-
   careerLinks: [
     { label: 'Career Goals', url: '/goals.html', icon: '🎯' },
     { label: 'Career Twin', url: '/career-twin.html', icon: '🧬' },
@@ -22,6 +14,14 @@ const Navbar = {
     { label: 'Career Roadmap', url: '/roadmap.html', icon: '🗺️' },
     { label: 'Mentor AI', url: '/mentor.html', icon: '🤖' },
     { label: 'Privacy & Settings', url: '/settings.html', icon: '⚙️' },
+  ],
+
+  adaptiveLinks: [
+    { label: 'Adaptive Dashboard', url: '/dashboard.html', icon: '🎯' },
+    { label: 'Diagnostic Room', url: '/diagnostic.html', icon: '🩺' },
+    { label: 'Concept Graph', url: '/concept-graph.html', icon: '🕸️' },
+    { label: 'Mastery & Uncertainty', url: '/mastery.html', icon: '📊' },
+    { label: 'Learning History', url: '/learning-history.html', icon: '📜' },
   ],
 
   renderLink(link, currentPath) {
@@ -61,14 +61,14 @@ const Navbar = {
 
         <nav class="sidebar-nav">
           <div style="font-size: 0.68rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.08em; padding: 0.5rem 0.85rem 0.25rem 0.85rem;">
-            Adaptive Engine
-          </div>
-          ${adaptiveHtml}
-
-          <div style="font-size: 0.68rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.08em; padding: 1rem 0.85rem 0.25rem 0.85rem;">
             Career Intelligence
           </div>
           ${careerHtml}
+
+          <div style="font-size: 0.68rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.08em; padding: 1rem 0.85rem 0.25rem 0.85rem;">
+            Adaptive Engine
+          </div>
+          ${adaptiveHtml}
         </nav>
 
 
