@@ -12,6 +12,7 @@ const Navbar = {
   ],
 
   careerLinks: [
+    { label: 'Career Goals', url: '/goals.html', icon: '🎯' },
     { label: 'Career Twin', url: '/career-twin.html', icon: '🧬' },
     { label: 'Mock Interviews', url: '/interview.html', icon: '🎙️' },
     { label: 'Resume & CV Analyzer', url: '/resume.html', icon: '📄' },
@@ -19,7 +20,6 @@ const Navbar = {
     { label: 'GitHub Signals', url: '/github.html', icon: '🐙' },
     { label: 'Skill Matrix', url: '/skills.html', icon: '⚡' },
     { label: 'Career Roadmap', url: '/roadmap.html', icon: '🗺️' },
-    { label: 'Career Goals', url: '/goals.html', icon: '🎯' },
     { label: 'Mentor AI', url: '/mentor.html', icon: '🤖' },
     { label: 'Privacy & Settings', url: '/settings.html', icon: '⚙️' },
   ],
