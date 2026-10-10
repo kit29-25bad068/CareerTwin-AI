@@ -62,6 +62,28 @@ const AdaptiveAPI = {
     };
     return window.API.post('/adaptive/attempts', body);
   },
+
+  async getDiagnosticInventory(learnerId = this.getLearnerId()) {
+    return window.API.get(`/adaptive/diagnostic/inventory?learnerId=${learnerId}`);
+  },
+
+  async extractDiagnosticSkills(payload = {}) {
+    const body = {
+      learnerId: payload.learnerId || this.getLearnerId(),
+      githubUsername: payload.githubUsername || '',
+      repoUrls: payload.repoUrls || [],
+      resumeText: payload.resumeText || '',
+    };
+    return window.API.post('/adaptive/diagnostic/extract', body);
+  },
+
+  async uploadDiagnosticResume(formData) {
+    return window.API.post('/adaptive/diagnostic/upload-resume', formData);
+  },
+
+  async deleteDiagnosticInventory(learnerId = this.getLearnerId()) {
+    return window.API.delete(`/adaptive/diagnostic/inventory?learnerId=${learnerId}`);
+  },
 };
 
 const AdaptiveUI = {

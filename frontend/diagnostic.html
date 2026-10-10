@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diagnostic Room - CareerTwin AI</title>
+  <title>Unified Skill Extraction - CareerTwin AI</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/pages.css">
@@ -11,6 +11,302 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Scoped Styles for Unified Skill Extraction Module */
+    .diag-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-bottom: 3rem;
+    }
+
+    .source-control-card {
+      background: rgba(14, 20, 36, 0.75);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius-lg, 16px);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .sources-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .sources-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .source-panel {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .source-panel.active-source {
+      border-color: rgba(34, 211, 238, 0.4);
+      background: rgba(34, 211, 238, 0.02);
+    }
+
+    .source-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .source-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Stats Overview Cards */
+    .stat-overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 992px) {
+      .stat-overview-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stat-overview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-card-box {
+      background: rgba(14, 20, 36, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1.25rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .stat-card-box:hover {
+      transform: translateY(-2px);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .stat-card-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin: 0.5rem 0 0.25rem 0;
+    }
+
+    /* Filtering Bar */
+    .filter-bar-card {
+      background: rgba(14, 20, 36, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .filter-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill:hover, .filter-pill.active {
+      background: rgba(99, 102, 241, 0.25);
+      border-color: #6366f1;
+      color: #fff;
+    }
+
+    .filter-pill.active-both {
+      background: rgba(34, 211, 238, 0.25);
+      border-color: #22d3ee;
+      color: #22d3ee;
+    }
+
+    /* Skills Grid */
+    .skills-inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .skill-card-item {
+      background: rgba(14, 20, 36, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+
+    .skill-card-item:hover {
+      transform: translateY(-3px);
+      border-color: rgba(99, 102, 241, 0.45);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .skill-card-item.source-both {
+      border-left: 3px solid #22d3ee;
+    }
+
+    .skill-card-item.source-resume {
+      border-left: 3px solid #f59e0b;
+    }
+
+    .skill-card-item.source-github {
+      border-left: 3px solid #a855f7;
+    }
+
+    .badge-source-both {
+      background: rgba(34, 211, 238, 0.15);
+      color: #22d3ee;
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+
+    .badge-source-resume {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+
+    .badge-source-github {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+
+    .badge-status-unverified {
+      background: rgba(148, 163, 184, 0.12);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    .badge-status-verified {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    /* Modal Styling */
+    .evidence-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .evidence-modal-content {
+      background: #0b101e;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 16px;
+      max-width: 750px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .evidence-quote-box {
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 3px solid #6366f1;
+      padding: 0.85rem 1rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      font-family: var(--font-mono, monospace);
+    }
+
+    /* Animated Loading Box */
+    .extraction-progress-box {
+      background: rgba(14, 20, 36, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .spinner-ring {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(99, 102, 241, 0.2);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.25rem auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
   <div class="app-layout">
@@ -21,111 +317,282 @@
       <!-- Dynamic Topbar -->
       <div id="topbar-container"></div>
 
-      <div class="page-container" style="max-width: 900px; margin: 0 auto;">
+      <div class="page-container diag-container">
         <!-- Header -->
         <div style="text-align: center; margin-bottom: 2rem;">
-          <span class="badge badge-cyan" style="margin-bottom: 0.5rem;">COLD-START ASSESSMENT</span>
-          <h1 style="font-size: 2.2rem; color: #fff; margin-bottom: 0.5rem;">
-            Java Core Diagnostic Room
+          <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span class="badge badge-cyan">AI UNIFIED SKILL EXTRACTION</span>
+            <span class="badge badge-indigo">EVIDENCE DISCOVERY ENGINE</span>
+          </div>
+          <h1 style="font-size: 2.3rem; color: #fff; margin-bottom: 0.5rem; font-weight: 800;">
+            Diagnostic Room — Skill Extraction
           </h1>
-          <p style="color: var(--text-secondary); font-size: 1rem; max-width: 600px; margin: 0 auto;">
-            A 10-question baseline diagnostic to measure your initial knowledge state and construct your personalized adaptive learning trajectory.
+          <p style="color: var(--text-secondary); font-size: 1.05rem; max-width: 680px; margin: 0 auto;">
+            Automatically discover, normalize, and consolidate competencies from your uploaded resume and GitHub project repositories with inspectable evidence.
           </p>
         </div>
 
-        <!-- Progress Indicator -->
-        <div class="diag-progress-bar-container">
-          <div class="diag-progress-bar-fill" id="diag-progress-fill" style="width: 10%;"></div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <div class="diag-step-counter" id="diag-step-text">Question 1 of 10</div>
-          <div class="timer-pill" id="diag-timer">⏱️ <span id="diag-timer-display">00:00</span></div>
-        </div>
-
-        <!-- Active Question Card -->
-        <div class="card" id="diagnostic-card" style="box-shadow: var(--shadow-lg); border-color: rgba(99, 102, 241, 0.35); min-height: 480px; display: flex; flex-direction: column; justify-content: space-between;">
-          <div id="question-render-area">
-            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
-              <span class="badge badge-primary" id="diag-concept-badge">Loading...</span>
-              <span class="badge badge-secondary" id="diag-type-badge">MCQ</span>
-              <span style="font-size: 0.8rem; color: var(--accent-amber);" id="diag-diff-badge">★★☆☆☆</span>
-            </div>
-
-            <h2 id="diag-prompt" style="font-size: 1.25rem; font-weight: 600; line-height: 1.5; color: #fff; margin-bottom: 1.25rem;">
-              Loading diagnostic question...
-            </h2>
-
-            <div id="diag-code-box" class="code-snippet-box" style="display: none; margin-bottom: 1.25rem;">
-              <code id="diag-code-text"></code>
-            </div>
-
-            <div id="diag-options-container" class="options-list">
-              <!-- Dynamically populated options -->
-            </div>
-
-            <!-- Confidence Rating -->
-            <div class="confidence-selector-container" style="margin-top: 1.5rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Confidence in this answer</span>
-                <span id="diag-confidence-label" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 600;">Medium (3/5)</span>
+        <!-- Extraction Source Controls Card -->
+        <div class="source-control-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div style="font-size: 1.15rem; font-weight: 700; color: #fff;">
+                Extraction Sources &amp; Artifacts
               </div>
-              <div class="confidence-scale">
-                <button type="button" class="confidence-btn" data-val="1">1: Guess</button>
-                <button type="button" class="confidence-btn" data-val="2">2: Low</button>
-                <button type="button" class="confidence-btn active" data-val="3">3: Medium</button>
-                <button type="button" class="confidence-btn" data-val="4">4: High</button>
-                <button type="button" class="confidence-btn" data-val="5">5: Certain</button>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Connect both your Resume and GitHub repositories to corroborate technical skills across practical artifacts.
               </div>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <button id="btn-run-extraction" class="btn btn-primary btn-md" style="display: flex; align-items: center; gap: 0.5rem;">
+                <span>⚡</span>
+                <span id="btn-extract-text">Run Unified Skill Extraction</span>
+              </button>
+              <button id="btn-reset-inventory" class="btn btn-outline btn-md" title="Reset Skill Inventory" style="padding: 0.5rem 0.85rem; font-size: 0.85rem;">
+                🔄 Reset
+              </button>
             </div>
           </div>
 
-          <!-- Bottom Action Bar -->
-          <div style="border-top: 1px solid var(--border-color); padding-top: 1.25rem; margin-top: 1.5rem; display: flex; justify-content: flex-end;">
-            <button id="btn-next-diag" class="btn btn-primary btn-md">
-              Submit &amp; Next Question ➔
-            </button>
+          <!-- Dual Source Panels -->
+          <div class="sources-grid">
+            <!-- Source 1: Resume -->
+            <div class="source-panel" id="panel-resume">
+              <div>
+                <div class="source-header">
+                  <div class="source-title">
+                    <span>📄</span>
+                    <span>Learner Resume (PDF)</span>
+                  </div>
+                  <span id="badge-resume-status" class="badge badge-secondary">Checking...</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.6rem;" id="resume-info-text">
+                  Checking for existing uploaded resume...
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+                <input type="file" id="resume-file-input" accept=".pdf" style="display: none;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('resume-file-input').click()">
+                  📤 Upload / Replace Resume (PDF)
+                </button>
+                <span id="resume-upload-spinner" style="display: none; font-size: 0.8rem; color: var(--accent-secondary);">Uploading &amp; Parsing...</span>
+              </div>
+            </div>
+
+            <!-- Source 2: GitHub -->
+            <div class="source-panel" id="panel-github">
+              <div>
+                <div class="source-header">
+                  <div class="source-title">
+                    <span>🐙</span>
+                    <span>GitHub Repositories</span>
+                  </div>
+                  <span id="badge-github-status" class="badge badge-secondary">Checking...</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.6rem;" id="github-info-text">
+                  Provide your GitHub username or repository URLs to inspect languages, packages, and code.
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem;">
+                <input type="text" id="github-username-input" class="form-control" placeholder="GitHub username (e.g. octocat)" style="font-size: 0.85rem; padding: 0.4rem 0.75rem; background: rgba(0,0,0,0.3); color: #fff; border-color: rgba(255,255,255,0.15); border-radius: 6px; flex: 1;">
+                <button type="button" id="btn-save-github" class="btn btn-secondary btn-sm" style="white-space: nowrap;">
+                  Save Handle
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Result Summary Card (hidden until complete) -->
-        <div class="card card-glow" id="diagnostic-summary-card" style="display: none; padding: 2.5rem; text-align: center;">
-          <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
-          <h2 style="font-size: 2rem; color: #fff; margin-bottom: 0.5rem;">Baseline Assessment Complete!</h2>
-          <p style="color: var(--text-secondary); font-size: 1.05rem; max-width: 600px; margin: 0 auto 2rem auto;">
-            Your baseline evidence has been synthesized into the persistent learner model.
+        <!-- Extraction Progress Indicator (Hidden by default) -->
+        <div id="extraction-progress-box" class="extraction-progress-box" style="display: none;">
+          <div class="spinner-ring"></div>
+          <h3 id="progress-step-title" style="font-size: 1.3rem; color: #fff; margin-bottom: 0.5rem;">
+            Analyzing Technical Artifacts...
+          </h3>
+          <p id="progress-step-desc" style="color: var(--text-secondary); font-size: 0.95rem; max-width: 500px; margin: 0 auto;">
+            Extracting skills from uploaded resume and inspecting accessible GitHub repositories.
           </p>
+        </div>
 
-          <div class="grid grid-cols-3" style="gap: 1.5rem; margin-bottom: 2.5rem; text-align: left;">
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
-              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Score Accuracy</div>
-              <div id="summary-accuracy" style="font-size: 2.2rem; font-weight: 800; color: #34d399; margin: 0.5rem 0;">0%</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Baseline Correctness</div>
+        <!-- Partial Results Notification Banner (Conditional) -->
+        <div id="banner-partial-mode" class="card" style="display: none; background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.3); padding: 1rem 1.25rem; margin-bottom: 1.5rem; border-radius: 12px;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 1.25rem;">⚠️</span>
+            <div>
+              <strong style="color: #fbbf24; font-size: 0.92rem;">Partial Extraction Mode:</strong>
+              <span id="banner-partial-text" style="color: var(--text-secondary); font-size: 0.88rem; margin-left: 0.35rem;">
+                Skills consolidated from one source only.
+              </span>
             </div>
-
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
-              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Uncertainty Reduced</div>
-              <div id="summary-uncertainty-drop" style="font-size: 2.2rem; font-weight: 800; color: #22d3ee; margin: 0.5rem 0;">-40%</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">10 Evidence Points Added</div>
-            </div>
-
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
-              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">First Recommended Action</div>
-              <div id="summary-action" style="font-size: 1.5rem; font-weight: 800; color: #fbbf24; margin: 0.5rem 0;">PRACTICE</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);" id="summary-concept-target">Java Basics</div>
-            </div>
-          </div>
-
-          <div style="display: flex; justify-content: center; gap: 1rem;">
-            <a href="/dashboard.html" class="btn btn-primary btn-md">
-              Go to Adaptive Dashboard ➔
-            </a>
-            <a href="/concept-graph.html" class="btn btn-secondary btn-md">
-              View Updated Concept Graph
-            </a>
           </div>
         </div>
 
+        <!-- Main Results Container (Populated when inventory exists) -->
+        <div id="results-container" style="display: none;">
+          <!-- 1. Stats Overview Cards -->
+          <div class="stat-overview-grid">
+            <div class="stat-card-box">
+              <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">
+                Total Unique Skills
+              </div>
+              <div id="stat-total-skills" class="stat-card-number" style="color: #6366f1;">0</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Consolidated Inventory</div>
+            </div>
+
+            <div class="stat-card-box">
+              <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">
+                Resume Skills
+              </div>
+              <div id="stat-resume-skills" class="stat-card-number" style="color: #fbbf24;">0</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Claimed in Candidate Resume</div>
+            </div>
+
+            <div class="stat-card-box">
+              <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">
+                GitHub Codebase Skills
+              </div>
+              <div id="stat-github-skills" class="stat-card-number" style="color: #c084fc;">0</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Found in Code &amp; Packages</div>
+            </div>
+
+            <div class="stat-card-box">
+              <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">
+                Both Sources Corroborated
+              </div>
+              <div id="stat-both-skills" class="stat-card-number" style="color: #22d3ee;">0</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Cross-Source Verified Evidence</div>
+            </div>
+          </div>
+
+          <!-- 2. Search & Filtering Bar -->
+          <div class="filter-bar-card">
+            <!-- Search Input -->
+            <div style="position: relative;">
+              <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1rem; color: var(--text-muted);">🔍</span>
+              <input type="text" id="skill-search-input" class="form-control" placeholder="Search extracted skills (e.g. JavaScript, Docker, Spring, MongoDB)..." style="padding-left: 2.75rem; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); color: #fff; border-radius: 8px;">
+            </div>
+
+            <!-- Source Filters -->
+            <div class="filter-row">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-right: 0.25rem;">Source:</span>
+              <button class="filter-pill active" data-filter-type="source" data-val="all">All Sources</button>
+              <button class="filter-pill" data-filter-type="source" data-val="both">⭐ Both Sources</button>
+              <button class="filter-pill" data-filter-type="source" data-val="resume">📄 Resume Only</button>
+              <button class="filter-pill" data-filter-type="source" data-val="github">🐙 GitHub Only</button>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="filter-row">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-right: 0.25rem;">Category:</span>
+              <button class="filter-pill active" data-filter-type="category" data-val="all">All Categories</button>
+              <button class="filter-pill" data-filter-type="category" data-val="Programming Languages">Languages</button>
+              <button class="filter-pill" data-filter-type="category" data-val="Frameworks & Libraries">Frameworks &amp; Libs</button>
+              <button class="filter-pill" data-filter-type="category" data-val="Databases & Storage">Databases</button>
+              <button class="filter-pill" data-filter-type="category" data-val="Cloud & DevOps">Cloud &amp; DevOps</button>
+              <button class="filter-pill" data-filter-type="category" data-val="AI, ML & Data Science">AI &amp; Data</button>
+              <button class="filter-pill" data-filter-type="category" data-val="Developer Tools & Platforms">Tools</button>
+              <button class="filter-pill" data-filter-type="category" data-val="Software Architecture & Concepts">Architecture</button>
+            </div>
+
+            <!-- Verification Status Filter -->
+            <div class="filter-row">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; margin-right: 0.25rem;">Status:</span>
+              <button class="filter-pill active" data-filter-type="status" data-val="all">All Statuses</button>
+              <button class="filter-pill" data-filter-type="status" data-val="unverified">⏳ Unverified (Extracted)</button>
+              <button class="filter-pill" data-filter-type="status" data-val="verified">✅ Verified in Assessment</button>
+            </div>
+          </div>
+
+          <!-- 3. Skills Inventory Grid -->
+          <div id="skills-grid" class="skills-inventory-grid">
+            <!-- Skill Cards rendered dynamically -->
+          </div>
+
+          <!-- Empty Filter State -->
+          <div id="no-filter-match" class="card" style="display: none; text-align: center; padding: 3rem; background: rgba(255,255,255,0.02);">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+            <h3 style="color: #fff; margin-bottom: 0.35rem;">No Matching Skills Found</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Try adjusting your search query or relaxing your active category / source filters.
+            </p>
+          </div>
+        </div>
+
+        <!-- Empty State (No inventory extracted yet) -->
+        <div id="empty-state-box" class="card" style="text-align: center; padding: 3.5rem 2rem; border-color: rgba(99, 102, 241, 0.25); background: rgba(14, 20, 36, 0.5);">
+          <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎯</div>
+          <h2 style="font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem;">
+            No Skills Extracted Yet
+          </h2>
+          <p style="color: var(--text-secondary); font-size: 1rem; max-width: 580px; margin: 0 auto 2rem auto;">
+            Upload your resume PDF and enter your GitHub username above, then click <strong>"Run Unified Skill Extraction"</strong> to construct your consolidated competency inventory.
+          </p>
+          <button class="btn btn-primary btn-md" onclick="document.getElementById('btn-run-extraction').click()">
+            ⚡ Begin Skill Extraction
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Evidence Inspection Modal -->
+  <div id="evidence-modal" class="evidence-modal-backdrop" style="display: none;">
+    <div class="evidence-modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem;">
+            <h2 id="modal-skill-name" style="font-size: 1.6rem; color: #fff; margin: 0; font-weight: 700;">Skill Name</h2>
+            <span id="modal-skill-source-badge" class="badge-source-both">⭐ Both Sources</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span id="modal-skill-category" class="badge badge-secondary" style="font-size: 0.75rem;">Category</span>
+            <span id="modal-skill-status" class="badge-status-unverified">⏳ Unverified</span>
+          </div>
+        </div>
+        <button id="modal-close-btn" class="btn btn-secondary btn-sm" style="padding: 0.3rem 0.6rem; font-size: 1.1rem; border-radius: 8px;">✕</button>
+      </div>
+
+      <!-- Extraction Confidence & Integrity Callout -->
+      <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.05em;">
+            Extraction Confidence
+          </span>
+          <span id="modal-confidence-text" style="font-size: 0.95rem; font-weight: 850; color: #fff;">85%</span>
+        </div>
+        <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+          <div id="modal-confidence-bar" style="height: 100%; width: 85%; background: linear-gradient(90deg, #6366f1, #22d3ee); border-radius: 3px;"></div>
+        </div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.5rem;">
+          ℹ️ <strong>Evidence Distinction:</strong> Extraction confidence reflects evidence strength in candidate artifacts. Learner mastery is independently evaluated via diagnostic assessments and is not inferred from extraction alone.
+        </div>
+      </div>
+
+      <!-- Tab: Resume Evidence -->
+      <div id="modal-resume-section" style="margin-bottom: 1.5rem;">
+        <h4 style="font-size: 1rem; color: #fff; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+          <span>📄</span> Resume Evidence
+        </h4>
+        <div id="modal-resume-body">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab: GitHub Evidence -->
+      <div id="modal-github-section" style="margin-bottom: 1.5rem;">
+        <h4 style="font-size: 1rem; color: #fff; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+          <span>🐙</span> GitHub Repository &amp; Code Evidence
+        </h4>
+        <div id="modal-github-body">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.25rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button id="modal-close-footer-btn" class="btn btn-secondary btn-md">Close</button>
       </div>
     </div>
   </div>
@@ -136,200 +603,478 @@
   <script src="/js/navbar.js"></script>
   <script src="/js/adaptive-api.js"></script>
   <script>
-    let diagnosticQuestions = [];
-    let currentIndex = 0;
-    let questionStartTime = Date.now();
-    let selectedConfidence = 3;
-    let timerInterval = null;
-    let correctCount = 0;
-    const sessionId = `diag_${Date.now()}`;
+    // State
+    let currentInventory = null;
+    let candidateSources = { hasResume: false, hasGithub: false };
+    let currentSkills = [];
+    let activeFilters = {
+      source: 'all',
+      category: 'all',
+      status: 'all',
+      search: '',
+    };
 
     document.addEventListener('DOMContentLoaded', async () => {
       Navbar.init('Diagnostic Room');
-      startTimer();
-      setupConfidenceButtons();
-      await loadDiagnosticQuestions();
-
-      document.getElementById('btn-next-diag').addEventListener('click', submitCurrentQuestion);
+      setupEventListeners();
+      await loadInitialData();
     });
 
-    function startTimer() {
-      timerInterval = setInterval(() => {
-        const sec = Math.floor((Date.now() - questionStartTime) / 1000);
-        const m = String(Math.floor(sec / 60)).padStart(2, '0');
-        const s = String(sec % 60).padStart(2, '0');
-        const el = document.getElementById('diag-timer-display');
-        if (el) el.textContent = `${m}:${s}`;
-      }, 1000);
-    }
+    function setupEventListeners() {
+      // Main extraction button
+      document.getElementById('btn-run-extraction').addEventListener('click', runSkillExtraction);
 
-    function setupConfidenceButtons() {
-      const labels = {
-        1: 'Pure Guess (1/5)',
-        2: 'Low Confidence (2/5)',
-        3: 'Medium Confidence (3/5)',
-        4: 'High Confidence (4/5)',
-        5: 'Certain (5/5)',
-      };
-      document.querySelectorAll('.confidence-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.confidence-btn').forEach((b) => b.classList.remove('active'));
-          btn.classList.add('active');
-          selectedConfidence = Number(btn.getAttribute('data-val'));
-          document.getElementById('diag-confidence-label').textContent = labels[selectedConfidence];
+      // Reset inventory button
+      document.getElementById('btn-reset-inventory').addEventListener('click', resetSkillInventory);
+
+      // Resume file picker
+      document.getElementById('resume-file-input').addEventListener('change', handleResumeUpload);
+
+      // GitHub username save
+      document.getElementById('btn-save-github').addEventListener('click', saveGithubUsername);
+
+      // Filter pills
+      document.querySelectorAll('.filter-pill').forEach((pill) => {
+        pill.addEventListener('click', () => {
+          const filterType = pill.getAttribute('data-filter-type');
+          const filterVal = pill.getAttribute('data-val');
+
+          // Update active style in row
+          pill.parentElement.querySelectorAll('.filter-pill').forEach((p) => p.classList.remove('active', 'active-both'));
+          pill.classList.add(filterVal === 'both' ? 'active-both' : 'active');
+
+          activeFilters[filterType] = filterVal;
+          renderSkillsGrid();
         });
+      });
+
+      // Search input
+      document.getElementById('skill-search-input').addEventListener('input', (e) => {
+        activeFilters.search = e.target.value.trim().toLowerCase();
+        renderSkillsGrid();
+      });
+
+      // Evidence Modal Close
+      document.getElementById('modal-close-btn').addEventListener('click', closeEvidenceModal);
+      document.getElementById('modal-close-footer-btn').addEventListener('click', closeEvidenceModal);
+      document.getElementById('evidence-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'evidence-modal') closeEvidenceModal();
       });
     }
 
-    async function loadDiagnosticQuestions() {
+    async function loadInitialData() {
       try {
-        const res = await AdaptiveAPI.getDiagnosticQuestions();
-        if (res.success && res.questions && res.questions.length > 0) {
-          diagnosticQuestions = res.questions;
-          renderQuestion(0);
-        } else {
-          document.getElementById('diag-prompt').textContent = 'No diagnostic questions available.';
+        const res = await AdaptiveAPI.getDiagnosticInventory();
+        if (res.success) {
+          candidateSources = res.candidateSources || {};
+          updateSourcePanelsUI(candidateSources);
+
+          if (res.hasInventory && res.inventory) {
+            currentInventory = res.inventory;
+            currentSkills = res.inventory.skills || [];
+            renderInventoryUI(res.inventory);
+          } else {
+            showEmptyState();
+          }
         }
       } catch (err) {
-        console.error('Error loading diagnostic questions:', err);
+        console.error('Failed to load diagnostic inventory:', err);
+        showEmptyState();
       }
     }
 
-    function renderQuestion(index) {
-      if (index >= diagnosticQuestions.length) {
-        showSummary();
+    function updateSourcePanelsUI(sources) {
+      // Resume Panel
+      const resumeBadge = document.getElementById('badge-resume-status');
+      const resumeText = document.getElementById('resume-info-text');
+      const resumePanel = document.getElementById('panel-resume');
+
+      if (sources.hasResume) {
+        resumeBadge.className = 'badge badge-success';
+        resumeBadge.textContent = 'Uploaded';
+        resumeText.innerHTML = `<strong>${escapeHtml(sources.resumeFileName || 'Resume.pdf')}</strong> ready for extraction.`;
+        resumePanel.classList.add('active-source');
+      } else {
+        resumeBadge.className = 'badge badge-secondary';
+        resumeBadge.textContent = 'Missing';
+        resumeText.textContent = 'No resume uploaded yet. Upload a PDF resume to extract candidate competencies.';
+        resumePanel.classList.remove('active-source');
+      }
+
+      // GitHub Panel
+      const ghBadge = document.getElementById('badge-github-status');
+      const ghText = document.getElementById('github-info-text');
+      const ghInput = document.getElementById('github-username-input');
+      const ghPanel = document.getElementById('panel-github');
+
+      if (sources.hasGithub && sources.githubUsername) {
+        ghBadge.className = 'badge badge-success';
+        ghBadge.textContent = 'Connected';
+        ghInput.value = sources.githubUsername;
+        ghText.innerHTML = `Connected as <strong>@${escapeHtml(sources.githubUsername)}</strong>. Public repositories will be scanned.`;
+        ghPanel.classList.add('active-source');
+      } else {
+        ghBadge.className = 'badge badge-secondary';
+        ghBadge.textContent = 'Not Connected';
+        ghText.textContent = 'Provide your GitHub username to inspect repositories, dependencies, and source languages.';
+        ghPanel.classList.remove('active-source');
+      }
+    }
+
+    async function handleResumeUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const spinner = document.getElementById('resume-upload-spinner');
+      spinner.style.display = 'inline';
+
+      const formData = new FormData();
+      formData.append('resume', file);
+
+      try {
+        const res = await AdaptiveAPI.uploadDiagnosticResume(formData);
+        if (res.success) {
+          candidateSources.hasResume = true;
+          candidateSources.resumeFileName = file.name;
+          updateSourcePanelsUI(candidateSources);
+          if (window.Utils?.showToast) {
+            window.Utils.showToast('Resume uploaded successfully! Ready for extraction.', 'success');
+          }
+        }
+      } catch (err) {
+        console.error('Error uploading resume:', err);
+        if (window.Utils?.showToast) {
+          window.Utils.showToast('Failed to parse uploaded resume: ' + err.message, 'error');
+        } else {
+          alert('Upload failed: ' + err.message);
+        }
+      } finally {
+        spinner.style.display = 'none';
+        e.target.value = '';
+      }
+    }
+
+    async function saveGithubUsername() {
+      const input = document.getElementById('github-username-input');
+      const username = input.value.trim().replace(/^@/, '');
+      if (!username) {
+        if (window.Utils?.showToast) {
+          window.Utils.showToast('Please enter a GitHub username.', 'warning');
+        }
         return;
       }
 
-      currentIndex = index;
-      questionStartTime = Date.now();
-      const q = diagnosticQuestions[index];
+      candidateSources.hasGithub = true;
+      candidateSources.githubUsername = username;
+      updateSourcePanelsUI(candidateSources);
+      if (window.Utils?.showToast) {
+        window.Utils.showToast(`GitHub handle @${username} staged for extraction.`, 'success');
+      }
+    }
 
-      // Update Header & Progress
-      const total = diagnosticQuestions.length;
-      document.getElementById('diag-step-text').textContent = `Question ${index + 1} of ${total}`;
-      document.getElementById('diag-progress-fill').style.width = `${((index + 1) / total) * 100}%`;
+    async function runSkillExtraction() {
+      const btn = document.getElementById('btn-run-extraction');
+      const btnText = document.getElementById('btn-extract-text');
+      const progressBox = document.getElementById('extraction-progress-box');
+      const resultsContainer = document.getElementById('results-container');
+      const emptyStateBox = document.getElementById('empty-state-box');
 
-      document.getElementById('diag-concept-badge').textContent = q.conceptId?.name || 'Java Concept';
-      document.getElementById('diag-type-badge').textContent = q.type || 'MCQ';
-      document.getElementById('diag-diff-badge').textContent = '★'.repeat(q.difficulty || 1) + '☆'.repeat(5 - (q.difficulty || 1));
-      document.getElementById('diag-prompt').textContent = q.question;
-
-      // Code Snippet
-      const codeBox = document.getElementById('diag-code-box');
-      const codeText = document.getElementById('diag-code-text');
-      if (q.codeSnippet) {
-        codeBox.style.display = 'block';
-        codeText.textContent = q.codeSnippet;
-      } else {
-        codeBox.style.display = 'none';
+      // Validation
+      const ghUsername = document.getElementById('github-username-input').value.trim();
+      if (!candidateSources.hasResume && !ghUsername) {
+        if (window.Utils?.showToast) {
+          window.Utils.showToast('Please upload a resume or provide a GitHub username to extract skills.', 'warning');
+        } else {
+          alert('Please upload a resume or provide a GitHub username to extract skills.');
+        }
+        return;
       }
 
-      // Options
-      const optionsContainer = document.getElementById('diag-options-container');
-      optionsContainer.innerHTML = '';
-      if (q.options && q.options.length > 0) {
-        q.options.forEach((opt, idx) => {
-          const label = document.createElement('label');
-          label.className = 'option-choice';
-          label.innerHTML = `
-            <input type="radio" name="diag-choice" value="${escapeHtml(opt)}" id="dopt-${idx}">
-            <span>${escapeHtml(opt)}</span>
-          `;
-          label.addEventListener('click', () => {
-            optionsContainer.querySelectorAll('.option-choice').forEach((l) => l.classList.remove('selected'));
-            label.classList.add('selected');
-          });
-          optionsContainer.appendChild(label);
-        });
+      btn.disabled = true;
+      btnText.textContent = 'Extracting Skills...';
+      emptyStateBox.style.display = 'none';
+      resultsContainer.style.display = 'none';
+      progressBox.style.display = 'block';
+
+      try {
+        const payload = {
+          githubUsername: ghUsername,
+        };
+
+        const res = await AdaptiveAPI.extractDiagnosticSkills(payload);
+        if (res.success && res.inventory) {
+          currentInventory = res.inventory;
+          currentSkills = res.inventory.skills || [];
+          renderInventoryUI(res.inventory);
+
+          if (window.Utils?.showToast) {
+            window.Utils.showToast(`Extracted ${res.summary?.totalUnique || 0} unique technical skills!`, 'success');
+          }
+        }
+      } catch (err) {
+        console.error('Skill extraction failed:', err);
+        if (window.Utils?.showToast) {
+          window.Utils.showToast('Skill extraction failed: ' + err.message, 'error');
+        } else {
+          alert('Skill extraction failed: ' + err.message);
+        }
+        showEmptyState();
+      } finally {
+        progressBox.style.display = 'none';
+        btn.disabled = false;
+        btnText.textContent = 'Run Unified Skill Extraction';
+      }
+    }
+
+    async function resetSkillInventory() {
+      if (!confirm('Are you sure you want to reset your extracted skill inventory?')) return;
+
+      try {
+        await AdaptiveAPI.deleteDiagnosticInventory();
+        currentInventory = null;
+        currentSkills = [];
+        showEmptyState();
+        if (window.Utils?.showToast) {
+          window.Utils.showToast('Skill inventory reset.', 'info');
+        }
+      } catch (err) {
+        console.error('Error resetting inventory:', err);
+      }
+    }
+
+    function renderInventoryUI(inventory) {
+      document.getElementById('empty-state-box').style.display = 'none';
+      document.getElementById('results-container').style.display = 'block';
+
+      // 1. Render Summary Stats
+      const s = inventory.summary || {};
+      document.getElementById('stat-total-skills').textContent = s.totalUnique || 0;
+      document.getElementById('stat-resume-skills').textContent = s.resumeCount || 0;
+      document.getElementById('stat-github-skills').textContent = s.githubCount || 0;
+      document.getElementById('stat-both-skills').textContent = s.bothCount || 0;
+
+      // 2. Partial Results Banner Check
+      const status = inventory.sourcesStatus || {};
+      const partialBanner = document.getElementById('banner-partial-mode');
+      const partialText = document.getElementById('banner-partial-text');
+
+      if (status.partialMode === 'resume-only') {
+        partialBanner.style.display = 'block';
+        partialText.textContent = 'Skills extracted from Resume only. Connect your GitHub profile to discover repository codebases and package dependencies.';
+      } else if (status.partialMode === 'github-only') {
+        partialBanner.style.display = 'block';
+        partialText.textContent = 'Skills extracted from GitHub only. Upload your resume PDF to corroborate career experience and resume keywords.';
       } else {
-        optionsContainer.innerHTML = `
-          <textarea id="diag-freeform" class="form-control" rows="3" placeholder="Type your answer..." style="width:100%; background:#080c16; color:#fff; border-color:rgba(255,255,255,0.1); padding:0.75rem; border-radius:var(--radius-md); font-family:var(--font-mono);"></textarea>
+        partialBanner.style.display = 'none';
+      }
+
+      // 3. Render Grid with Active Filters
+      renderSkillsGrid();
+    }
+
+    function renderSkillsGrid() {
+      const container = document.getElementById('skills-grid');
+      const noMatchBox = document.getElementById('no-filter-match');
+      container.innerHTML = '';
+
+      const filtered = currentSkills.filter((skill) => {
+        // Source filter
+        if (activeFilters.source !== 'all') {
+          if (activeFilters.source === 'both' && skill.primarySource !== 'both') return false;
+          if (activeFilters.source === 'resume' && (skill.primarySource !== 'resume' || skill.sources.includes('github'))) return false;
+          if (activeFilters.source === 'github' && (skill.primarySource !== 'github' || skill.sources.includes('resume'))) return false;
+        }
+
+        // Category filter
+        if (activeFilters.category !== 'all') {
+          if (skill.category !== activeFilters.category) return false;
+        }
+
+        // Status filter
+        if (activeFilters.status !== 'all') {
+          if (skill.verificationStatus !== activeFilters.status) return false;
+        }
+
+        // Search query
+        if (activeFilters.search) {
+          const q = activeFilters.search;
+          const matchName = skill.skillName.toLowerCase().includes(q) || skill.normalizedName.toLowerCase().includes(q);
+          const matchCategory = skill.category.toLowerCase().includes(q);
+          const matchEvidence = (skill.evidence?.resume?.excerpt || '').toLowerCase().includes(q) ||
+            (skill.evidence?.github || []).some((g) => (g.repo || '').toLowerCase().includes(q) || (g.file || '').toLowerCase().includes(q));
+
+          if (!matchName && !matchCategory && !matchEvidence) return false;
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        noMatchBox.style.display = 'block';
+        return;
+      }
+
+      noMatchBox.style.display = 'none';
+
+      filtered.forEach((skill) => {
+        const card = document.createElement('div');
+        const sourceClass = skill.primarySource === 'both' ? 'source-both' : skill.primarySource === 'resume' ? 'source-resume' : 'source-github';
+        card.className = `skill-card-item ${sourceClass}`;
+
+        const sourceBadgeHtml = skill.primarySource === 'both'
+          ? '<span class="badge-source-both">⭐ Both Sources</span>'
+          : skill.primarySource === 'resume'
+          ? '<span class="badge-source-resume">📄 Resume</span>'
+          : '<span class="badge-source-github">🐙 GitHub</span>';
+
+        const statusBadgeHtml = skill.verificationStatus === 'verified'
+          ? `<span class="badge-status-verified">✅ Verified (${skill.mastery || 75}% Mastery)</span>`
+          : '<span class="badge-status-unverified">⏳ Unverified</span>';
+
+        // Evidence summary badges
+        const resumeEvidenceCount = skill.evidence?.resume?.found ? 1 : 0;
+        const ghEvidenceCount = Array.isArray(skill.evidence?.github) ? skill.evidence.github.length : 0;
+
+        let evidencePill = '';
+        if (skill.primarySource === 'both') {
+          evidencePill = `1 Resume Section • ${ghEvidenceCount} Codebase Artifact${ghEvidenceCount > 1 ? 's' : ''}`;
+        } else if (skill.primarySource === 'resume') {
+          evidencePill = `Found in ${skill.evidence?.resume?.section || 'Resume'}`;
+        } else {
+          evidencePill = `${ghEvidenceCount} Repository Reference${ghEvidenceCount > 1 ? 's' : ''}`;
+        }
+
+        card.innerHTML = `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <h3 style="font-size: 1.15rem; color: #fff; font-weight: 700; margin: 0;">${escapeHtml(skill.skillName)}</h3>
+              ${sourceBadgeHtml}
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.85rem;">
+              <span class="badge badge-secondary" style="font-size: 0.72rem;">${escapeHtml(skill.category)}</span>
+              ${statusBadgeHtml}
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+              <span>📁</span>
+              <span>${escapeHtml(evidencePill)}</span>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 0.78rem; color: var(--text-muted);">
+              Confidence: <strong style="color: #22d3ee;">${skill.extractionConfidence || 80}%</strong>
+            </div>
+            <button class="btn btn-secondary btn-sm" style="font-size: 0.78rem; padding: 0.25rem 0.65rem;">
+              Inspect Evidence ➔
+            </button>
+          </div>
+        `;
+
+        card.addEventListener('click', () => openEvidenceModal(skill));
+        container.appendChild(card);
+      });
+    }
+
+    function openEvidenceModal(skill) {
+      const modal = document.getElementById('evidence-modal');
+      document.getElementById('modal-skill-name').textContent = skill.skillName;
+      document.getElementById('modal-skill-category').textContent = skill.category;
+
+      const sourceBadge = document.getElementById('modal-skill-source-badge');
+      if (skill.primarySource === 'both') {
+        sourceBadge.className = 'badge-source-both';
+        sourceBadge.textContent = '⭐ Both Sources (Corroborated)';
+      } else if (skill.primarySource === 'resume') {
+        sourceBadge.className = 'badge-source-resume';
+        sourceBadge.textContent = '📄 Resume Only';
+      } else {
+        sourceBadge.className = 'badge-source-github';
+        sourceBadge.textContent = '🐙 GitHub Only';
+      }
+
+      const statusBadge = document.getElementById('modal-skill-status');
+      if (skill.verificationStatus === 'verified') {
+        statusBadge.className = 'badge-status-verified';
+        statusBadge.textContent = `✅ Verified (${skill.mastery || 75}% Mastery)`;
+      } else {
+        statusBadge.className = 'badge-status-unverified';
+        statusBadge.textContent = '⏳ Unverified (Pending Assessment)';
+      }
+
+      const conf = skill.extractionConfidence || 80;
+      document.getElementById('modal-confidence-text').textContent = `${conf}%`;
+      document.getElementById('modal-confidence-bar').style.width = `${conf}%`;
+
+      // Render Resume Evidence
+      const resumeSection = document.getElementById('modal-resume-section');
+      const resumeBody = document.getElementById('modal-resume-body');
+      if (skill.evidence?.resume?.found) {
+        resumeSection.style.display = 'block';
+        resumeBody.innerHTML = `
+          <div style="font-size: 0.82rem; font-weight: 600; color: #fbbf24; margin-bottom: 0.35rem;">
+            Section: ${escapeHtml(skill.evidence.resume.section || 'Work Experience / Skills')}
+          </div>
+          <div class="evidence-quote-box">
+            "${escapeHtml(skill.evidence.resume.excerpt || 'Referenced in candidate resume.')}"
+          </div>
+        `;
+      } else {
+        resumeSection.style.display = 'block';
+        resumeBody.innerHTML = `
+          <div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">
+            Not explicitly detected in candidate resume document. Discovered via GitHub codebase evidence.
+          </div>
         `;
       }
-    }
 
-    async function submitCurrentQuestion() {
-      const q = diagnosticQuestions[currentIndex];
-      const btn = document.getElementById('btn-next-diag');
-      btn.disabled = true;
-      btn.textContent = 'Processing...';
+      // Render GitHub Evidence
+      const ghSection = document.getElementById('modal-github-section');
+      const ghBody = document.getElementById('modal-github-body');
+      const ghItems = Array.isArray(skill.evidence?.github) ? skill.evidence.github : [];
 
-      let answer = null;
-      if (q.options && q.options.length > 0) {
-        const checked = document.querySelector('input[name="diag-choice"]:checked');
-        if (!checked) {
-          if (window.Utils?.showToast) {
-            window.Utils.showToast('Please select an option before proceeding.', 'warning');
-          } else {
-            alert('Please select an option before proceeding.');
-          }
-          btn.disabled = false;
-          btn.textContent = 'Submit & Next Question ➔';
-          return;
-        }
-        answer = checked.value;
+      if (ghItems.length > 0) {
+        ghSection.style.display = 'block';
+        ghBody.innerHTML = ghItems.map((item) => {
+          const typeBadge = item.evidenceType === 'implementation'
+            ? '<span class="badge badge-success" style="font-size: 0.68rem;">Direct Implementation</span>'
+            : item.evidenceType === 'dependency'
+            ? '<span class="badge badge-indigo" style="font-size: 0.68rem;">Package Dependency</span>'
+            : '<span class="badge badge-secondary" style="font-size: 0.68rem;">Documentation</span>';
+
+          return `
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <div style="font-size: 0.9rem; font-weight: 700; color: #fff;">
+                  📁 ${escapeHtml(item.repo)} / <span style="color: #22d3ee;">${escapeHtml(item.file)}</span>
+                </div>
+                ${typeBadge}
+              </div>
+              <div class="evidence-quote-box" style="margin-top: 0.5rem; font-size: 0.82rem;">
+                ${escapeHtml(item.snippet)}
+              </div>
+            </div>
+          `;
+        }).join('');
       } else {
-        const txt = document.getElementById('diag-freeform');
-        if (!txt || !txt.value.trim()) {
-          if (window.Utils?.showToast) {
-            window.Utils.showToast('Please enter an answer before proceeding.', 'warning');
-          } else {
-            alert('Please enter an answer.');
-          }
-          btn.disabled = false;
-          btn.textContent = 'Submit & Next Question ➔';
-          return;
-        }
-        answer = txt.value.trim();
+        ghSection.style.display = 'block';
+        ghBody.innerHTML = `
+          <div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">
+            No direct GitHub code or package dependency detected. Discovered via candidate resume evidence.
+          </div>
+        `;
       }
 
-      const elapsed = Math.max(1, Math.round((Date.now() - questionStartTime) / 1000));
-
-      try {
-        const targetQId = q._id || q.id;
-        const res = await AdaptiveAPI.submitAttempt({
-          questionId: targetQId,
-          userAnswer: answer,
-          responseTime: elapsed,
-          confidence: selectedConfidence,
-          hintsUsed: 0,
-          sessionId,
-        });
-
-        if (res.success && res.correct) {
-          correctCount++;
-        }
-
-        btn.disabled = false;
-        btn.textContent = 'Submit & Next Question ➔';
-        renderQuestion(currentIndex + 1);
-      } catch (err) {
-        console.error('Submission error:', err);
-        btn.disabled = false;
-        btn.textContent = 'Submit & Next Question ➔';
-        renderQuestion(currentIndex + 1);
-      }
+      modal.style.display = 'flex';
     }
 
-    async function showSummary() {
-      clearInterval(timerInterval);
-      document.getElementById('diagnostic-card').style.display = 'none';
-      const summaryCard = document.getElementById('diagnostic-summary-card');
-      summaryCard.style.display = 'block';
+    function closeEvidenceModal() {
+      document.getElementById('evidence-modal').style.display = 'none';
+    }
 
-      const accuracy = Math.round((correctCount / diagnosticQuestions.length) * 100);
-      document.getElementById('summary-accuracy').textContent = `${accuracy}% (${correctCount}/10)`;
-
-      try {
-        const nextAction = await AdaptiveAPI.getNextAction();
-        if (nextAction.success) {
-          document.getElementById('summary-action').textContent = nextAction.action;
-          document.getElementById('summary-concept-target').textContent = nextAction.targetConcept?.name || 'Java Basics';
-        }
-      } catch (e) {
-        // Fallback
-      }
+    function showEmptyState() {
+      document.getElementById('empty-state-box').style.display = 'block';
+      document.getElementById('results-container').style.display = 'none';
+      document.getElementById('banner-partial-mode').style.display = 'none';
     }
 
     function escapeHtml(str) {

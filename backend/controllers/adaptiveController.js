@@ -717,4 +717,230 @@ exports.getCareerEvidence = async (req, res, next) => {
   }
 };
 
+// ==========================================
+// UNIFIED SKILL EXTRACTION CONTROLLER METHODS
+// ==========================================
+
+const UnifiedSkillInventory = require('../models/UnifiedSkillInventory');
+const Resume = require('../models/Resume');
+const GitHubProfile = require('../models/GitHubProfile');
+const CareerEvidence = require('../models/CareerEvidence');
+const User = require('../models/User');
+const unifiedSkillExtractorService = require('../services/unifiedSkillExtractorService');
+const resumeParserService = require('../services/resumeParserService');
+
+// @desc    Get user's Unified Skill Inventory and candidate source status
+// @route   GET /api/adaptive/diagnostic/inventory
+// @access  Public / Optional Auth
+exports.getDiagnosticSkillInventory = async (req, res, next) => {
+  try {
+    const learnerId = req.user?._id || req.user?.id || req.query.learnerId || '64f1a2b3c4d5e6f7a8b9c0d1';
+
+    // 1. Fetch persisted inventory
+    let inventory = await UnifiedSkillInventory.findOne({ user: learnerId });
+
+    // 2. Fetch candidate source presence
+    const resume = await Resume.findOne({ user: learnerId });
+    const github = await GitHubProfile.findOne({ user: learnerId });
+    let githubUsername = github?.username;
+    if (!githubUsername && req.user) {
+      githubUsername = req.user.githubUsername;
+    }
+
+    const candidateSources = {
+      hasResume: Boolean(resume && resume.rawText),
+      resumeFileName: resume?.originalFileName || '',
+      resumeUploadedAt: resume?.updatedAt || null,
+      hasGithub: Boolean(githubUsername),
+      githubUsername: githubUsername || '',
+      githubSyncedAt: github?.lastSyncedAt || null,
+    };
+
+    res.status(200).json({
+      success: true,
+      hasInventory: Boolean(inventory && inventory.skills && inventory.skills.length > 0),
+      inventory,
+      candidateSources,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Run Unified Skill Extraction across Resume and GitHub
+// @route   POST /api/adaptive/diagnostic/extract
+// @access  Public / Optional Auth
+exports.extractDiagnosticSkills = async (req, res, next) => {
+  try {
+    const learnerId = req.user?._id || req.user?.id || req.body.learnerId || '64f1a2b3c4d5e6f7a8b9c0d1';
+    const { githubUsername: inputGithub, repoUrls, resumeText: inputResumeText } = req.body;
+
+    // 1. Locate Resume Source
+    let resumeDoc = await Resume.findOne({ user: learnerId });
+    let rawResumeText = inputResumeText || resumeDoc?.rawText || '';
+
+    // 2. Locate GitHub Source
+    let githubDoc = await GitHubProfile.findOne({ user: learnerId });
+    let githubUsername = inputGithub || githubDoc?.username || req.user?.githubUsername || '';
+
+    if (githubUsername) {
+      githubUsername = githubUsername.trim().replace(/^@/, '');
+    }
+
+    const notes = [];
+
+    // 3. Execute Resume Extraction
+    let resumeSkills = [];
+    if (rawResumeText && rawResumeText.trim().length > 30) {
+      resumeSkills = await unifiedSkillExtractorService.extractSkillsFromResume(rawResumeText);
+      notes.push(`Extracted ${resumeSkills.length} competencies from uploaded resume.`);
+    } else {
+      notes.push('No resume text available for extraction.');
+    }
+
+    // 4. Execute GitHub Project Extraction
+    let githubExtraction = { skills: [], notes: [], analyzedReposCount: 0 };
+    if (githubUsername || (Array.isArray(repoUrls) && repoUrls.length > 0)) {
+      githubExtraction = await unifiedSkillExtractorService.extractSkillsFromGitHub(githubUsername, repoUrls);
+      notes.push(...githubExtraction.notes);
+    } else {
+      notes.push('No GitHub profile or repositories provided.');
+    }
+
+    // 5. Cross-reference existing LearnerState for validated assessment mastery
+    const learnerStates = await LearnerState.find({ learnerId }).populate('conceptId', 'name slug');
+
+    // 6. Consolidate into Unified Inventory
+    const aggregated = unifiedSkillExtractorService.aggregateSkills(
+      resumeSkills,
+      githubExtraction.skills,
+      learnerStates
+    );
+
+    // 7. Determine Partial vs Complete mode
+    let partialMode = 'none';
+    const hasResume = resumeSkills.length > 0;
+    const hasGithub = githubExtraction.skills.length > 0;
+
+    if (hasResume && hasGithub) {
+      partialMode = 'complete';
+    } else if (hasResume) {
+      partialMode = 'resume-only';
+    } else if (hasGithub) {
+      partialMode = 'github-only';
+    }
+
+    // 8. Persist Unified Inventory to Database
+    const inventory = await UnifiedSkillInventory.findOneAndUpdate(
+      { user: learnerId },
+      {
+        user: learnerId,
+        summary: aggregated.summary,
+        sourcesStatus: {
+          hasResume,
+          resumeFileName: resumeDoc?.originalFileName || (rawResumeText ? 'Candidate_Resume.pdf' : ''),
+          hasGithub,
+          githubUsername: githubUsername || '',
+          analyzedReposCount: githubExtraction.analyzedReposCount,
+          partialMode,
+          extractionNotes: notes,
+        },
+        skills: aggregated.skills,
+        lastExtractedAt: new Date(),
+      },
+      { upsert: true, new: true }
+    );
+
+    // 9. Synchronize with CareerEvidence & Skill without overwriting existing valid mastery
+    for (const s of aggregated.skills) {
+      try {
+        await CareerEvidence.findOneAndUpdate(
+          { learnerId, skillName: s.normalizedName },
+          {
+            $setOnInsert: {
+              learnerId,
+              skillName: s.normalizedName,
+              source: s.primarySource === 'both' ? 'resume' : s.primarySource,
+              claimedProficiency: s.extractionConfidence,
+              status: s.verificationStatus === 'verified' ? 'verified' : 'claimed',
+              evidenceDetails: s.evidence,
+            },
+          },
+          { upsert: true }
+        );
+      } catch (evErr) {}
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Unified skill extraction completed successfully.',
+      inventory,
+      summary: inventory.summary,
+      sourcesStatus: inventory.sourcesStatus,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Upload resume PDF directly from Diagnostic Room
+// @route   POST /api/adaptive/diagnostic/upload-resume
+// @access  Public / Optional Auth
+exports.uploadDiagnosticResume = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'Please provide a PDF resume file.' });
+    }
+
+    const learnerId = req.user?._id || req.user?.id || req.body.learnerId || '64f1a2b3c4d5e6f7a8b9c0d1';
+
+    // Parse PDF & analyze
+    const { rawText, parsedData, analysis } = await resumeParserService.parseAndAnalyzeResume(
+      req.file.path || req.file.buffer,
+      'Software Engineer'
+    );
+
+    // Upsert into Resume
+    const relativePath = `/uploads/resumes/${req.file.filename}`;
+    const resumeDoc = await Resume.findOneAndUpdate(
+      { user: learnerId },
+      {
+        user: learnerId,
+        originalFileName: req.file.originalname,
+        storedFilePath: relativePath,
+        fileSizeBytes: req.file.size,
+        rawText,
+        parsedData,
+        analysis,
+      },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Resume parsed and staged for skill extraction.',
+      resume: resumeDoc,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Reset / Delete Unified Skill Inventory
+// @route   DELETE /api/adaptive/diagnostic/inventory
+// @access  Public / Optional Auth
+exports.deleteDiagnosticSkillInventory = async (req, res, next) => {
+  try {
+    const learnerId = req.user?._id || req.user?.id || req.query.learnerId || '64f1a2b3c4d5e6f7a8b9c0d1';
+    await UnifiedSkillInventory.findOneAndDelete({ user: learnerId });
+
+    res.status(200).json({
+      success: true,
+      message: 'Diagnostic skill inventory reset successfully.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
