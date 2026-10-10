@@ -215,20 +215,30 @@ flowchart TD
 
 The mock interview engine is grounded in a verified repository of authentic interview questions categorized across **11 major tech employers**:
 
-| Company | Total Questions | Primary Evaluated Focus Areas |
-|:---|:---:|:---|
-| **Google** | 50 | Data Structures, Algorithms, Distributed System Design, Algorithmic Complexity |
-| **Amazon** | 75 | Leadership Principles, Scalability, System Design, Behavioral STAR Format |
-| **Microsoft** | 80 | Core Algorithms, OOP Principles, Low-Level System Design, OS Internals, DBMS |
-| **Zoho** | 80 | Logic Puzzles, Low-Level Java/C Implementation, OOP, Relational Database Normalization |
-| **Apple** | 100 | Systems Architecture, Low-Level Concurrency, Memory Optimization, Data Structures |
-| **Meta** | 100 | Large-Scale Distributed Systems, Scalability, High-Frequency DSA, Behavioral |
-| **Adobe** | 100 | Complex Algorithms, Computational Geometry, Memory Management, DSA |
-| **Atlassian** | 100 | Clean Code, API Design, System Architecture, Agile Collaboration, Values |
-| **Infosys** | 100 | Core Programming, OOP, SQL/Relational Queries, Computer Networks |
-| **TCS** | 100 | CS Fundamentals, Database Management, OOP, Software Engineering Principles |
-| **High-Growth Startup** | 100 | Full-Stack Architecture, Rapid Prototyping, Debugging, CI/CD, Production Readiness |
-| **Total** | **985 Questions** | **18 Normalized Categories Across Top Enterprises** |
+| Company | Total Questions | Primary Evaluated Focus Areas | Curated Pattern & Question Source |
+|:---|:---:|:---|:---|
+| **Google** | 50 | Data Structures, Algorithms, Distributed System Design, Algorithmic Complexity | Publicly available competitive & system design interview archives |
+| **Amazon** | 75 | Leadership Principles, Scalability, System Design, Behavioral STAR Format | [DSA Tracker Amazon Sheet](https://dsatracker.tech/company/amazon) |
+| **Microsoft** | 80 | Core Algorithms, OOP Principles, Low-Level System Design, OS Internals, DBMS | [DSA Tracker Microsoft Sheet](https://dsatracker.tech/company/microsoft) |
+| **Zoho** | 80 | Logic Puzzles, Low-Level Java/C Implementation, OOP, Relational Database Normalization | [WCode Curated Zoho Questions](https://www.wcode.in/s/curated/zoho-interview-questions) |
+| **Apple** | 100 | Systems Architecture, Low-Level Concurrency, Memory Optimization, Data Structures | [LeetCode Apple Top 100](https://leetcode.com/discuss/general-discussion/1734481/Apple-top-100-questions) |
+| **Meta** | 100 | Large-Scale Distributed Systems, Scalability, High-Frequency DSA, Behavioral | [LeetCode Meta Tagged](https://leetcode.com/company/facebook/) |
+| **Adobe** | 100 | Complex Algorithms, Computational Geometry, Memory Management, DSA | Public engineering interview archives & LeetCode tagged sets |
+| **Atlassian** | 100 | Clean Code, API Design, System Architecture, Agile Collaboration, Values | Values & system design interview patterns |
+| **Infosys** | 100 | Core Programming, OOP, SQL/Relational Queries, Computer Networks | [GeeksforGeeks Infosys SDE Sheet](https://www.geeksforgeeks.org/dsa/infosys-sde-sheet-interview-questions-and-answers/) |
+| **TCS** | 100 | CS Fundamentals, Database Management, OOP, Software Engineering Principles | [LeetCode TCS Interview Post](https://leetcode.com/discuss/post/6791325/) |
+| **High-Growth Startup** | 100 | Full-Stack Architecture, Rapid Prototyping, Debugging, CI/CD, Production Readiness | Early-stage practical full-stack evaluation patterns |
+| **Total** | **985 Questions** | **18 Normalized Categories Across Top Enterprises** | **Curated from verified developer preparation sources** |
+
+### 📚 Company Interview Sources & Origin References
+The mock interview questions, rubrics, and company-specific evaluation patterns are curated and synthesized from reputable developer preparation platforms and community interview debriefs:
+* **Amazon:** [https://dsatracker.tech/company/amazon](https://dsatracker.tech/company/amazon)
+* **Zoho:** [https://www.wcode.in/s/curated/zoho-interview-questions](https://www.wcode.in/s/curated/zoho-interview-questions)
+* **Microsoft:** [https://dsatracker.tech/company/microsoft](https://dsatracker.tech/company/microsoft)
+* **Apple:** [https://leetcode.com/discuss/general-discussion/1734481/Apple-top-100-questions](https://leetcode.com/discuss/general-discussion/1734481/Apple-top-100-questions)
+* **Meta:** [https://leetcode.com/company/facebook/](https://leetcode.com/company/facebook/)
+* **Infosys:** [https://www.geeksforgeeks.org/dsa/infosys-sde-sheet-interview-questions-and-answers/](https://www.geeksforgeeks.org/dsa/infosys-sde-sheet-interview-questions-and-answers/)
+* **TCS:** [https://leetcode.com/discuss/post/6791325/](https://leetcode.com/discuss/post/6791325/)
 
 ---
 
@@ -253,7 +263,7 @@ Structured around a bounded **Java Core Instructional Knowledge Graph**:
   * **Mastery (0–100%):** Probabilistic competency calculation with strict upward jump caps (+12% maximum per attempt) to prevent artificial score spikes.
   * **Epistemic Uncertainty (5–100%):** Measures system confidence; lowered only through diverse question formats (Code Output, Debugging, Concept Application).
 * **Anti-Gaming Shield:** Penalizes rapid guessing (`<5s` response times), guess-until-correct cycles, and hint exploitation.
-* **6 Pedagogical Decision Actions:** `ADVANCE`, `PRACTICE`, `REVIEW`, `REMEDIATE_PREREQUISITE`, `CHALLENGE`, `TEACHER_INTERVENTION`.
+* **5 Pedagogical Decision Actions:** `ADVANCE`, `PRACTICE`, `REVIEW`, `REMEDIATE_PREREQUISITE`, `CHALLENGE`.
 
 ---
 
