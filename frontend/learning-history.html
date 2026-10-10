@@ -11,6 +11,64 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    .analytics-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .misconception-card {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.75rem;
+      position: relative;
+    }
+    .filter-tab-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: 999px;
+      padding: 0.35rem 0.95rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .filter-tab-pill:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+    }
+    .filter-tab-pill.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: #fff;
+    }
+    .resolve-btn {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #fb7185;
+      border-radius: 6px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .resolve-btn:hover {
+      background: rgba(244, 63, 94, 0.3);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body>
   <div class="app-layout">
@@ -23,36 +81,110 @@
 
       <div class="page-container">
         <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
           <div>
-            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.06em; font-weight: 700;">
-              Traceability &amp; Epistemic Audit
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+              <span class="badge badge-purple">Traceability &amp; Epistemic Audit</span>
+              <span class="badge badge-amber">Interactive Mistake Notebook</span>
             </div>
-            <h1 style="font-size: 1.85rem; color: #fff; margin-top: 0.25rem;">
-              Learning History
+            <h1 style="font-size: 1.85rem; color: #fff; margin: 0;">
+              Learning History &amp; Mistake Notebook
             </h1>
-            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
-              Complete event audit trail of evidence attempts, response timings, question types, and evidence quality.
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.35rem;">
+              Audit trail of evidence submissions with AI error pattern diagnosis, speed vs accuracy behavior analysis, and one-click re-attempt engine.
             </p>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
             <select id="history-learner-selector" class="form-control" style="width: auto; background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-color); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.88rem; cursor: pointer;">
               <option value="64f1a2b3c4d5e6f7a8b9c0d1">Alex Rivers (Demo)</option>
               <option value="64f1a2b3c4d5e6f7a8b9c0d2">Sam Chen</option>
               <option value="64f1a2b3c4d5e6f7a8b9c0d3">Elena Rostova</option>
             </select>
-            <a href="/dashboard.html" class="btn btn-secondary btn-sm">Dashboard</a>
+            <button class="btn btn-secondary btn-sm" onclick="exportEvidenceAudit()">
+              📥 Export Evidence Proof
+            </button>
+            <a href="/dashboard.html" class="btn btn-secondary btn-sm">⬅ Dashboard</a>
           </div>
         </div>
 
-        <!-- Attempt Evidence Table -->
+        <!-- Behavioral Analytics & Speed vs Accuracy Summary Grid -->
+        <div class="analytics-stats-grid">
+          <div class="card" style="padding: 1.15rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Verified Submissions</div>
+            <div id="stat-total-attempts" style="font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: 0.25rem;">0</div>
+            <div style="font-size: 0.72rem; color: var(--accent-secondary); margin-top: 0.2rem;">Full tamper-proof audit trail</div>
+          </div>
+
+          <div class="card" style="padding: 1.15rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Accuracy Rate</div>
+            <div id="stat-accuracy-rate" style="font-size: 1.8rem; font-weight: 800; color: #34d399; margin-top: 0.25rem;">--%</div>
+            <div id="stat-accuracy-sub" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">0 correct / 0 total</div>
+          </div>
+
+          <div class="card" style="padding: 1.15rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Speed vs. Accuracy Behavior</div>
+            <div id="stat-speed-accuracy" style="font-size: 1.35rem; font-weight: 700; color: #fbbf24; margin-top: 0.35rem;">Calculating...</div>
+            <div id="stat-speed-sub" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Timing psychology analysis</div>
+          </div>
+
+          <div class="card" style="padding: 1.15rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Mistake Backlog</div>
+            <div id="stat-mistake-count" style="font-size: 1.8rem; font-weight: 800; color: #fb7185; margin-top: 0.25rem;">0</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Questions needing re-attempt</div>
+          </div>
+        </div>
+
+        <!-- AI Misconception & Error Trend Diagnosis Banner -->
+        <div class="misconception-card" id="ai-misconception-banner" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 1.3rem;">🧠</span>
+              <span style="font-size: 0.85rem; font-weight: 700; color: #fb7185; text-transform: uppercase; letter-spacing: 0.05em;">
+                AI Misconception & Anti-Pattern Diagnosis
+              </span>
+            </div>
+            <span class="badge badge-danger">High-Priority Focus</span>
+          </div>
+          <p id="ai-misconception-text" style="font-size: 0.9rem; color: #e2e8f0; line-height: 1.5; margin: 0.4rem 0;">
+            Analyzing your past incorrect answers to isolate subconscious misconception traps...
+          </p>
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.6rem;">
+            <button class="btn btn-danger btn-sm" onclick="setFilter('mistakes')">
+              ⚠️ Launch Mistake Notebook (Filter Failed Questions)
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Controls & Mistake Notebook Mode Tabs -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="filter-tab-pill active" data-filter="all" onclick="setFilter('all')">
+              All Attempts (<span id="count-all">0</span>)
+            </button>
+            <button class="filter-tab-pill" data-filter="mistakes" onclick="setFilter('mistakes')" style="border-color: rgba(244, 63, 94, 0.4);">
+              ⚠️ Mistake Notebook (<span id="count-mistakes">0</span>)
+            </button>
+            <button class="filter-tab-pill" data-filter="correct" onclick="setFilter('correct')">
+              ✓ Correct Only (<span id="count-correct">0</span>)
+            </button>
+            <button class="filter-tab-pill" data-filter="rapid" onclick="setFilter('rapid')">
+              ⚡ Rapid Retries (<span id="count-rapid">0</span>)
+            </button>
+          </div>
+
+          <div style="font-size: 0.8rem; color: var(--text-muted);">
+            Showing <strong id="visible-attempts-count" style="color: #fff;">0</strong> records
+          </div>
+        </div>
+
+        <!-- Attempt Evidence Submissions Table Card -->
         <div class="card" id="attempts-view-card">
           <div class="card-header">
             <div class="card-title">
-              <span>Attempt Evidence Submissions (<span id="attempts-count-badge">0</span>)</span>
+              <span id="table-card-title">Verified Evidence Records</span>
             </div>
-            <span class="badge badge-cyan">Verified Evidence Records</span>
+            <span class="badge badge-cyan" id="table-card-badge">Immutable Evidence Ledger</span>
           </div>
           <div style="overflow-x: auto;">
             <table class="table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
@@ -64,14 +196,13 @@
                   <th style="padding: 0.75rem 1rem;">Question Prompt</th>
                   <th style="padding: 0.75rem 1rem;">Result</th>
                   <th style="padding: 0.75rem 1rem;">Timing</th>
-                  <th style="padding: 0.75rem 1rem;">Confidence</th>
-                  <th style="padding: 0.75rem 1rem;">Hints</th>
-                  <th style="padding: 0.75rem 1rem;">Evidence Quality</th>
+                  <th style="padding: 0.75rem 1rem;">Evidence Weight</th>
+                  <th style="padding: 0.75rem 1rem; text-align: right;">Action</th>
                 </tr>
               </thead>
               <tbody id="attempts-table-body">
                 <tr>
-                  <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading attempt history...</td>
+                  <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">Loading attempt history...</td>
                 </tr>
               </tbody>
             </table>
@@ -89,6 +220,7 @@
   <script src="/js/adaptive-api.js"></script>
   <script>
     let attemptsList = [];
+    let currentFilter = 'all';
 
     document.addEventListener('DOMContentLoaded', async () => {
       Navbar.init('Learning History');
@@ -112,43 +244,159 @@
 
         if (attemptsRes.success) {
           attemptsList = attemptsRes.attempts || [];
-          const countBadge = document.getElementById('attempts-count-badge');
-          if (countBadge) countBadge.textContent = attemptsList.length;
-          renderAttemptsTable(attemptsList);
+          computeBehavioralAnalytics(attemptsList);
+          renderAttemptsTable();
         }
       } catch (err) {
         console.error('Error fetching history:', err);
       }
     }
 
-    function renderAttemptsTable(attempts) {
+    function computeBehavioralAnalytics(attempts) {
+      const total = attempts.length;
+      document.getElementById('stat-total-attempts').textContent = total;
+      document.getElementById('count-all').textContent = total;
+
+      if (total === 0) {
+        document.getElementById('stat-accuracy-rate').textContent = '--%';
+        document.getElementById('stat-accuracy-sub').textContent = '0 correct / 0 total';
+        document.getElementById('stat-speed-accuracy').textContent = 'No data yet';
+        document.getElementById('stat-mistake-count').textContent = '0';
+        document.getElementById('ai-misconception-banner').style.display = 'none';
+        return;
+      }
+
+      const correctList = attempts.filter((a) => a.correct);
+      const mistakeList = attempts.filter((a) => !a.correct);
+      const rapidList = attempts.filter((a) => a.isRapidRetry || (a.responseTime > 0 && a.responseTime < 5));
+
+      document.getElementById('count-mistakes').textContent = mistakeList.length;
+      document.getElementById('count-correct').textContent = correctList.length;
+      document.getElementById('count-rapid').textContent = rapidList.length;
+      document.getElementById('stat-mistake-count').textContent = mistakeList.length;
+
+      const accuracy = Math.round((correctList.length / total) * 100);
+      document.getElementById('stat-accuracy-rate').textContent = `${accuracy}%`;
+      document.getElementById('stat-accuracy-sub').textContent = `${correctList.length} correct / ${total} total`;
+
+      // Speed vs Accuracy Analysis
+      const avgCorrectTime = correctList.length
+        ? Math.round(correctList.reduce((s, a) => s + (a.responseTime || 15), 0) / correctList.length)
+        : 0;
+      const avgMistakeTime = mistakeList.length
+        ? Math.round(mistakeList.reduce((s, a) => s + (a.responseTime || 10), 0) / mistakeList.length)
+        : 0;
+
+      const speedEl = document.getElementById('stat-speed-accuracy');
+      const speedSub = document.getElementById('stat-speed-sub');
+
+      if (mistakeList.length > 0 && avgMistakeTime < avgCorrectTime * 0.6) {
+        speedEl.textContent = `⚠️ Impulsive Guessing Detected`;
+        speedEl.style.color = '#fbbf24';
+        speedSub.textContent = `Failed answers avg: ${avgMistakeTime}s vs Correct: ${avgCorrectTime}s (Rushing hurts accuracy)`;
+      } else {
+        speedEl.textContent = `✅ Deliberate Answering (${avgCorrectTime}s avg)`;
+        speedEl.style.color = '#34d399';
+        speedSub.textContent = `Consistent response pacing across attempts`;
+      }
+
+      // AI Misconception Diagnosis
+      const banner = document.getElementById('ai-misconception-banner');
+      const bannerText = document.getElementById('ai-misconception-text');
+
+      if (mistakeList.length > 0) {
+        // Find most failed concept
+        const failedConceptCounts = {};
+        mistakeList.forEach((a) => {
+          const cName = a.conceptId?.name || 'Fundamentals';
+          failedConceptCounts[cName] = (failedConceptCounts[cName] || 0) + 1;
+        });
+
+        let topFailedConcept = 'Java Concepts';
+        let maxFailures = 0;
+        for (const [cName, cnt] of Object.entries(failedConceptCounts)) {
+          if (cnt > maxFailures) {
+            maxFailures = cnt;
+            topFailedConcept = cName;
+          }
+        }
+
+        banner.style.display = 'block';
+        bannerText.innerHTML = `
+          Detected <strong>${mistakeList.length} total mistake(s)</strong>. Your primary error hotspot is 
+          <strong>${escapeHtml(topFailedConcept)}</strong> (${maxFailures} missed questions). 
+          Most errors happen when skipping edge-case validation. Use the <em>Mistake Notebook</em> below to re-solve these questions without penalties!
+        `;
+      } else {
+        banner.style.display = 'none';
+      }
+    }
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-tab-pill').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter') === filter);
+      });
+
+      const titleEl = document.getElementById('table-card-title');
+      const badgeEl = document.getElementById('table-card-badge');
+
+      if (filter === 'mistakes') {
+        titleEl.textContent = '⚠️ Mistake Notebook (Failed Questions to Re-Attempt)';
+        badgeEl.textContent = 'Action Required';
+        badgeEl.className = 'badge badge-danger';
+      } else if (filter === 'correct') {
+        titleEl.textContent = '✓ Mastered Evidence Submissions';
+        badgeEl.textContent = 'Verified Competencies';
+        badgeEl.className = 'badge badge-success';
+      } else {
+        titleEl.textContent = 'Verified Evidence Records';
+        badgeEl.textContent = 'Immutable Evidence Ledger';
+        badgeEl.className = 'badge badge-cyan';
+      }
+
+      renderAttemptsTable();
+    }
+
+    function renderAttemptsTable() {
       const tbody = document.getElementById('attempts-table-body');
       tbody.innerHTML = '';
 
-      if (attempts.length === 0) {
+      const filtered = attemptsList.filter((a) => {
+        if (currentFilter === 'all') return true;
+        if (currentFilter === 'mistakes') return !a.correct;
+        if (currentFilter === 'correct') return a.correct;
+        if (currentFilter === 'rapid') return a.isRapidRetry || (a.responseTime > 0 && a.responseTime < 5);
+        return true;
+      });
+
+      document.getElementById('visible-attempts-count').textContent = filtered.length;
+
+      if (filtered.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="9" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
-              No attempts registered yet for this learner. Complete questions or the diagnostic to generate records.
+            <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+              ${currentFilter === 'mistakes' ? '🎉 Great job! You have zero uncorrected mistakes in your notebook!' : 'No attempts match the current filter.'}
             </td>
           </tr>
         `;
         return;
       }
 
-      attempts.forEach((a) => {
+      filtered.forEach((a) => {
         const d = new Date(a.timestamp || a.createdAt);
         const timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         const conceptName = a.conceptId?.name || 'Java Concept';
-        const qText = a.questionId?.question || 'Diagnostic / Practice Question';
+        const qText = a.questionId?.question || a.questionText || 'Diagnostic / Practice Question';
         const qType = a.questionType || a.questionId?.type || 'MCQ';
+        const qId = a.questionId?._id || a.questionId;
 
         const tr = document.createElement('tr');
         tr.style.borderBottom = '1px solid var(--border-color)';
         tr.innerHTML = `
           <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">${timeStr}</td>
-          <td style="padding: 0.75rem 1rem; font-weight: 600; color: #fff;">${conceptName}</td>
-          <td style="padding: 0.75rem 1rem;"><span class="badge badge-primary" style="font-size: 0.65rem;">${qType}</span></td>
+          <td style="padding: 0.75rem 1rem; font-weight: 600; color: #fff;">${escapeHtml(conceptName)}</td>
+          <td style="padding: 0.75rem 1rem;"><span class="badge badge-primary" style="font-size: 0.65rem;">${escapeHtml(qType)}</span></td>
           <td style="padding: 0.75rem 1rem; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(qText)}">
             ${escapeHtml(qText)}
           </td>
@@ -158,20 +406,71 @@
             </span>
           </td>
           <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem;">${a.responseTime || 0}s</td>
-          <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem;">${a.confidence || 3}/5</td>
-          <td style="padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.8rem;">${a.hintsUsed || 0}</td>
           <td style="padding: 0.75rem 1rem;">
             <span class="badge badge-cyan" style="font-size: 0.7rem;">
               ${a.evidenceQuality || 'STANDARD'} (${a.evidenceWeight?.toFixed(2) || '1.00'}x)
             </span>
-            ${a.isRapidRetry ? '<span class="badge badge-amber" style="font-size: 0.65rem; margin-left: 0.25rem;">Rapid Retry</span>' : ''}
+            ${a.isRapidRetry ? '<span class="badge badge-amber" style="font-size: 0.65rem; margin-left: 0.25rem;">Rapid</span>' : ''}
+          </td>
+          <td style="padding: 0.75rem 1rem; text-align: right;">
+            ${!a.correct && qId ? `
+              <button class="resolve-btn" onclick="reAttemptQuestion('${qId}', '${a.conceptId?._id || ''}')" title="Re-attempt this question in the Mistake Notebook">
+                🔄 Re-Solve
+              </button>
+            ` : `
+              <span style="font-size: 0.75rem; color: #34d399;">✓ Verified</span>
+            `}
           </td>
         `;
         tbody.appendChild(tr);
       });
     }
 
+    async function reAttemptQuestion(questionId, conceptId) {
+      try {
+        Utils.showLoading('Loading question for re-attempt...');
+        // Query question by ID or concept
+        let res = await window.API.get(`/adaptive/questions?id=${questionId}`);
+        Utils.hideLoading();
 
+        if (res.success && res.questions && res.questions.length > 0) {
+          const question = res.questions[0];
+          AdaptiveUI.openAttemptModal(question, async () => {
+            Utils.showToast('Re-attempt registered! Knowledge score updated.', 'success');
+            await loadAllHistory();
+          });
+        } else if (conceptId) {
+          // Fallback to concept questions if specific question was not loaded
+          const cRes = await window.API.get(`/adaptive/questions?conceptId=${conceptId}`);
+          if (cRes.success && cRes.questions && cRes.questions.length > 0) {
+            AdaptiveUI.openAttemptModal(cRes.questions[0], async () => {
+              Utils.showToast('Re-attempt registered! Knowledge score updated.', 'success');
+              await loadAllHistory();
+            });
+          }
+        } else {
+          Utils.showToast('Question details unavailable for live re-attempt.', 'info');
+        }
+      } catch (err) {
+        Utils.hideLoading();
+        console.error('Error loading re-attempt question:', err);
+      }
+    }
+
+    function exportEvidenceAudit() {
+      if (!attemptsList || attemptsList.length === 0) {
+        Utils.showToast('No attempt data to export.', 'info');
+        return;
+      }
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(attemptsList, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute('href', dataStr);
+      downloadAnchor.setAttribute('download', `careertwin_evidence_audit_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      Utils.showToast('Evidence audit trail exported successfully!', 'success');
+    }
 
     function escapeHtml(str) {
       if (!str) return '';

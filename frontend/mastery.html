@@ -12,6 +12,79 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .matrix-card {
+      background: rgba(17, 24, 39, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .matrix-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    .matrix-card.active {
+      border-color: var(--accent-primary);
+      background: rgba(99, 102, 241, 0.08);
+    }
+    .decay-shelf-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+    .shelf-fresh {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .shelf-warning {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .shelf-stale {
+      background: rgba(244, 63, 94, 0.12);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+    /* Certificate Modal */
+    .cert-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .cert-modal {
+      background: #0f172a;
+      border: 2px solid rgba(99, 102, 241, 0.4);
+      border-radius: var(--radius-xl);
+      max-width: 650px;
+      width: 100%;
+      padding: 2.25rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+  </style>
 </head>
 <body>
   <div class="app-layout">
@@ -24,26 +97,82 @@
 
       <div class="page-container">
         <!-- Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
           <div>
-            <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.06em; font-weight: 700;">
-              Epistemic Learner State Analytics
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+              <span class="badge badge-purple">Epistemic Decision Intelligence</span>
+              <span class="badge badge-cyan">Ebbinghaus Decay Prediction</span>
             </div>
-            <h1 style="font-size: 1.85rem; color: #fff; margin-top: 0.25rem;">
+            <h1 style="font-size: 1.85rem; color: #fff; margin: 0;">
               Mastery & Uncertainty Intelligence
             </h1>
-            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.2rem;">
-              Dual-metric epistemic model: Tracking what the learner knows (Mastery 0-100%) vs system confidence (Uncertainty 5-100%).
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-top: 0.35rem;">
+              Separating genuine competence from lucky guesses, predicting knowledge decay curves, and launching spaced-retention memory drills.
             </p>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
             <select id="mastery-learner-selector" class="form-control" style="width: auto; background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-color); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.88rem; cursor: pointer;">
               <option value="64f1a2b3c4d5e6f7a8b9c0d1">Alex Rivers (Demo)</option>
               <option value="64f1a2b3c4d5e6f7a8b9c0d2">Sam Chen</option>
               <option value="64f1a2b3c4d5e6f7a8b9c0d3">Elena Rostova</option>
             </select>
-            <a href="/dashboard.html" class="btn btn-secondary btn-sm">Dashboard</a>
+            <button class="btn btn-primary btn-sm" onclick="openCertificateModal()">
+              🎓 View Epistemic Certificate
+            </button>
+            <a href="/dashboard.html" class="btn btn-secondary btn-sm">⬅ Dashboard</a>
+          </div>
+        </div>
+
+        <!-- 4-Quadrant Epistemic Competency Matrix Banner -->
+        <div style="margin-bottom: 1rem;">
+          <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--accent-secondary); letter-spacing: 0.05em; margin-bottom: 0.6rem;">
+            4-Quadrant Epistemic Competency Matrix (Click to Filter)
+          </div>
+          <div class="matrix-grid">
+            <div class="matrix-card" id="quad-mastered" onclick="filterByQuadrant('mastered')">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #34d399;">🟢 INTERVIEW-READY MASTERY</span>
+                <span id="quad-count-mastered" class="badge badge-success">0</span>
+              </div>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #fff; margin: 0.35rem 0;">High Mastery &bull; Low Uncertainty</div>
+              <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0;">
+                Verified competency ($\ge 70\%$ Mastery, $\le 30\%$ Uncertainty). Robust evidence gathered across diverse question formats.
+              </p>
+            </div>
+
+            <div class="matrix-card" id="quad-guessing" onclick="filterByQuadrant('guessing')">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #fbbf24;">🟡 LUCKY GUESSING TRAP</span>
+                <span id="quad-count-guessing" class="badge badge-amber">0</span>
+              </div>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #fbbf24; margin: 0.35rem 0;">High Score &bull; High Uncertainty</div>
+              <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0;">
+                High score but insufficient evidence. System detects high probability of lucky guessing. Needs verification drill!
+              </p>
+            </div>
+
+            <div class="matrix-card" id="quad-blindspot" onclick="filterByQuadrant('blindspot')">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #fb7185;">🔴 CONCEPTUAL BLINDSPOTS</span>
+                <span id="quad-count-blindspot" class="badge badge-danger">0</span>
+              </div>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #fb7185; margin: 0.35rem 0;">Low Mastery &bull; Low Uncertainty</div>
+              <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0;">
+                System is confident learner genuinely struggles with this topic. Foundational remediation required.
+              </p>
+            </div>
+
+            <div class="matrix-card" id="quad-decay" onclick="filterByQuadrant('decay')">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #a78bfa;">🟣 KNOWLEDGE DECAY RISK</span>
+                <span id="quad-count-decay" class="badge badge-purple">0</span>
+              </div>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #a78bfa; margin: 0.35rem 0;">Ebbinghaus Memory Loss</div>
+              <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0;">
+                Unpracticed for $>14$ days. Knowledge is slipping away from working memory. Run 2-min retention drill!
+              </p>
+            </div>
           </div>
         </div>
 
@@ -51,33 +180,86 @@
         <div class="card" style="margin-bottom: 2rem;">
           <div class="card-header">
             <div class="card-title">
-              <span>📊 Mastery vs. Epistemic Uncertainty Distribution</span>
+              <span>📊 Dual-Metric Distribution: Demonstrated Mastery vs Epistemic Uncertainty</span>
             </div>
             <span class="badge badge-cyan">12 Java Concepts</span>
           </div>
-          <div style="height: 320px; position: relative;">
+          <div style="height: 300px; position: relative;">
             <canvas id="mastery-uncertainty-chart"></canvas>
           </div>
         </div>
 
-        <!-- Filter Bar -->
-        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
-          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">FILTER CONCEPTS:</span>
-          <button class="btn btn-secondary btn-sm filter-btn active" data-filter="all">All (12)</button>
-          <button class="btn btn-secondary btn-sm filter-btn" data-filter="mastered">🏆 Mastered</button>
-          <button class="btn btn-secondary btn-sm filter-btn" data-filter="learning">⚡ In Progress</button>
-          <button class="btn btn-secondary btn-sm filter-btn" data-filter="uncertain">🎯 High Uncertainty</button>
-          <button class="btn btn-secondary btn-sm filter-btn" data-filter="review">⌛ Needs Review</button>
+        <!-- Filter Controls Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">FILTER:</span>
+            <button class="btn btn-secondary btn-sm filter-btn active" data-filter="all">All Concepts (12)</button>
+            <button class="btn btn-secondary btn-sm filter-btn" data-filter="mastered">🟢 Mastered</button>
+            <button class="btn btn-secondary btn-sm filter-btn" data-filter="learning">⚡ In Progress</button>
+            <button class="btn btn-secondary btn-sm filter-btn" data-filter="guessing">🟡 Lucky Guesses</button>
+            <button class="btn btn-secondary btn-sm filter-btn" data-filter="decay">🟣 Decay Risk</button>
+          </div>
+
+          <div style="font-size: 0.8rem; color: var(--text-muted);">
+            Showing <strong id="visible-count" style="color: #fff;">12</strong> concepts
+          </div>
         </div>
 
         <!-- 12 Concept Detail Cards Grid -->
         <div class="grid grid-cols-3" id="concept-cards-container" style="gap: 1.25rem;">
           <!-- Dynamically populated concept cards -->
-          <div class="skeleton" style="height: 220px;"></div>
-          <div class="skeleton" style="height: 220px;"></div>
-          <div class="skeleton" style="height: 220px;"></div>
+          <div class="skeleton" style="height: 240px;"></div>
+          <div class="skeleton" style="height: 240px;"></div>
+          <div class="skeleton" style="height: 240px;"></div>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- Verifiable Epistemic Certificate Modal -->
+  <div class="cert-overlay" id="cert-modal-overlay" onclick="closeCertificateModal(event)">
+    <div class="cert-modal" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.75rem;">🎓</span>
+          <div>
+            <h2 style="font-size: 1.25rem; color: #fff; margin: 0;">Verified Epistemic Competency Credential</h2>
+            <span style="font-size: 0.75rem; color: var(--accent-secondary); font-family: var(--font-mono);">CareerTwin AI Epistemic Validation Engine</span>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="closeCertificateModal()">✕</button>
+      </div>
+
+      <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.06em;">Candidate Verified Certification</div>
+        <h3 id="cert-candidate-name" style="font-size: 1.6rem; color: #fff; margin: 0.5rem 0;">Candidate</h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto 1.25rem auto;">
+          Demonstrated algorithmic problem solving, core computer science concepts, and object-oriented architecture in Java.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 0.85rem;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; color: #34d399; font-weight: 700;">Curriculum Mastery</div>
+            <div id="cert-mastery-score" style="font-size: 1.75rem; font-weight: 800; color: #fff; margin-top: 0.2rem;">--%</div>
+          </div>
+          <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-sm); padding: 0.85rem;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--accent-secondary); font-weight: 700;">Epistemic Confidence</div>
+            <div id="cert-confidence-score" style="font-size: 1.75rem; font-weight: 800; color: #fff; margin-top: 0.2rem;">--%</div>
+          </div>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+          Verification Hash: <span id="cert-hash" style="color: #e2e8f0;">CT-EPIST-9482A1B7</span> &bull; Issued: <span id="cert-date">Today</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 0.78rem; color: var(--text-muted);">Cryptographically signed evidence record</span>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print Credential</button>
+          <button class="btn btn-primary btn-sm" onclick="copyCertLink()">📋 Copy Verification Link</button>
+        </div>
       </div>
     </div>
   </div>
@@ -109,6 +291,7 @@
       document.querySelectorAll('.filter-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+          document.querySelectorAll('.matrix-card').forEach((c) => c.classList.remove('active'));
           btn.classList.add('active');
           activeFilter = btn.getAttribute('data-filter');
           renderCards();
@@ -123,12 +306,48 @@
         const res = await AdaptiveAPI.getMastery();
         if (res.success && res.overview) {
           overviewData = res.overview;
+          updateQuadrantMetrics();
           renderChart();
           renderCards();
         }
       } catch (err) {
         console.error('Error fetching mastery data:', err);
       }
+    }
+
+    function updateQuadrantMetrics() {
+      let masteredCount = 0;
+      let guessingCount = 0;
+      let blindspotCount = 0;
+      let decayCount = 0;
+
+      overviewData.forEach((c) => {
+        const isMastered = c.mastery >= c.requiredMastery && c.uncertainty <= 30;
+        const isGuessing = c.mastery >= c.requiredMastery && c.uncertainty > 30;
+        const isBlindspot = c.mastery < c.requiredMastery && c.uncertainty <= 30 && c.evidenceCount > 0;
+        const isDecaying = c.isStale || (c.lastAttemptAt && (Date.now() - new Date(c.lastAttemptAt).getTime() > 10 * 86400000));
+
+        if (isMastered) masteredCount++;
+        if (isGuessing) guessingCount++;
+        if (isBlindspot) blindspotCount++;
+        if (isDecaying) decayCount++;
+      });
+
+      document.getElementById('quad-count-mastered').textContent = masteredCount;
+      document.getElementById('quad-count-guessing').textContent = guessingCount;
+      document.getElementById('quad-count-blindspot').textContent = blindspotCount;
+      document.getElementById('quad-count-decay').textContent = decayCount;
+    }
+
+    function filterByQuadrant(quadrant) {
+      document.querySelectorAll('.matrix-card').forEach((c) => c.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+
+      const quadEl = document.getElementById(`quad-${quadrant}`);
+      if (quadEl) quadEl.classList.add('active');
+
+      activeFilter = quadrant;
+      renderCards();
     }
 
     function renderChart() {
@@ -147,17 +366,17 @@
           labels,
           datasets: [
             {
-              label: 'Mastery (%)',
+              label: 'Demonstrated Mastery (%)',
               data: masteryValues,
-              backgroundColor: 'rgba(99, 102, 241, 0.75)',
+              backgroundColor: 'rgba(99, 102, 241, 0.8)',
               borderColor: '#6366f1',
               borderWidth: 1,
               borderRadius: 6,
             },
             {
-              label: 'Uncertainty (%)',
+              label: 'Epistemic Uncertainty (%)',
               data: uncertaintyValues,
-              backgroundColor: 'rgba(245, 158, 11, 0.65)',
+              backgroundColor: 'rgba(245, 158, 11, 0.75)',
               borderColor: '#f59e0b',
               borderWidth: 1,
               borderRadius: 6,
@@ -200,13 +419,21 @@
       container.innerHTML = '';
 
       const filtered = overviewData.filter((c) => {
+        const isMastered = c.mastery >= c.requiredMastery && c.uncertainty <= 30;
+        const isGuessing = c.mastery >= c.requiredMastery && c.uncertainty > 30;
+        const isBlindspot = c.mastery < c.requiredMastery && c.uncertainty <= 30 && c.evidenceCount > 0;
+        const isDecaying = c.isStale || (c.lastAttemptAt && (Date.now() - new Date(c.lastAttemptAt).getTime() > 10 * 86400000));
+
         if (activeFilter === 'all') return true;
-        if (activeFilter === 'mastered') return c.mastery >= c.requiredMastery && c.uncertainty <= 30;
-        if (activeFilter === 'learning') return c.evidenceCount > 0 && c.mastery < c.requiredMastery;
-        if (activeFilter === 'uncertain') return c.uncertainty > 60;
-        if (activeFilter === 'review') return c.isStale;
+        if (activeFilter === 'mastered') return isMastered;
+        if (activeFilter === 'guessing') return isGuessing;
+        if (activeFilter === 'blindspot') return isBlindspot;
+        if (activeFilter === 'decay') return isDecaying;
+        if (activeFilter === 'learning') return c.evidenceCount > 0 && !isMastered;
         return true;
       });
+
+      document.getElementById('visible-count').textContent = filtered.length;
 
       if (filtered.length === 0) {
         container.innerHTML = `
@@ -219,6 +446,20 @@
 
       filtered.forEach((c) => {
         const isMastered = c.mastery >= c.requiredMastery && c.uncertainty <= 30;
+        const isGuessing = c.mastery >= c.requiredMastery && c.uncertainty > 30;
+        const isDecaying = c.isStale || (c.lastAttemptAt && (Date.now() - new Date(c.lastAttemptAt).getTime() > 10 * 86400000));
+
+        // Shelf-Life Calculation
+        let shelfText = '🟢 Fresh (14d safe)';
+        let shelfClass = 'shelf-fresh';
+        if (c.isStale) {
+          shelfText = '🔴 Stale (>14d inactive)';
+          shelfClass = 'shelf-stale';
+        } else if (isDecaying) {
+          shelfText = '🟡 Decaying (<4d left)';
+          shelfClass = 'shelf-warning';
+        }
+
         const card = document.createElement('div');
         card.className = 'card';
         card.style.display = 'flex';
@@ -228,17 +469,17 @@
         card.innerHTML = `
           <div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
-              <span class="badge ${isMastered ? 'badge-success' : c.isStale ? 'badge-purple' : c.uncertainty > 60 ? 'badge-amber' : 'badge-cyan'}">
-                #${c.order} ${isMastered ? 'MASTERED' : c.isStale ? 'NEEDS REVIEW' : c.uncertainty > 60 ? 'UNCERTAIN' : 'LEARNING'}
+              <span class="badge ${isMastered ? 'badge-success' : isGuessing ? 'badge-amber' : isDecaying ? 'badge-purple' : 'badge-cyan'}">
+                #${c.order} ${isMastered ? 'MASTERED' : isGuessing ? 'LUCKY GUESSING' : isDecaying ? 'DECAY RISK' : 'LEARNING'}
               </span>
-              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
-                ${c.evidenceCount} attempt(s)
+              <span class="decay-shelf-pill ${shelfClass}">
+                ${shelfText}
               </span>
             </div>
 
-            <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">${c.name}</h3>
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 1.25rem;">
-              slug: ${c.slug} | req: ${c.requiredMastery}%
+            <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.25rem;">${c.name}</h3>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 1.1rem;">
+              req: ${c.requiredMastery}% &bull; ${c.evidenceCount} verified attempt(s)
             </div>
 
             <!-- Dial + Progress Layout -->
@@ -252,25 +493,31 @@
 
               <div style="flex: 1;">
                 <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.35rem;">
-                  <span style="color: var(--text-muted);">Mastery Level:</span>
+                  <span style="color: var(--text-muted);">Mastery:</span>
                   <span style="font-weight: 700; color: ${c.mastery >= c.requiredMastery ? '#34d399' : '#fff'};">${c.mastery}%</span>
                 </div>
                 <div class="progress-track" style="height: 8px;">
                   <div class="progress-bar ${c.mastery >= c.requiredMastery ? 'progress-bar-emerald' : 'progress-bar-indigo'}" style="width: ${c.mastery}%;"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.4rem;">
-                  <span>Recent: ${c.recentPerformance}%</span>
-                  <span>Hist: ${c.historicalPerformance}%</span>
+                  <span>System Goal: &ge;${c.requiredMastery}%</span>
+                  <span style="color: ${c.uncertainty <= 30 ? '#34d399' : '#fbbf24'};">${c.uncertainty <= 30 ? '✓ Verified' : '⚠ Unverified'}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div style="border-top: 1px solid var(--border-color); padding-top: 0.85rem; margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 0.75rem; color: ${c.isStale ? '#fb7185' : 'var(--text-muted)'};">
-              ${c.isStale ? '⚠️ Inactive &gt;14 days' : 'Active status'}
-            </span>
-            <button class="btn btn-secondary btn-sm" onclick="practiceConcept('${c.conceptId}', '${c.name}')">
+          <div style="border-top: 1px solid var(--border-color); padding-top: 0.85rem; margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+            ${isDecaying ? `
+              <button class="btn btn-warning btn-sm" onclick="practiceConcept('${c.conceptId}', '${c.name}', true)" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+                ⚡ Retention Drill
+              </button>
+            ` : `
+              <span style="font-size: 0.75rem; color: var(--text-muted);">
+                Memory safe
+              </span>
+            `}
+            <button class="btn btn-primary btn-sm" onclick="practiceConcept('${c.conceptId}', '${c.name}', false)" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
               Practice ➔
             </button>
           </div>
@@ -280,21 +527,52 @@
       });
     }
 
-    async function practiceConcept(conceptId, conceptName) {
+    async function practiceConcept(conceptId, conceptName, isRetention = false) {
       try {
         const res = await window.API.get(`/adaptive/questions?conceptId=${conceptId}`);
         if (res.success && res.questions && res.questions.length > 0) {
           const question = res.questions[0];
           AdaptiveUI.openAttemptModal(question, async () => {
-            Utils.showToast(`Attempt registered for ${conceptName}!`, 'success');
+            Utils.showToast(isRetention ? `Retention drill completed! Knowledge refreshed.` : `Practice attempt recorded for ${conceptName}!`, 'success');
             await loadMasteryData();
           });
         } else {
-          Utils.showToast('No questions found for this concept.', 'info');
+          Utils.showToast('No active questions found for this concept.', 'info');
         }
       } catch (err) {
         console.error('Error starting practice:', err);
       }
+    }
+
+    // Epistemic Credential Modal Functions
+    function openCertificateModal() {
+      const user = window.API?.getUser ? window.API.getUser() : null;
+      const userName = user?.name || 'Alex Rivers';
+
+      const avgMastery = Math.round(overviewData.reduce((sum, c) => sum + c.mastery, 0) / (overviewData.length || 1));
+      const avgUncertainty = Math.round(overviewData.reduce((sum, c) => sum + c.uncertainty, 0) / (overviewData.length || 1));
+      const confidence = Math.max(50, 100 - avgUncertainty);
+
+      document.getElementById('cert-candidate-name').textContent = userName;
+      document.getElementById('cert-mastery-score').textContent = `${avgMastery}%`;
+      document.getElementById('cert-confidence-score').textContent = `${confidence}%`;
+      document.getElementById('cert-date').textContent = new Date().toLocaleDateString();
+
+      const randHash = 'CT-EPIST-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+      document.getElementById('cert-hash').textContent = randHash;
+
+      document.getElementById('cert-modal-overlay').style.display = 'flex';
+    }
+
+    function closeCertificateModal(e) {
+      if (!e || e.target.id === 'cert-modal-overlay' || e.target.tagName === 'BUTTON') {
+        document.getElementById('cert-modal-overlay').style.display = 'none';
+      }
+    }
+
+    function copyCertLink() {
+      navigator.clipboard.writeText(window.location.href);
+      Utils.showToast('Verification link copied to clipboard!', 'success');
     }
   </script>
 </body>

@@ -82,7 +82,9 @@ exports.getQuestions = async (req, res, next) => {
     const { conceptId, conceptSlug, type, difficulty } = req.query;
     const filter = { active: true };
 
-    if (conceptId) {
+    if (req.query.id || req.query.questionId) {
+      filter._id = req.query.id || req.query.questionId;
+    } else if (conceptId) {
       filter.conceptId = conceptId;
     } else if (conceptSlug) {
       const c = await Concept.findOne({ slug: conceptSlug });
