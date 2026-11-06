@@ -28,6 +28,14 @@
       "dest": "frontend/js/$1"
     },
     {
+      "src": "/images/(.*)",
+      "dest": "frontend/images/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "frontend/favicon.ico"
+    },
+    {
       "src": "/",
       "dest": "frontend/index.html"
     },
