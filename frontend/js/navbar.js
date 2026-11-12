@@ -56,7 +56,7 @@ const Navbar = {
     sidebarEl.innerHTML = `
       <aside class="sidebar">
         <div class="sidebar-header">
-          <div class="sidebar-logo">CT</div>
+          <div class="sidebar-logo"><img src="/images/logo.jpg" alt="CareerTwin AI Logo"></div>
           <div>
             <div class="sidebar-title gradient-text">CareerTwin AI</div>
             <div style="font-size: 0.72rem; color: var(--accent-secondary);">Adaptive Learning Core</div>
